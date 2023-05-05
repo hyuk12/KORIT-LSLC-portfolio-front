@@ -1,48 +1,52 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
+import Calendar from '../../components/Calendar/Calendar';
+
 
 const container = css`
-
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    align-items: center;
     margin-top: 64px;
     border: 1px solid #dbdbdb;
-    
-    width: 100%;
-    height: 100%;
+    width: 1;
+    height:100%;
 `;
 
-const sidebar = css`
+const leftsidebar = css`
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     border: 1px solid #dbdbdb;
-    min-width: 280px;
+    min-width: 300px;
+    height:100%;
 `;
+    
 const main = css`
     display: flex;
     justify-content: center;
-    align-items: center;
     border: 1px solid #dbdbdb;
-
+    width:100%
+    height:100%;
 `;
-const footer = css`
+
+const rightsidebar = css`
     display: flex;
     justify-content: center;
-    align-items: center;
     border: 1px solid #dbdbdb;
+    width:100%
+    height:100%;
 `;
 
 const Contents = () => {
     return (
         
         <div css={container}>
-            <div css={sidebar}>1</div>
+            <div css={leftsidebar}><Calendar /></div>
             <div css={main}>2</div>
-            <div css={footer}>3</div>
+            <div css={rightsidebar}>3</div>
         </div>
         
     );

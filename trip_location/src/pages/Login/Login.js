@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
 import { Avatar, AvatarGroup, Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, {useState} from 'react';
 import Paper from '@mui/material/Paper';
 import loginImg from '../../images/busan_night.jpg';
 import kakaoBtn from '../../images/kakaolink_btn.png';
 import naverBtn from '../../images/naver_btn.png';
 import googleBtn from '../../images/google_btn.png';
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 
 const submitButton = css`
@@ -104,14 +106,44 @@ const oauthImg = css`
 
 
 const Login = () => {
+    const [loginUser, setLoginUser] = useState({
+        email: '',
+        password: ''
+    })
+    const [errorMessages, setErrorMessages] = useState({email: '', password: ''});
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-          email: data.get('email'),
-          password: data.get('password'),
-        });
+    const navigate = useNavigate();
+
+    const onChangeHandler = (e) => {
+        const { name, value } = e.target;
+        setLoginUser(
+            {
+                ...loginUser,
+                [name]: value
+            }
+        )
+    }
+
+    const handleSubmit = async () => {
+        const data = { ...loginUser };
+
+        const option = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        try {
+            const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, JSON.stringify(data), option);
+            setErrorMessages({email: '', password: ''});
+
+            const accessToken = response.data.grantType + " " + response.data.accessToken;
+            localStorage.setItem('accessToken', accessToken);
+            navigate('/');
+
+        }catch (error) {
+            setErrorMessages({email: '', password: '', ...error.response.data.errorData})
+        }
     };
 
     return (
@@ -150,7 +182,7 @@ const Login = () => {
                         Sign in
                     </Typography>
 
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                    <Box noValidate  sx={{ mt: 1 }}>
 
                         <TextField
                             margin="normal"
@@ -161,6 +193,7 @@ const Login = () => {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            onChange={onChangeHandler}
                         />
                         <TextField
                             margin="normal"
@@ -171,6 +204,7 @@ const Login = () => {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            onChange={onChangeHandler}
                         />
 
                         <Grid container>
@@ -182,7 +216,7 @@ const Login = () => {
                         </Grid>
 
                         <Button
-                            type="submit"
+                            onClick={handleSubmit}
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2, backgroundColor: '#0BD0AF', color: 'white' }}

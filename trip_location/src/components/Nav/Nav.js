@@ -19,7 +19,7 @@ const toolbarStyle = css`
   justify-content: center;
   margin: 0 auto;
   border-bottom: 1px solid #dbdbdb;
-  width: 80%;
+  width: 100%;
 `;
 
 const logoImage = css`
@@ -62,7 +62,7 @@ const Nav = (props) => {
     }
 
     const handleSignInClick = () => {
-        navigate("/");
+        navigate("/login");
     }
 
     const handleSignUpClick = () => {

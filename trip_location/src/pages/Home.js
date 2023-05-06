@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Paper} from "@mui/material";
 import {css} from "@emotion/react";
 import cityNight from '../images/city_night.jpg';
@@ -18,7 +18,7 @@ const paperStyle = css`
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url("${cityNight}");
+  background-image: url(${cityNight});
   object-fit: cover;
 `;
 
@@ -31,7 +31,8 @@ const contents = css`
 `;
 
 const Home = () => {
-    const images = [cityNight, building];
+    const images = useMemo(() => [cityNight, building],[]);
+    // eslint-disable-next-line no-unused-vars
     const [currentImage, setCurrentImage] = useState(images[0]);
 
     useEffect(() => {
@@ -48,9 +49,9 @@ const Home = () => {
 
     return (
         <main>
-            <img css={paperStyle} src={currentImage} alt={currentImage} />
+            <Paper css={paperStyle} elevation={0} />
             <div css={contents}>
-                <PopularDestinations contents={contents}/>
+                <PopularDestinations />
 
             </div>
         </main>

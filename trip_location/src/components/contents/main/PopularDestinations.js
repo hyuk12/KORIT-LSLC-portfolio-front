@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import React, {useState} from 'react';
-import {css} from "@emotion/react";
-import busan from '../../../images/haeundae.jpg'
-import jeju from '../../../images/forest-jeju.jpg'
-import yeosu from '../../../images/yeosu.jpg'
-import gyeongju from '../../../images/gyeongju.jpg'
-import seoul from '../../../images/seoul.jpg'
-import gangneung from '../../../images/gangneung.jpg'
+import React, { useState } from 'react';
+import { css } from "@emotion/react";
+import busan from '../../../images/haeundae.jpg';
+import jeju from '../../../images/forest-jeju.jpg';
+import yeosu from '../../../images/yeosu.jpg';
+import gyeongju from '../../../images/gyeongju.jpg';
+import seoul from '../../../images/seoul.jpg';
+import gangneung from '../../../images/gangneung.jpg';
 import Modal from "../Modal/Modal";
+import Carousel from 'react-material-ui-carousel';
+import { Paper, Button } from '@mui/material';
 
 const destinations = [
     {
@@ -46,25 +48,43 @@ const destinations = [
         alt: "강릉",
         title: "강릉 경포대 해수욕장",
     },
+    {
+        id: 7,
+        image: gyeongju,
+        alt: "경주",
+        title: "경주 동궁과 월지",
+    },
+    {
+        id: 8,
+        image: seoul,
+        alt: "서울",
+        title: "서울 남산타워",
+    },
+    {
+        id: 9,
+        image: gangneung,
+        alt: "강릉",
+        title: "강릉 경포대 해수욕장",
+    },
 ];
 
-const container = css`
+const carouselStyle = css`
+  width: 100%;
+`;
+
+const paperStyle = css`
   position: relative;
-  box-shadow: 1px 1px 1px 2px #e1e1e1;
-  width: 30%;
+  width: calc(100% / 3);
   height: 350px;
-  margin-right: 10px;
+  cursor: pointer;
+  display: inline-block;
 `;
 
 const popularImg = css`
-  position: relative;
-  background-repeat: no-repeat;
   object-fit: cover;
-  background-size: cover;
   width: 100%;
   height: 100%;
 `;
-
 
 const textOverlay = css`
   position: absolute;
@@ -78,142 +98,80 @@ const textOverlay = css`
   pointer-events: none;
 `;
 
-const slider = css`
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  width: 100%;
-  height: 350px;
-`;
-
-const leftButton = css`
-  position: absolute;
-  top: 50%;
-  left: 0;
-  z-index: 2;
-  transform: translateY(-50%);
-  background-color: transparent;
-  border: 1px solid #ccc;
-  margin: 0 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
-
-  &:hover {
-    background-color: #eee;
-  }
-`;
-
-const rightButton = css`
-  position: absolute;
-  top: 50%;
-  right: 0;
-  z-index: 2;
-  transform: translateY(-50%);
-  background-color: transparent;
-  border: 1px solid #ccc;
-  margin: 0 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
-
-  &:hover {
-    background-color: #eee;
-  }
-`;
 
 
 
-
-
-const hoverStyles = css `opacity: 1`;
-
-
-
-const PopularDestinations = ({ contents }) => {
-    const [page, setPage] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
+const PopularDestinations = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedDestination, setSelectedDestination] = useState(null)
+    const [selectedDestination, setSelectedDestination] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const itemPerSlide = 3;
+    const destinationChunks = [];
 
-    const handleNextPage = () => {
-        setPage((page + 1) % destinations.length);
-    };
-
-    const handlePrevPage = () => {
-        setPage(page === 0 ? destinations.length - 1 : page - 1);
-    };
+    for (let i = 0; i < destinations.length; i += itemPerSlide) {
+        destinationChunks.push(destinations.slice(i, i + itemPerSlide));
+    }
 
     const handleImageClick = (destination) => {
         setSelectedDestination(destination);
-        setIsModalOpen(true)
+        setIsModalOpen(true);
     };
 
     const closeModal = () => {
-        setIsModalOpen(false)
-    }
+        setIsModalOpen(false);
+    };
+
+    const createIndicators = (length) => {
+        const indicators = [];
+        for (let i = 0; i < length; i++) {
+            indicators.push(
+                <button
+                    key={i}
+                    onClick={() => {
+                        // Carousel의 setActiveIndex를 사용하여 인디케이터 클릭 시 해당 슬라이드로 이동
+                        setActiveIndex(i);
+                    }}
+                    className={i === activeIndex ? "active" : ""}
+                ></button>
+            );
+        }
+        return indicators;
+    };
 
     return (
         <>
-            <div
-                css={contents}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+            <Carousel
+                autoPlay={false}
+                swipe={true}
+                indicators={createIndicators(destinationChunks.length)}
+                cycleNavigation={true}
+                animation={"slide"}
+                css={carouselStyle}
+                setActiveIndex={setActiveIndex}
+                activeIndex={activeIndex}
             >
-                <div css={slider}>
-                    {destinations.map((destination, index) => (
-                        <div
-                            key={destination.id}
-                            css={container}
-                            style={{
-                                order: index - page < 0 ? index - page + destinations.length : index - page,
-                                display:
-                                    Math.abs(index - page) <= 1 ||
-                                    (Math.abs(index - page) === destinations.length - 1 && index !== (page + 1) % destinations.length)
-                                        ? "block"
-                                        : "none",
-                            }}
-                        >
-                            <img
-                                css={popularImg}
-                                src={destination.image}
-                                alt={destination.alt}
+                {destinationChunks.map((chunk, index) => (
+                    <div key={index}>
+                        {chunk.map((destination) => (
+                            <Paper
+                                key={destination.id}
                                 onClick={() => handleImageClick(destination)}
-                            />
-                            <div css={textOverlay}>{destination.title}</div>
-                            {index === page && (
-                                <button
-                                    css={[leftButton, isHovered && hoverStyles]}
-                                    onClick={handlePrevPage}
-                                >
-                                    Prev
-                                </button>
-                            )}
-                            {index === (page + 1) % destinations.length && (
-                                <button
-                                    css={[rightButton, isHovered && hoverStyles]}
-                                    onClick={handleNextPage}
-                                >
-                                    Next
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </div>
+                                css={paperStyle}
+                            >
+                                <img css={popularImg} src={destination.image} alt={destination.alt} />
+                                <div css={textOverlay}>{destination.title}</div>
+                            </Paper>
+                        ))}
+                    </div>
+                ))}
+            </Carousel>
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 destination={selectedDestination}
             />
         </>
-
     );
+};
 
-
-
-}
 export default PopularDestinations;
-

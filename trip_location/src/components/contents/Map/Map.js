@@ -3,8 +3,27 @@ import { css } from '@emotion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
 const map = css`
+  position: relative;
   width: 500px;
   height: 500px;
+  z-index: 1;
+`;
+
+const guideBox = css`
+  position: absolute;
+  z-index: 2;
+`;
+
+const guideButton = css`
+  display: flex;
+  margin: 8px;
+  width: 100px;
+  height: 50px;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffffb3;
+  box-shadow: 0 4px 8px 0;
 `;
 
 const Map = () => {
@@ -116,8 +135,16 @@ const Map = () => {
   };
     
   return (
-      <div>
-        <div css={map} ref={mapRef}></div>
+    <div css={map} ref={mapRef}>
+        <div>
+          <div css={guideBox}>
+            <a css={guideButton}>1번 박스</a>
+            <a css={guideButton}>2번 박스</a>
+            <a css={guideButton}>3번 박스</a>
+            <a css={guideButton}>4번 박스</a>
+
+          </div>
+      </div>
         {markers.length > 0 && (
           <div>
             <ul>

@@ -7,6 +7,9 @@ import yeosu from '../../../images/yeosu.jpg';
 import gyeongju from '../../../images/gyeongju.jpg';
 import seoul from '../../../images/seoul.jpg';
 import gangneung from '../../../images/gangneung.jpg';
+import ulleungdo from '../../../images/ulleungdo.jpg';
+import geojedo from '../../../images/geojedo.jpg';
+import incheon from '../../../images/incheon.jpg'
 import Modal from "../Modal/Modal";
 import Carousel from 'react-material-ui-carousel';
 import { Paper, Button } from '@mui/material';
@@ -16,55 +19,64 @@ const destinations = [
         id: 1,
         image: jeju,
         alt: "제주도",
-        title: "제주도 산림욕",
+        title: "제주도",
+        englishing: "Jeju",
     },
     {
         id: 2,
         image: yeosu,
         alt: "여수",
-        title: "여수 해수욕장",
+        title: "여수",
+        englishing: "Yeosu",
     },
     {
         id: 3,
         image: busan,
         alt: "부산",
-        title: "부산 해운대 해수욕장",
+        title: "부산",
+        englishing: "Busan",
     },
     {
         id: 4,
         image: gyeongju,
         alt: "경주",
-        title: "경주 동궁과 월지",
+        title: "경주",
+        englishing: "Gyeongju",
     },
     {
         id: 5,
         image: seoul,
         alt: "서울",
-        title: "서울 남산타워",
+        title: "서울",
+        englishing: "Seoul",
     },
     {
         id: 6,
         image: gangneung,
         alt: "강릉",
-        title: "강릉 경포대 해수욕장",
+        title: "강릉",
+        englishing: "Gangneung",
     },
     {
         id: 7,
-        image: gyeongju,
-        alt: "경주",
-        title: "경주 동궁과 월지",
+        image: ulleungdo,
+        alt: "울릉도",
+        title: "울릉도",
+        englishing: "Ulleungdo",
     },
     {
         id: 8,
-        image: seoul,
-        alt: "서울",
-        title: "서울 남산타워",
+        image: geojedo,
+        alt: "거제도",
+        title: "거제도",
+        englishing: "Geojedo",
     },
     {
         id: 9,
-        image: gangneung,
-        alt: "강릉",
-        title: "강릉 경포대 해수욕장",
+        image: incheon,
+        alt: "인천",
+        title: "인천",
+        englishing: "Incheon",
     },
 ];
 
@@ -74,7 +86,8 @@ const carouselStyle = css`
 
 const paperStyle = css`
   position: relative;
-  width: calc(100% / 3);
+  margin: 0 10px;
+  width: calc(100% / 3 - 20px);
   height: 350px;
   cursor: pointer;
   display: inline-block;
@@ -88,17 +101,25 @@ const popularImg = css`
 
 const textOverlay = css`
   position: absolute;
-  bottom: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   padding: 20px;
   color: white;
   font-size: 1.5rem;
-  background: rgba(0, 0, 0, 0.5);
   pointer-events: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  text-align: center;
 `;
 
+const largeText = css`
+  font-size: 2rem;
+`;
 
+const smallText = css`
+  font-size: 1rem;
+`;
 
 
 const PopularDestinations = () => {
@@ -158,8 +179,15 @@ const PopularDestinations = () => {
                                 onClick={() => handleImageClick(destination)}
                                 css={paperStyle}
                             >
-                                <img css={popularImg} src={destination.image} alt={destination.alt} />
-                                <div css={textOverlay}>{destination.title}</div>
+                                <img css={popularImg} src={destination.image} alt={destination.alt}/>
+                                <div css={textOverlay}>
+                                    <div css={largeText}>
+                                        {destination.title}
+                                    </div>
+                                    <div css={smallText}>
+                                        {destination.englishing}
+                                    </div>
+                                </div>
                             </Paper>
                         ))}
                     </div>

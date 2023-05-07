@@ -17,7 +17,7 @@ function App() {
   return (
       <>
           <CssBaseline/>
-          <Nav title={"Trip Location"}/>
+
             <Routes css={mainStyles}>
                 <Route path={"/"} element={<Home />}/>
                 <Route path={"/login"} element={<Login />}/>

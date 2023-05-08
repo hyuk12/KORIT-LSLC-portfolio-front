@@ -1,6 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import {css} from "@emotion/react";
+import styled from "@emotion/styled";
+import {Bolt, Favorite, History, Language, Person} from "@mui/icons-material";
+import {useNavigate} from "react-router-dom";
 
 const modalStyle = css`
   display: flex;
@@ -28,7 +31,7 @@ const modalContent = css`
 `;
 
 const imageWrapper = css`
-  flex-basis: 30%;
+  flex-basis: 50%;
   padding-right: 20px;
   border-right: 1px solid #e1e1e1;
 `;
@@ -38,14 +41,44 @@ const infoWrapper = css`
   padding-left: 20px;
 `;
 
+const buttonStyle = css`
+  margin-top: 40px;
+  border: none;
+  width: 144px;
+  height: 44px;
+  background-color: #98dde3;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+`;
 
+const iconContainer = css`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+`;
+
+const UserIconStyle = styled(Person)`
+  font-size: 2rem;
+`;
+
+const FavoriteIcon = styled(Favorite)`
+  font-size: 2rem;
+`;
+
+
+const Pstyle = css`
+  color: #808080;
+`;
 
 const Modal = ({ isOpen, onClose, destination }) => {
+    const navigate = useNavigate();
     if (!isOpen || !destination) {
         return null;
     }
 
-    const { image, title } = destination;
+    const { image, title, englishing } = destination;
+
 
     return (
         <div css={modalStyle} onClick={onClose}>
@@ -55,10 +88,17 @@ const Modal = ({ isOpen, onClose, destination }) => {
                 </div>
                 <div css={infoWrapper}>
                     <h2>{title}</h2>
-                    <p>
-                        여기에 간단한 설명글이 들어갑니다. 해당 지역의 특징과 매력을 소개해 주세요.
+                    <span>{englishing}</span>
+                    <p css={Pstyle}>
+                        국제 해양관광의 중심 전남 여수시. 3천여 그루의 동백나무로 가득 찬 붉은 섬 오동도는 웰빙 트래킹 코스를 갖추고
+                        있어 한층 더 운치 있다. 해상 케이블카를 타면 마치 바다 위를 걷는 듯한 느낌이 들며 탁 트인 바다 전망을 감상할
+                        수 있다. 노래 가사에도 나오는 낭만적이고 황홀한 여수의 밤바다는 돌산대교와 음악분수가 함께 어우러져 멋진 야
+                        경을 선사한다. 공식 밥도둑 게장 백반과 돌산 갓김치, 갈치조림 등 풍부한 먹거리 까지 갖춘 인기 만점 관광지!
                     </p>
-                    <button>여행 경로 설정하기</button>
+                    <div css={iconContainer}>
+                        <UserIconStyle /> <FavoriteIcon />
+                    </div>
+                    <button css={buttonStyle} onClick={() => navigate('/contents', {destinationTitle: title})}>일정 만들기</button>
                 </div>
             </div>
         </div>

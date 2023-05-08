@@ -72,8 +72,6 @@ const SectionWrapper = styled.div`
   width: 100%;
 `;
 
-
-
 const StyledPaper = styled(Paper)`
   display: flex;
   flex-direction: column;
@@ -85,7 +83,7 @@ const StyledPaper = styled(Paper)`
   margin: 20px auto;
   border: none;
   min-width: 80%;
-  height: 450px;
+  min-height: 100vh;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -136,7 +134,6 @@ const Home = () => {
     const images = useMemo(() => [cityNight, building], []);
     const [currentImage, setCurrentImage] = useState(images[0]);
 
-
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentImage((prevImage) => {
@@ -151,8 +148,9 @@ const Home = () => {
 
     return (
         <MainWrapper>
-            <Nav title={"Trip Location"} />
-            <StyledPaper elevation={0} style={{ backgroundImage: `url(${currentImage})` }} />
+            <SectionWrapper>
+                <StyledPaper elevation={0} style={{ backgroundImage: `url(${currentImage})` }} />
+            </SectionWrapper>
 
             <SectionWrapper>
                 <Container>

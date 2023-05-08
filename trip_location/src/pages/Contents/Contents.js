@@ -44,7 +44,7 @@ const rightsidebar = css`
 `;
 
 
-const Contents = () => {
+const Contents = ({ destinationTitle }) => {
   return (
     <div css={container}>
       <div css={leftsidebar}>
@@ -52,7 +52,7 @@ const Contents = () => {
         <Calendar />
         <div>총 일정</div>
       </div>
-      <div css={main}><Map/></div>
+      <div css={main}><Map destinationTitle={destinationTitle}/></div>
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
   );

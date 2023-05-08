@@ -1,49 +1,100 @@
 /** @jsxImportSource @emotion/react */
-import React, {useState} from 'react';
-import {css} from "@emotion/react";
-import haeundae from '../../../images/haeundae.jpg'
-import jeju from '../../../images/forest-jeju.jpg'
+import React, { useState } from 'react';
+import { css } from "@emotion/react";
+import busan from '../../../images/haeundae.jpg';
+import jeju from '../../../images/forest-jeju.jpg';
+import yeosu from '../../../images/yeosu.jpg';
+import gyeongju from '../../../images/gyeongju.jpg';
+import seoul from '../../../images/seoul.jpg';
+import gangneung from '../../../images/gangneung.jpg';
+import ulleungdo from '../../../images/ulleungdo.jpg';
+import geojedo from '../../../images/geojedo.jpg';
+import incheon from '../../../images/incheon.jpg'
+import Modal from "../Modal/Modal";
+import Carousel from 'react-material-ui-carousel';
+import { Paper, Button } from '@mui/material';
 
 const destinations = [
     {
         id: 1,
-        image: haeundae,
-        alt: '해운대',
-        title: '해운대 해수욕장',
+        image: jeju,
+        alt: "제주도",
+        title: "제주도",
+        englishing: "Jeju",
     },
     {
         id: 2,
-        image: jeju,
-        alt: '제주도',
-        title: '제주도 산림욕',
+        image: yeosu,
+        alt: "여수",
+        title: "여수",
+        englishing: "Yeosu",
     },
     {
         id: 3,
-        image: jeju,
-        alt: '제주도',
-        title: '제주도 산림욕',
+        image: busan,
+        alt: "부산",
+        title: "부산",
+        englishing: "Busan",
     },
     {
         id: 4,
-        image: haeundae,
-        alt: '해운대',
-        title: '해운대 해수욕장',
+        image: gyeongju,
+        alt: "경주",
+        title: "경주",
+        englishing: "Gyeongju",
+    },
+    {
+        id: 5,
+        image: seoul,
+        alt: "서울",
+        title: "서울",
+        englishing: "Seoul",
+    },
+    {
+        id: 6,
+        image: gangneung,
+        alt: "강릉",
+        title: "강릉",
+        englishing: "Gangneung",
+    },
+    {
+        id: 7,
+        image: ulleungdo,
+        alt: "울릉도",
+        title: "울릉도",
+        englishing: "Ulleungdo",
+    },
+    {
+        id: 8,
+        image: geojedo,
+        alt: "거제도",
+        title: "거제도",
+        englishing: "Geojedo",
+    },
+    {
+        id: 9,
+        image: incheon,
+        alt: "인천",
+        title: "인천",
+        englishing: "Incheon",
     },
 ];
 
-const container = css`
+const carouselStyle = css`
+  width: 100%;
+`;
+
+const paperStyle = css`
   position: relative;
-  box-shadow: 1px 1px 1px 2px #e1e1e1;
-  width: 45%;
+  margin: 0 10px;
+  width: calc(100% / 3 - 20px);
   height: 350px;
-  margin-right: 10px;
+  cursor: pointer;
+  display: inline-block;
 `;
 
 const popularImg = css`
-  position: relative;
-  background-repeat: no-repeat;
   object-fit: cover;
-  background-size: cover;
   width: 100%;
   height: 100%;
 `;
@@ -53,92 +104,101 @@ const textOverlay = css`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 3px;
-  padding: 10px;
-  color: #fff;
-  font-weight: bold;
   width: 100%;
+  padding: 20px;
+  color: white;
+  font-size: 1.5rem;
+  pointer-events: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   text-align: center;
-  font-size: 24px;
-  text-shadow: 0px 1px 1px 2px #dbdbdb;
 `;
 
-const slider = css`
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  width: 100%;
-  transform: translateX(${(props) => -100 * props.page}%);
-  transition: transform 0.3s ease-out;
+const largeText = css`
+  font-size: 2rem;
 `;
 
-const paginationButtons = css`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  padding: 0 20px;
-`;
-
-const buttonStyles = css`
-  background-color: transparent;
-  border: 1px solid #ccc;
-  margin: 0 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
-
-  &:hover {
-    background-color: #eee;
-  }
-`;
-
-const hoverStyles = css`
-  opacity: 1;
+const smallText = css`
+  font-size: 1rem;
 `;
 
 
-const PopularDestinations = ({ contents }) => {
+const PopularDestinations = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedDestination, setSelectedDestination] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const itemPerSlide = 3;
+    const destinationChunks = [];
 
-    const [page, setPage] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
-    const handleNextPage = () => {
-        if(page < Math.ceil((destinations.length / 2) - 1)) {
-            setPage(page + 1);
-        }
-    };
-
-    const handlePrevPage = () => {
-        if(page > 0) {
-            setPage(page - 1);
-        }
+    for (let i = 0; i < destinations.length; i += itemPerSlide) {
+        destinationChunks.push(destinations.slice(i, i + itemPerSlide));
     }
 
+    const handleImageClick = (destination) => {
+        setSelectedDestination(destination);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const createIndicators = (length) => {
+        const indicators = [];
+        for (let i = 0; i < length; i++) {
+            indicators.push(
+                <button
+                    key={i}
+                    onClick={() => {
+                        // Carousel의 setActiveIndex를 사용하여 인디케이터 클릭 시 해당 슬라이드로 이동
+                        setActiveIndex(i);
+                    }}
+                    className={i === activeIndex ? "active" : ""}
+                ></button>
+            );
+        }
+        return indicators;
+    };
+
     return (
-        <div css={contents}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+        <>
+            <Carousel
+                autoPlay={false}
+                swipe={true}
+                indicators={createIndicators(destinationChunks.length)}
+                cycleNavigation={true}
+                animation={"slide"}
+                css={carouselStyle}
+                setActiveIndex={setActiveIndex}
+                activeIndex={activeIndex}
             >
-            <div css={[slider, {transform: `translateX(-${100 * page}%)`}]}>
-                {destinations.slice(page * 2, page * 2 + 2).map((destination) => (
-                    <div key={destination.id} css={container}>
-                        <img css={popularImg} src={destination.image} alt={destination.alt}/>
-                        <div css={textOverlay}>
-                            {destination.title}
-                        </div>
+                {destinationChunks.map((chunk, index) => (
+                    <div key={index}>
+                        {chunk.map((destination) => (
+                            <Paper
+                                key={destination.id}
+                                onClick={() => handleImageClick(destination)}
+                                css={paperStyle}
+                            >
+                                <img css={popularImg} src={destination.image} alt={destination.alt}/>
+                                <div css={textOverlay}>
+                                    <div css={largeText}>
+                                        {destination.title}
+                                    </div>
+                                    <div css={smallText}>
+                                        {destination.englishing}
+                                    </div>
+                                </div>
+                            </Paper>
+                        ))}
                     </div>
                 ))}
-                <div css={paginationButtons}>
-                    <button css={[buttonStyles, isHovered && hoverStyles]} onClick={handlePrevPage}>Prev</button>
-                    <button css={[buttonStyles, isHovered && hoverStyles]} onClick={handleNextPage}>Next</button>
-                </div>
-            </div>
-
-        </div>
+            </Carousel>
+            <Modal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                destination={selectedDestination}
+            />
+        </>
     );
 };
 

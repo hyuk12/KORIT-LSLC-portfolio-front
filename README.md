@@ -5,6 +5,8 @@
 - react
 - emotion
 - react-router-dom
+- Material-UI
+- React-Meterial-UI-Carousel
 
 ## tools
 - Visual Studio Code

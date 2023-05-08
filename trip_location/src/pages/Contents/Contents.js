@@ -4,6 +4,7 @@ import React from 'react';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
 
+
 const container = css`
   display: flex;
   flex-wrap: wrap;
@@ -46,15 +47,16 @@ const rightsidebar = css`
 
 const Contents = ({ destinationTitle }) => {
   return (
+
     <div css={container}>
       <div css={leftsidebar}>
         <div>여행장소 이름</div>
         <Calendar />
-        <div>총 일정</div>
       </div>
       <div css={main}><Map destinationTitle={destinationTitle}/></div>
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
+
   );
 };
 

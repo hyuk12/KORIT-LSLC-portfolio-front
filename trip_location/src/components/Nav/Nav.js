@@ -66,7 +66,7 @@ const Nav = (props) => {
     }
 
     const handleSignUpClick = () => {
-        navigate("/");
+        navigate("/user");
     }
 
     return (

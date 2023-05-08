@@ -151,9 +151,7 @@ const Home = () => {
 
     return (
         <MainWrapper>
-            <Nav title={"Trip Location"} />
             <StyledPaper elevation={0} style={{ backgroundImage: `url(${currentImage})` }} />
-
             <SectionWrapper>
                 <Container>
                     <StyleTitleTypography  variant="h4" component="h2">

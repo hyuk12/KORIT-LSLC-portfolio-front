@@ -60,8 +60,8 @@ const destinations = [
     {
         id: 7,
         image: ulleungdo,
-        alt: "울릉도",
-        title: "울릉도",
+        alt: "울릉",
+        title: "울릉",
         englishing: "Ulleungdo",
     },
     {

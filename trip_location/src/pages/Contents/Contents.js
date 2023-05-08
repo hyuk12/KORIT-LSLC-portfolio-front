@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import React from 'react';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
+import { useSearchParams } from 'react-router-dom';
 
 const container = css`
   display: flex;
@@ -44,7 +45,9 @@ const rightsidebar = css`
 `;
 
 
-const Contents = ({ destinationTitle }) => {
+const Contents = () => {
+  const [serchParams, setSearchParams] = useSearchParams();
+
   return (
     <div css={container}>
       <div css={leftsidebar}>
@@ -52,7 +55,7 @@ const Contents = ({ destinationTitle }) => {
         <Calendar />
         <div>총 일정</div>
       </div>
-      <div css={main}><Map destinationTitle={destinationTitle}/></div>
+      <div css={main}><Map destinationTitle={serchParams.get("destinationTitle")}/></div>
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
   );

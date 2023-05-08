@@ -17,6 +17,8 @@ function Maptest() {
     const Map = new kakao.maps.Map(container, options);
     setMap(Map);   
 
+    
+
     const linePath = [];
     const polyline = new kakao.maps.Polyline({
       path: linePath,

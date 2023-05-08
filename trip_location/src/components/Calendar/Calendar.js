@@ -1,24 +1,60 @@
-import * as React from 'react';
-import dayjs from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import dayjs from 'dayjs';
+import React from 'react';
+import BasicTimeline from '../TimeLine/BasicTimeLine';
 
 
-export default function Calendar() {
-  const [value, setValue] = React.useState(dayjs());
+export default function Calendar(props) {
+  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange } = props;
+
+  const resetDay = () => {
+    onStartDayChange(startDay);
+    onEndDayChange(endDay);
+  }
+
+  const startDayHandle = (newValue) => {
+    onStartDayChange(newValue);
+  }
+
+  const endDayHanlde = (newValue) => {
+    onEndDayChange(newValue);
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={['DatePicker', 'DatePicker']}>
-        <DatePicker label="start" defaultValue={dayjs()} />
+        <DatePicker
+          label="start"
+          value={startDay}
+          onMonthChange={false}
+          onChange={startDayHandle}
+          minDate={dayjs()}
+          maxDate={dayjs().add(3,'month')}
+        />
         <DatePicker
           label="end"
-          value={value}
-          onChange={(newValue) => setValue(newValue)}
+          value={endDay}
+          onMonthChange={false}
+          onChange={endDayHanlde}
+          minDate={startDay}
+          maxDate={startDay.add(1,'month')}
         />
       </DemoContainer>
+      <div>Total days: {totalDate}</div>
+      {Array.from({ length: totalDate }, (_, i) => {
+        const scheduleDays = startDay.add(i, 'day');
+        
+        return (
+          <div key={scheduleDays.toString()}>
+            Schedule for {scheduleDays.format('YYYY-MM-DD')}
+            <BasicTimeline startDay={startDay} endDay={endDay} scheduleDays={scheduleDays}/>
+          </div>
+        );
+      })}
     </LocalizationProvider>
   );
 }
+

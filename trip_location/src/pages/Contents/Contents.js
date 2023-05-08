@@ -1,8 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
+import dayjs from 'dayjs';
+import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
+import BasicTimeline from '../../components/TimeLine/BasicTimeLine';
+
 
 const container = css`
   display: flex;
@@ -43,18 +47,53 @@ const rightsidebar = css`
   flex: 1 0 300px;
 `;
 
+const Contents = ({ destinationTitle }) => {
+  const [serchParams, setSearchParams] = useSearchParams();
+  const [startDay, setStartDay] = useState(dayjs());
+  const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
+  const [totalDate, setTotalDate] =useState(1);
 
-const Contents = () => {
+  const startDayHandle = (newValue) => {
+    setStartDay(newValue);
+    setTotalDate(endDay.diff(newValue, 'day') + 1);
+  }
+
+  const endDayHanlde = (newValue) => {
+    setEndDay(newValue);
+    setTotalDate(newValue.diff(startDay, 'Day') + 1)
+  }
+
+  const resetDay = () => {
+    setStartDay(dayjs());
+    setEndDay(dayjs().add(1,'day'));
+    setTotalDate(1);
+  }
+  
+  const AddLocationClick = (e) =>{
+
+  }
+
   return (
+    
     <div css={container}>
       <div css={leftsidebar}>
         <div>여행장소 이름</div>
-        <Calendar />
-        <div>총 일정</div>
+        <button onClick={resetDay}>Reset Start Day</button>
+        <Calendar 
+          startDay={startDay}
+          endDay={endDay}
+          totalDate={totalDate}
+          onStartDayChange={startDayHandle}
+          onEndDayChange={endDayHanlde}
+        />
+        <button onClick={AddLocationClick}>아직 기능 없음</button>
       </div>
-      <div css={main}><Map/></div>
+
+      <div css={main}><Map destinationTitle={serchParams.get("destinationTitle")}/></div>
+
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
+
   );
 };
 

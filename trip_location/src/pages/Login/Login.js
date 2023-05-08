@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
-import { Avatar, AvatarGroup, Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import React from 'react';
 import Paper from '@mui/material/Paper';
 import loginImg from '../../images/busan_night.jpg';
@@ -10,6 +10,14 @@ import googleBtn from '../../images/google_btn.png';
 
 
 const submitButton = css`
+    margin-top: 30px;
+    margin-bottom: 20px;
+
+    background-color: #0BD0AF;
+    color: white;
+    
+    font-size: 15px;
+
     &:hover {
         background-color: #0BAF94;
     }

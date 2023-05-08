@@ -46,10 +46,18 @@ const buttonStyle = css`
   border: none;
   width: 144px;
   height: 44px;
-  background-color: #98dde3;
+  background-color: #0BD0AF;
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
+
+  &:hover {
+    background-color: #0BAF94;
+  }
+
+  &:active {
+    background-color: #40D6BD;
+  }
 `;
 
 const iconContainer = css`

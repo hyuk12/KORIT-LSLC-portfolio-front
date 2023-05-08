@@ -23,7 +23,7 @@ function App() {
             <Routes css={mainStyles}>
                 <Route path={"/"} element={<Home />}/>
                 <Route path={"/login"} element={<Login />}/>
-                <Route path={"/signup"} element={<SignUp />}/>
+                <Route path={"/user"} element={<SignUp />}/>
                 <Route path={"/contents"} element={<Contents />}/>
             </Routes>
             

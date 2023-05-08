@@ -38,6 +38,12 @@ const signUpContainer = css`
     margin-bottom: 5px;
 `;
 
+const errorMsg = css`
+    margin-left: 5px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: red;
+`;
 
 const orBorderContainer = css`
     display: flex;
@@ -115,11 +121,11 @@ const oauthImg = css`
 
 
 const Login = () => {
-    const [loginUser, setLoginUser] = useState({
+    const [ loginUser, setLoginUser ] = useState({
         email: '',
         password: ''
     })
-    const [errorMessages, setErrorMessages] = useState({email: '', password: ''});
+    const [ errorMessages, setErrorMessages ] = useState({email: '', password: ''});
 
     const navigate = useNavigate();
 
@@ -133,7 +139,7 @@ const Login = () => {
         )
     }
 
-    const handleSubmit = async () => {
+    const loginHandleSubmit = async () => {
         const data = { ...loginUser };
 
         const option = {
@@ -151,7 +157,7 @@ const Login = () => {
             navigate('/');
 
         }catch (error) {
-            setErrorMessages({email: '', password: '', ...error.response.data.errorData})
+            setErrorMessages({email: '', password: '', ...error.response.data.errorData});
         }
     };
 
@@ -191,7 +197,7 @@ const Login = () => {
                         Sign in
                     </Typography>
 
-                    <Box noValidate  sx={{ mt: 1 }}>
+                    <Box sx={{ mt: 1 }}>
 
                         <TextField
                             margin="normal"
@@ -204,6 +210,8 @@ const Login = () => {
                             autoFocus
                             onChange={onChangeHandler}
                         />
+                        <div css={errorMsg}>{errorMessages.email}</div>
+
                         <TextField
                             margin="normal"
                             required
@@ -215,6 +223,7 @@ const Login = () => {
                             autoComplete="current-password"
                             onChange={onChangeHandler}
                         />
+                        <div css={errorMsg}>{errorMessages.password}</div>
 
                         <Grid container>
                             <Grid item xs>
@@ -225,7 +234,7 @@ const Login = () => {
                         </Grid>
 
                         <Button
-                            onClick={handleSubmit}
+                            onClick={loginHandleSubmit}
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2, backgroundColor: '#0BD0AF', color: 'white' }}

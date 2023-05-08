@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
 import dayjs from 'dayjs';
+import { useSearchParams } from 'react-router-dom';
 
 const container = css`
   display: flex;
@@ -44,8 +45,8 @@ const rightsidebar = css`
   flex: 1 0 300px;
 `;
 
-
 const Contents = ({ destinationTitle }) => {
+  const [serchParams, setSearchParams] = useSearchParams();
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
@@ -68,7 +69,6 @@ const Contents = ({ destinationTitle }) => {
   
   return (
     
-
     <div css={container}>
       <div css={leftsidebar}>
         <div>여행장소 이름</div>
@@ -81,7 +81,7 @@ const Contents = ({ destinationTitle }) => {
           onEndDayChange={endDayHanlde}
         />
       </div>
-      <div css={main}><Map destinationTitle={destinationTitle}/></div>
+      <div css={main}><Map destinationTitle={serchParams.get("destinationTitle")}/></div>
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
 

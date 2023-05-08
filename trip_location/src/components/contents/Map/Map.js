@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const map = css`
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 900px;
+  height: 900px;
   z-index: 1;
 `;
 
@@ -36,13 +36,14 @@ const Map = ({ destinationTitle }) => {
 
   useEffect(() => {
     const kakao = window.kakao;
-    const mapContainer = mapRef.current;
+    // const mapContainer = mapRef.current;
     const mapOption = {
       center: new kakao.maps.LatLng(35.152380, 129.059647),
-      level: 5,
+      level: 9,
     };
-    const map = new kakao.maps.Map(mapContainer, mapOption);
-  
+    const map = new kakao.maps.Map(mapRef.current, mapOption);
+    const geocoder = new kakao.maps.services.Geocoder();
+
     // Create a red marker image to use for route markers
     const routeMarkerImage = new kakao.maps.MarkerImage(
       'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
@@ -50,6 +51,7 @@ const Map = ({ destinationTitle }) => {
       { offset: new kakao.maps.Point(10, 34) }
     );
   
+
     // Prevent map events from firing
     const preventMapEvents = () => {
       setEditMode(false);
@@ -78,6 +80,33 @@ const Map = ({ destinationTitle }) => {
       });
       setRoute(markers);
     }
+
+    console.log(destinationTitle)
+    //geocoder 사용으로 주소로 장소표시
+    geocoder.addressSearch(destinationTitle, function(result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        
+        const map = new kakao.maps.Map(mapRef.current, {
+          center: coords,
+          level: 9
+        });
+        // 검색결과 마커로 표시
+        const marker = new kakao.maps.Marker({
+          map: map,
+          position: coords
+        });
+
+        // 인포윈도우에 간단한 주석 띄우기
+        const infowindow = new kakao.maps.InfoWindow({
+          content: '<div style="width:150px;text-align:center;padding:6px 0;">좌표들어갈곳</div>'
+        });
+        infowindow.open(map, marker);
+
+        // Move the center of the map to the location received as the result
+        map.setCenter(coords);
+      }
+    });
   
     const handleMapClick = (mouseEvent) => {
       const latlng = mouseEvent.latLng;
@@ -119,7 +148,9 @@ const Map = ({ destinationTitle }) => {
       kakao.maps.event.removeListener(map, 'dragend', restoreMapEvents);
       kakao.maps.event.removeListener(map, 'click', handleMapClick);
     };
-  }, [editMode, clickable,previousRoute]);
+
+  }, [editMode, previousRoute, destinationTitle]);
+
       
   const handleSaveRoute = () => {
     setPreviousRoute([...markers]);

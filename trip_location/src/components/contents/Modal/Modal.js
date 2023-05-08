@@ -98,7 +98,7 @@ const Modal = ({ isOpen, onClose, destination }) => {
                     <div css={iconContainer}>
                         <UserIconStyle /> <FavoriteIcon />
                     </div>
-                    <button css={buttonStyle} onClick={() => navigate('/contents', {destinationTitle: title})}>일정 만들기</button>
+                    <button css={buttonStyle} onClick={() => navigate(`/contents?destinationTitle=${title}`)}>일정 만들기</button>
                 </div>
             </div>
         </div>

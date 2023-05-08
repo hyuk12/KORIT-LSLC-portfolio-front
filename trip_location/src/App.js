@@ -7,6 +7,7 @@ import {CssBaseline} from "@mui/material";
 import Nav from "./components/Nav/Nav";
 import {css} from "@emotion/react";
 import Login from "./pages/Login/Login";
+import React from "react";
 
 
 const mainStyles = css`
@@ -17,7 +18,7 @@ function App() {
   return (
       <>
           <CssBaseline/>
-
+          <Nav title={"Trip Location"} />
             <Routes css={mainStyles}>
                 <Route path={"/"} element={<Home />}/>
                 <Route path={"/login"} element={<Login />}/>

@@ -2,7 +2,7 @@
 import React from 'react';
 import {css} from "@emotion/react";
 import styled from "@emotion/styled";
-import {Bolt, Favorite, History, Language, Person} from "@mui/icons-material";
+import {Favorite, Person} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 
 const modalStyle = css`

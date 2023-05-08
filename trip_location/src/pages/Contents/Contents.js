@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { useState } from 'react';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
-
+import dayjs from 'dayjs';
+import { useSearchParams } from 'react-router-dom';
 
 const container = css`
   display: flex;
@@ -44,16 +45,43 @@ const rightsidebar = css`
   flex: 1 0 300px;
 `;
 
-
 const Contents = ({ destinationTitle }) => {
-  return (
+  const [serchParams, setSearchParams] = useSearchParams();
+  const [startDay, setStartDay] = useState(dayjs());
+  const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
+  const [totalDate, setTotalDate] =useState(1);
 
+  const startDayHandle = (newValue) => {
+    setStartDay(newValue);
+    setTotalDate(endDay.diff(newValue, 'day') + 1);
+  }
+
+  const endDayHanlde = (newValue) => {
+    setEndDay(newValue);
+    setTotalDate(newValue.diff(startDay, 'Day') + 1)
+  }
+
+  const resetDay = () => {
+    setStartDay(dayjs());
+    setEndDay(dayjs().add(1,'day'));
+    setTotalDate(1);
+  }
+  
+  return (
+    
     <div css={container}>
       <div css={leftsidebar}>
         <div>여행장소 이름</div>
-        <Calendar />
+        <button onClick={resetDay}>Reset Start Day</button>
+        <Calendar 
+          startDay={startDay}
+          endDay={endDay}
+          totalDate={totalDate}
+          onStartDayChange={startDayHandle}
+          onEndDayChange={endDayHanlde}
+        />
       </div>
-      <div css={main}><Map destinationTitle={destinationTitle}/></div>
+      <div css={main}><Map destinationTitle={serchParams.get("destinationTitle")}/></div>
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
 

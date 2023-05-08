@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import dayjs from 'dayjs';
+import React from 'react';
 
-export default function Calendar() {
-  const [startDay, setStartDay] = useState(dayjs());
-  const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
-  const [totalDate, setTotalDate] =useState(1);
+export default function Calendar(props) {
+  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange } = props;
+
+  const resetDay = () => {
+    onStartDayChange(startDay);
+    onEndDayChange(endDay);
+  }
 
   const startDayHandle = (newValue) => {
-    setStartDay(newValue);
-    setTotalDate(endDay.diff(newValue, 'day') + 1);
+    onStartDayChange(newValue);
   }
 
   const endDayHanlde = (newValue) => {
-    setEndDay(newValue);
-    setTotalDate(newValue.diff(startDay, 'Day') + 1)
+    onEndDayChange(newValue);
   }
 
   return (
@@ -26,19 +27,22 @@ export default function Calendar() {
         <DatePicker
           label="start"
           value={startDay}
+          onMonthChange={false}
           onChange={startDayHandle}
-          minDate={startDay}
+          minDate={dayjs()}
+          maxDate={dayjs().add(3,'month')}
         />
         <DatePicker
           label="end"
           value={endDay}
+          onMonthChange={false}
           onChange={endDayHanlde}
           minDate={startDay}
-          maxDate={dayjs().add(1,'month')}
+          maxDate={startDay.add(1,'month')}
         />
       </DemoContainer>
-         <div>Total days: {totalDate}</div>
-         {[...Array(totalDate)].map((_, i) => {
+      <div>Total days: {totalDate}</div>
+      {Array.from({ length: totalDate }, (_, i) => {
         const scheduleDay = startDay.add(i, 'day');
         return (
           <div key={scheduleDay.toString()}>
@@ -46,7 +50,7 @@ export default function Calendar() {
           </div>
         );
       })}
-
     </LocalizationProvider>
   );
 }
+

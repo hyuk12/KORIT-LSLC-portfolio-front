@@ -9,6 +9,7 @@ import {css} from "@emotion/react";
 import React from "react";
 import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
+import MyPage from "./pages/MyPage";
 
 
 const mainStyles = css`
@@ -24,6 +25,7 @@ function App() {
                 <Route path={"/"} element={<Home />}/>
                 <Route path={"/login"} element={<Login />}/>
                 <Route path={"/user"} element={<SignUp />}/>
+                <Route path={"/user/:id"} element={<MyPage />}/>
                 <Route path={"/contents"} element={<Contents />}/>
             </Routes>
             

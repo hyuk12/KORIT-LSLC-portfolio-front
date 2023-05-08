@@ -28,18 +28,7 @@ const logoImage = css`
   
 `;
 
-const signupButton = css`
-  border: 1px solid #bababa;
-  border-radius: 5px;
-  color: #7c7f86;
-  
-  &:hover {
-    background-color: #dbdbdb;
-    color: #282c34;
-  }
-`;
-
-const signinButton = css`
+const buttonStyle = css`
   margin-left: 5px;
   border: 1px solid #bababa;
   border-radius: 5px;
@@ -69,6 +58,10 @@ const Nav = (props) => {
         navigate("/user");
     }
 
+    const handleMyPageClick = () => {
+        navigate("/user/:id")
+    }
+
     return (
         <React.Fragment>
             <Toolbar css={[toolbarStyle, navStyles]}>
@@ -85,16 +78,22 @@ const Nav = (props) => {
                     {title}
                 </Typography>
                 <Button
-                    css={signupButton}
+                    css={buttonStyle}
                     size={"small"}
                     onClick={handleSignUpClick}>
                     Sign up
                 </Button>
                 <Button
-                    css={signinButton}
+                    css={buttonStyle}
                     size={"small"}
                     onClick={handleSignInClick}>
                     Sign in
+                </Button>
+                <Button
+                    css={buttonStyle}
+                    size={"small"}
+                    onClick={handleMyPageClick}>
+                    My Page
                 </Button>
             </Toolbar>
         </React.Fragment>

@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
-import BasicTimeline from '../../components/TimeLine/BasicTimeLine';
 
 
 const container = css`
@@ -69,9 +68,7 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(1);
   }
   
-  const AddLocationClick = (e) =>{
 
-  }
 
   return (
     
@@ -86,11 +83,11 @@ const Contents = ({ destinationTitle }) => {
           onStartDayChange={startDayHandle}
           onEndDayChange={endDayHanlde}
         />
-        <button onClick={AddLocationClick}>아직 기능 없음</button>
+        <div>
+          여긴 친구 추가 
+        </div>
       </div>
-
       <div css={main}><Map destinationTitle={serchParams.get("destinationTitle")}/></div>
-
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
 

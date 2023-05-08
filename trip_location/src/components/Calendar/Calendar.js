@@ -1,11 +1,11 @@
+import React from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
-import React from 'react';
-import BasicTimeline from '../TimeLine/BasicTimeLine';
-
+import SubButton from '../Button/SubButton';
+import VerticalTabs from '../Tab/Tab';
 
 export default function Calendar(props) {
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange } = props;
@@ -25,6 +25,7 @@ export default function Calendar(props) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div>Total days: {totalDate}</div>
       <DemoContainer components={['DatePicker', 'DatePicker']}>
         <DatePicker
           label="start"
@@ -32,7 +33,7 @@ export default function Calendar(props) {
           onMonthChange={false}
           onChange={startDayHandle}
           minDate={dayjs()}
-          maxDate={dayjs().add(3,'month')}
+          maxDate={dayjs().add(3, 'month')}
         />
         <DatePicker
           label="end"
@@ -40,21 +41,12 @@ export default function Calendar(props) {
           onMonthChange={false}
           onChange={endDayHanlde}
           minDate={startDay}
-          maxDate={startDay.add(1,'month')}
+          maxDate={startDay.add(1, 'month')}
         />
       </DemoContainer>
-      <div>Total days: {totalDate}</div>
-      {Array.from({ length: totalDate }, (_, i) => {
-        const scheduleDays = startDay.add(i, 'day');
-        
-        return (
-          <div key={scheduleDays.toString()}>
-            Schedule for {scheduleDays.format('YYYY-MM-DD')}
-            <BasicTimeline startDay={startDay} endDay={endDay} scheduleDays={scheduleDays}/>
-          </div>
-        );
-      })}
+      <SubButton/>
+      <VerticalTabs scheduleDays={Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'))} />
     </LocalizationProvider>
   );
+  
 }
-

@@ -26,7 +26,7 @@ const guideButton = css`
   box-shadow: 0 4px 8px 0;
 `;
 
-const Map = () => {
+const Map = ({ destinationTitle }) => {
   const mapRef = useRef(null);
   const [markers, setMarkers] = useState([]);
   const [route, setRoute] = useState([]);

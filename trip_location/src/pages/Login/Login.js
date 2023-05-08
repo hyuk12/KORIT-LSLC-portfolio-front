@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
+import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import { Avatar, AvatarGroup, Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import React, {useState} from 'react';
 import Paper from '@mui/material/Paper';
@@ -12,6 +13,14 @@ import axios from "axios";
 
 
 const submitButton = css`
+    margin-top: 30px;
+    margin-bottom: 20px;
+
+    background-color: #0BD0AF;
+    color: white;
+    
+    font-size: 15px;
+
     &:hover {
         background-color: #0BAF94;
     }

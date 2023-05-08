@@ -1,9 +1,9 @@
 import {Card, CardActionArea, CardContent, CardMedia, Typography} from '@mui/material';
 
-const LocationCard = ({ image, title, description }) => {
+const LocationCard = ({ image, title, description, onClick }) => {
     return (
         <Card>
-            <CardActionArea>
+            <CardActionArea onClick={onClick}>
                 <CardMedia
                     component="img"
                     alt={title}

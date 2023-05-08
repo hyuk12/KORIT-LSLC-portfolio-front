@@ -148,7 +148,9 @@ const Map = ({ destinationTitle }) => {
       kakao.maps.event.removeListener(map, 'dragend', restoreMapEvents);
       kakao.maps.event.removeListener(map, 'click', handleMapClick);
     };
+
   }, [editMode, previousRoute, destinationTitle]);
+
       
   const handleSaveRoute = () => {
     setPreviousRoute([...markers]);
@@ -167,11 +169,10 @@ const Map = ({ destinationTitle }) => {
     <div css={map} ref={mapRef}>
         <div>
           <div css={guideBox}>
-            <a css={guideButton}>1번 박스</a>
+            <a css={guideButton} >1번 박스</a>
             <a css={guideButton}>2번 박스</a>
             <a css={guideButton}>3번 박스</a>
             <a css={guideButton}>4번 박스</a>
-
           </div>
       </div>
         {markers.length > 0 && (

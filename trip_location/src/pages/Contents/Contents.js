@@ -5,6 +5,7 @@ import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
 import { useSearchParams } from 'react-router-dom';
 
+
 const container = css`
   display: flex;
   flex-wrap: wrap;
@@ -49,15 +50,16 @@ const Contents = () => {
   const [serchParams, setSearchParams] = useSearchParams();
 
   return (
+
     <div css={container}>
       <div css={leftsidebar}>
         <div>여행장소 이름</div>
         <Calendar />
-        <div>총 일정</div>
       </div>
       <div css={main}><Map destinationTitle={serchParams.get("destinationTitle")}/></div>
       <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
+
   );
 };
 

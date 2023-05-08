@@ -151,7 +151,6 @@ const Home = () => {
             <SectionWrapper>
                 <StyledPaper elevation={0} style={{ backgroundImage: `url(${currentImage})` }} />
             </SectionWrapper>
-
             <SectionWrapper>
                 <Container>
                     <StyleTitleTypography  variant="h4" component="h2">

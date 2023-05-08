@@ -12,6 +12,15 @@ import busan from '../images/haeundae.jpg';
 import jeju from '../images/forest-jeju.jpg';
 import yeosu from '../images/yeosu.jpg';
 import gyeongju from '../images/gyeongju.jpg';
+import gangneung from '../images/gangneung.jpg';
+import seoul from '../images/seoul.jpg';
+import yongin from '../images/yongin.jpg';
+import seosan from '../images/seosan.jpg';
+import jeonju from '../images/jeonju.jpg';
+import ulsan from '../images/ulsan.jpg';
+import mokpo from '../images/mokpo.jpg';
+import suncheon from '../images/suncheon.jpg';
+import Modal from "../components/contents/Modal/Modal";
 
 const cardData = [
     {
@@ -35,24 +44,44 @@ const cardData = [
         description: '경주',
     },
     {
-        image: jeju,
-        title: 'Jeju',
-        description: '제주도',
+        image: gangneung,
+        title: 'Gangneung',
+        description: '강릉',
     },
     {
-        image: busan,
-        title: 'Busan',
-        description: '부산',
+        image: seoul,
+        title: 'Seoul',
+        description: '서울',
     },
     {
-        image: yeosu,
-        title: 'Yeosu',
-        description: '여수',
+        image: yongin,
+        title: 'Yongin',
+        description: '용인',
     },
     {
-        image: gyeongju,
-        title: 'Gyeongju',
-        description: '경주',
+        image: seosan,
+        title: 'Seosan',
+        description: '서산',
+    },
+    {
+        image: jeonju,
+        title: 'Jeonju',
+        description: '전주',
+    },
+    {
+        image: ulsan,
+        title: 'Ulsan',
+        description: '울산',
+    },
+    {
+        image: mokpo,
+        title: 'Mokpo',
+        description: '목포',
+    },
+    {
+        image: suncheon,
+        title: 'Suncheon',
+        description: '순천',
     },
     // ... 추가 카드 데이터
 ];
@@ -68,6 +97,7 @@ const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 100px;
   min-height: 100vh;
   width: 100%;
 `;
@@ -133,6 +163,17 @@ const StyleInput = styled(TextField)`
 const Home = () => {
     const images = useMemo(() => [cityNight, building], []);
     const [currentImage, setCurrentImage] = useState(images[0]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+
+    const handleCardClick = (location) => {
+        setSelectedLocation(location);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -189,12 +230,19 @@ const Home = () => {
                                     image={data.image}
                                     title={data.title}
                                     description={data.description}
+                                    onClick={() => handleCardClick(data)}
                                 />
                             </Grid>
                         ))}
                     </Grid>
                 </Container>
             </SectionWrapper>
+            <SectionWrapper>
+                <footer>
+
+                </footer>
+            </SectionWrapper>
+            <Modal isOpen={modalOpen} onClose={handleCloseModal} destination={selectedLocation} />
         </MainWrapper>
     );
 };

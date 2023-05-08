@@ -73,6 +73,7 @@ const Pstyle = css`
 
 const Modal = ({ isOpen, onClose, destination }) => {
     const navigate = useNavigate();
+
     if (!isOpen || !destination) {
         return null;
     }

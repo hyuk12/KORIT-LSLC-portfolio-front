@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
-import { Avatar, AvatarGroup, Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import {css} from '@emotion/react'
+import {Box, Button, Grid, Link, TextField, Typography} from '@mui/material';
 import React, {useState} from 'react';
 import Paper from '@mui/material/Paper';
 import loginImg from '../../images/busan_night.jpg';

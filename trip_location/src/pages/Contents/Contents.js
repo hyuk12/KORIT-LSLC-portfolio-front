@@ -8,52 +8,63 @@ import Map from '../../components/contents/Map/Map';
 
 
 const container = css`
-  display: flex;
-  flex-wrap: wrap;
   margin-top: 64px;
-  border: 1px solid #dbdbdb;
-  height: 100vh;
 `;
 
-const leftsidebar = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #dbdbdb;
-  min-width: 400px;
-  flex: 1 0 400px;
-  z-index:100;
+const sidebar=css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  background-color: white;
+  box-shadow: 0 4px 8px 0;
+  height: 100%;
 `;
+
 const calendar = css`
-  height: 400px;
+  height: 100%;
 `;
-
 
 const main = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #dbdbdb;
-  flex: 1 1 auto;
-  overflow:hidden;
-  z-index: 0;
+  position: relative;
 `;
 
 const rightsidebar = css`
+  position: absolute;
+  top: 0;
+  right: 0;
+  box-shadow: 0 4px 8px 0;
+  background-color: white;
+  height: 100%;
+  z-index: 3;
+`;
+
+
+const Title =css`
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+`;
+
+const resetButton= css`
+  
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #dbdbdb;
-  min-width: 300px;
-  flex: 1 0 300px;
+  margin: 0 auto;
+
 `;
 
+const group = css`
+  text-align: center;
+`;
 const Contents = ({ destinationTitle }) => {
   const [serchParams, setSearchParams] = useSearchParams();
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
+  const [paths, setPaths] = useState([]);
+
 
   const startDayHandle = (newValue) => {
     setStartDay(newValue);
@@ -71,28 +82,29 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(1);
   }
   
-
-
   return (
     
     <div css={container}>
-      <div css={leftsidebar}>
-        <div>여행장소 이름</div>
-        <button onClick={resetDay}>Reset Start Day</button>
-        <Calendar 
-          css={calendar}
-          startDay={startDay}
-          endDay={endDay}
-          totalDate={totalDate}
-          onStartDayChange={startDayHandle}
-          onEndDayChange={endDayHanlde}
-        />
-        <div>
-          여긴 친구 추가 
+      <div css={main}>
+        <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
+        <div css={sidebar}>
+            <div css={Title}>{serchParams.get("destinationTitle")}</div>
+            <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
+            <Calendar 
+              css={calendar}
+              startDay={startDay}
+              endDay={endDay}
+              totalDate={totalDate}
+              onStartDayChange={startDayHandle}
+              onEndDayChange={endDayHanlde}
+              paths={paths}
+            />
+            <div css={group}>
+              여긴 친구 추가 
+            </div>
         </div>
+        <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
       </div>
-      <div css={main}><Map destinationTitle={serchParams.get("destinationTitle")}/></div>
-      <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
     </div>
 
   );

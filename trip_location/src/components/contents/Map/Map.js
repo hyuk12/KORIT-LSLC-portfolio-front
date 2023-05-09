@@ -6,35 +6,39 @@ const { kakao } = window;
 
 const map = css`
   position: relative;
-  width: 900px;
-  height: 900px;
+  width: 100%;
+  height: 93vh;
   z-index: 1;
 `;
 
 const guideBox = css`
   position: absolute;
+  left: 540px;
   z-index: 2;
 `;
 
 const guideButton = css`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
   margin: 8px;
   width: 100px;
   height: 50px;
   border-radius: 5px;
-  justify-content: center;
-  align-items: center;
   background-color: #ffffffb3;
   box-shadow: 0 4px 8px 0;
 `;
 
-const Map = ({ destinationTitle }) => {
+const Map = ({ destinationTitle, paths, setPaths }) => {
   const linePath = [];
   const mapRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
   const [markers, setMarkers] = useState([]);
   const [polyline, setPolyline] = useState(null);
   const [markerPositions, setMarkerPositions] = useState([]);
+
 
   useEffect(() => {
     const mapOption = {
@@ -110,32 +114,43 @@ const Map = ({ destinationTitle }) => {
   }
 
   function handleHideMarkers() {
-    window.location.reload()
+    setMarkersOnMap(null);
+    if (polyline) {
+      polyline.setMap(null);
+    }
+    setPolyline(null);
+    setEditMode(prevEditMode => !prevEditMode);
+  }
+  
+  
+
+  function handleSavePath() {
+    const positions = markerPositions.map((position) => ({
+      lat: position.getLat(),
+      lng: position.getLng(),
+    }));
+    setPaths([...paths, ...positions]);
   }
   
 
-    function handleSavePath() {
-      const positions = markerPositions.map((position) => ({
-        lat: position.getLat(),
-        lng: position.getLng(),
-      }));
-      console.log(positions)
-    
-  }
-
   return (
     <div css={map} ref={mapRef}>
-        <div>
-          <div css={guideBox}>
-            <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
-            <button css={guideButton} onClick={handleHideMarkers}>마커 전부 삭제</button>
-            <a css={guideButton}>3번 박스</a>
-            <a css={guideButton}>4번 박스</a>
+      <div css={guideBox}>
+        <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
+        <button css={guideButton} onClick={handleHideMarkers}>마커 전부 삭제</button>
+        {/* {paths.map((path, index) => (
+          <div key={index}>
+            {path.map((position, index) => (
+              <div key={index}>
+                {`lat: ${position.lat}, lng: ${position.lng}`}
+              </div>
+            ))}
           </div>
+        ))} */}
       </div>
-      <button onClick={handleHideMarkers}>마커 전체삭제</button>
-      </div>
-    );
+    </div>
+  );
+  
 };
 
 export default Map;

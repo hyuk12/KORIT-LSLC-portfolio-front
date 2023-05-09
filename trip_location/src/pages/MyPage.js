@@ -4,6 +4,9 @@ import {css} from "@emotion/react";
 import defaultImg from '../images/logotitle.png';
 import {Button} from "@mui/material";
 import styled from "@emotion/styled";
+import {useQuery, useQueryClient} from "react-query";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const container = css`
   display: flex;
@@ -72,14 +75,25 @@ const myPlanAndReview = css`
 `;
 
 const MyPage = () => {
+    const navigate = useNavigate();
+    const principal = useQuery(["principal"], async () => {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
+        return response;
+    });
+
+    if(principal.isLoading) {
+        return (<div>is Loading...</div>)
+    }
+
     return (
         <div css={container}>
             <main css={main}>
                 <div css={imgContainer}>
 
                 </div>
-                <div>Example@gmail.com</div>
-                <ModifyButton>수정하기</ModifyButton>
+                <div>{principal.data.data.email}</div>
+                <ModifyButton onClick={() => navigate(`/user/modify/${principal.data.data.userId}`)}>수정하기</ModifyButton>
                 <div css={mainContents}>
                     <div css={myPlanAndReview}>
                         <span>나의 일정</span>

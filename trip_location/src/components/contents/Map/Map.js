@@ -53,7 +53,7 @@ const Map = ({ destinationTitle }) => {
         map.setCenter(coords);
       }
     });
-
+    
     const polyline = new kakao.maps.Polyline({
       path: linePath,
       strokeWeight: 5,
@@ -66,6 +66,15 @@ const Map = ({ destinationTitle }) => {
 
      kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
         const position = mouseEvent.latLng;
+        geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            // Extract the address from the result object
+            const address = result[0].address.address_name;
+      
+            // TODO: do something with the address, such as displaying it in a popup or storing it in state
+            console.log(address);
+          }
+        });
         const marker = new kakao.maps.Marker({ position });
         marker.setMap(map);
         setMarkers(prevMarkers => [...prevMarkers, marker]);
@@ -94,26 +103,10 @@ const Map = ({ destinationTitle }) => {
     };
   }, [editMode, destinationTitle]);
 
-  function setMarkersOnMap(map) {
-    markers.forEach(marker => {
-      if (map) {
-        marker.setMap(map);
-        kakao.maps.event.addListener(marker, 'click', function() {
-          setMarkers(prevMarkers => prevMarkers.filter(prevMarker => prevMarker !== marker));
-          marker.setMap(null);
-        });
-      } else {
-        kakao.maps.event.removeListener(marker, 'click');
-        marker.setMap(null);
-      }
-    });
-  }
-
   function handleHideMarkers() {
     window.location.reload()
   }
   
-
     function handleSavePath() {
       const positions = markerPositions.map((position) => ({
         lat: position.getLat(),
@@ -129,8 +122,6 @@ const Map = ({ destinationTitle }) => {
           <div css={guideBox}>
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
             <button css={guideButton} onClick={handleHideMarkers}>마커 전부 삭제</button>
-            <a css={guideButton}>3번 박스</a>
-            <a css={guideButton}>4번 박스</a>
           </div>
       </div>
       <button onClick={handleHideMarkers}>마커 전체삭제</button>

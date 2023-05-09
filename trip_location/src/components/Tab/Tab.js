@@ -1,4 +1,5 @@
-
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -7,6 +8,10 @@ import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 
+const route=css`
+  font-size: 16px;
+  font-weight: 400;
+`;
 
 function a11yProps(index) {
   return {
@@ -15,8 +20,7 @@ function a11yProps(index) {
   };
 }
 
-function TabPanel(props) {
-  const { children, value, index, scheduleDays, ...other } = props;
+function TabPanel({ children, value, index, scheduleDays, coordinates, ...other }) {
 
   return (
     <div
@@ -30,6 +34,11 @@ function TabPanel(props) {
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography sx={{ px: 2, py: 1 }}>
             {scheduleDays.format('YYYY-MM-DD')}
+            {coordinates.map(coordinate => (
+              <div css={route}>
+                Latitude: {coordinate.lat}, Longitude: {coordinate.lng}
+              </div>
+            ))}
           </Typography>
           <Box sx={{ flexGrow: 1, px: 2 }}>{children}</Box>
         </Box>
@@ -38,42 +47,51 @@ function TabPanel(props) {
   );
 }
 
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-    scheduleDays: PropTypes.instanceOf(dayjs).isRequired,
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+  scheduleDays: PropTypes.instanceOf(dayjs).isRequired,
+  coordinates: PropTypes.shape({
+    date: PropTypes.string.isRequired,
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
+  })
+};
+
+export default function VerticalTabs({ scheduleDays, coordinates }) {
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
-  
-  export default function VerticalTabs({ scheduleDays }) {
-    const [value, setValue] = useState(0);
-  
-    const handleChange = (event, newValue) => {
-      setValue(newValue);
-    };
-  
-    return (
-      <Box
-        sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}
+
+  return (
+    <Box
+      sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}
+    >
+      <Tabs
+        orientation="vertical"
+        variant="scrollable"
+        value={value}
+        onChange={handleChange}
+        aria-label="Vertical tabs example"
+        sx={{ borderRight: 1, borderColor: 'divider' }}
       >
-        <Tabs
-          orientation="vertical"
-          variant="scrollable"
-          value={value}
-          onChange={handleChange}
-          aria-label="Vertical tabs example"
-          sx={{ borderRight: 1, borderColor: 'divider' }}
-        >
-          {scheduleDays.map((day, index) => (
-            <Tab label={day.format('YYYY-MM-DD')} {...a11yProps(index)} key={day.toString()} />
-          ))}
-        </Tabs>
         {scheduleDays.map((day, index) => (
-          <TabPanel value={value} index={index} key={day.toString()} scheduleDays={day}>
-            Item {index + 1}
-          </TabPanel>
+          <Tab label={day.format('YYYY-MM-DD')} {...a11yProps(index)} key={day.toString()} />
         ))}
-      </Box>
-    );
-  }
-  
+      </Tabs>
+      {scheduleDays.map((day, index) => (
+        <TabPanel
+          value={value}
+          index={index}
+          key={day.toString()}
+          scheduleDays={day}
+          coordinates={coordinates}
+        >
+        </TabPanel>
+      ))}
+    </Box>
+  );
+}

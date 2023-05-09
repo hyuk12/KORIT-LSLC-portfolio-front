@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
-import SubButton from '../Button/SubButton';
+import React, { useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
 
 const calendarContainer = css`
@@ -14,11 +13,22 @@ const calendarContainer = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
   height: 400px; 
+`;
+const Total=css`
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
 `;
 
 export default function Calendar(props) {
-  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange } = props;
+  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, paths } = props;
+  const [route, setRoute] =useState([]);
+
+  const savelocation = (location) =>{
+    setRoute(location);
+  }
 
   const resetDay = () => {
     onStartDayChange(startDay);
@@ -32,31 +42,37 @@ export default function Calendar(props) {
   const endDayHanlde = (newValue) => {
     onEndDayChange(newValue);
   }
+  console.log(paths)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div>Total days: {totalDate}</div>
-      <div css={calendarContainer}>
-        <DemoContainer components={['DatePicker', 'DatePicker']}>
-          <DatePicker
-            label="start"
-            value={startDay}
-            onMonthChange={false}
-            onChange={startDayHandle}
-            minDate={dayjs()}
-            maxDate={dayjs().add(3, 'month')}
-            />
-          <DatePicker
-            label="end"
-            value={endDay}
-            onMonthChange={false}
-            onChange={endDayHanlde}
-            minDate={startDay}
-            maxDate={startDay.add(1, 'month')}
-            />
-        </DemoContainer>
-        <SubButton/>
-        <VerticalTabs scheduleDays={Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'))} />
+      <div id='calendar'>
+        <div css={Total}>Total days: {totalDate}</div>
+        <div css={calendarContainer}>
+          <DemoContainer components={['DatePicker', 'DatePicker']}>
+            <DatePicker
+              label="start"
+              value={startDay}
+              onMonthChange={false}
+              onChange={startDayHandle}
+              minDate={dayjs()}
+              maxDate={dayjs().add(3, 'month')}
+              />
+            <DatePicker
+              label="end"
+              value={endDay}
+              onMonthChange={false}
+              onChange={endDayHanlde}
+              minDate={startDay}
+              maxDate={startDay.add(1, 'month')}
+              />
+          </DemoContainer>
+          <VerticalTabs 
+            scheduleDays={Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'))}
+            coordinates={paths}/>
+          {/* <Map /> */}
+          {/* <SubButton/> */}
+        </div>
       </div>
     </LocalizationProvider>
   );

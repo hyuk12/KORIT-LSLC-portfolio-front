@@ -25,6 +25,9 @@ const leftsidebar = css`
   flex: 1 0 400px;
   z-index:100;
 `;
+const calendar = css`
+  height: 400px;
+`;
 
 
 const main = css`
@@ -77,6 +80,7 @@ const Contents = ({ destinationTitle }) => {
         <div>여행장소 이름</div>
         <button onClick={resetDay}>Reset Start Day</button>
         <Calendar 
+          css={calendar}
           startDay={startDay}
           endDay={endDay}
           totalDate={totalDate}

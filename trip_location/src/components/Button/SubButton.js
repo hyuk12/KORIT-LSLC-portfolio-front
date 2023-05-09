@@ -9,8 +9,8 @@ const buttons = [
 
 export default function SubButton() {
   return (
-    <ButtonGroup color="primary" aria-label="medium primary button group">
-      {buttons}
+    <ButtonGroup size="small" aria-label="small button group">
+    {buttons}
     </ButtonGroup>
   );
 }

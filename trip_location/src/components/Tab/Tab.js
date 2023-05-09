@@ -1,10 +1,11 @@
-import * as React from 'react';
+
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
+import React, { useState } from 'react';
 
 
 function a11yProps(index) {
@@ -15,26 +16,28 @@ function a11yProps(index) {
 }
 
 function TabPanel(props) {
-    const { children, value, index, scheduleDays, ...other } = props;
-  
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`vertical-tabpanel-${index}`}
-        aria-labelledby={`vertical-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: value }}>
-            <Typography>{scheduleDays.format('YYYY-MM-DD')}</Typography>
-            {children}
-          </Box>
-        )}
-      </div>
-    );
-  }
-  
+  const { children, value, index, scheduleDays, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography sx={{ px: 2, py: 1 }}>
+            {scheduleDays.format('YYYY-MM-DD')}
+          </Typography>
+          <Box sx={{ flexGrow: 1, px: 2 }}>{children}</Box>
+        </Box>
+      )}
+    </div>
+  );
+}
+
   TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
@@ -43,7 +46,7 @@ function TabPanel(props) {
   };
   
   export default function VerticalTabs({ scheduleDays }) {
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
   
     const handleChange = (event, newValue) => {
       setValue(newValue);

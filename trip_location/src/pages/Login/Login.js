@@ -10,6 +10,8 @@ import loginImg from '../../images/busan_night.jpg';
 import googleBtn from '../../images/google_btn.png';
 import kakaoBtn from '../../images/kakaolink_btn.png';
 import naverBtn from '../../images/naver_btn.png';
+import {useRecoilState} from "recoil";
+import {isLoggedOutState, refreshState} from "../../atoms/Auth/AuthAtoms";
 
 
 const submitButton = css`
@@ -126,7 +128,8 @@ const Login = () => {
         password: ''
     })
     const [ errorMessages, setErrorMessages ] = useState({email: '', password: ''});
-
+    const [refresh, setRefresh] = useRecoilState(refreshState);
+    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
     const navigate = useNavigate();
 
     const onChangeHandler = (e) => {
@@ -154,6 +157,8 @@ const Login = () => {
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
+            setRefresh(false);
+            setIsLoggedOut(true);
             navigate('/');
 
         }catch (error) {
@@ -248,7 +253,7 @@ const Login = () => {
                                 회원이 아니세요?
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2" marginLeft="7px">
+                                <Link to={"/signup"} variant="body2" marginLeft="7px">
                                     {"회원가입하기"}
                                 </Link>
                             </Grid>

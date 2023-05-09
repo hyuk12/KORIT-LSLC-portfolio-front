@@ -34,6 +34,7 @@ const Map = ({ destinationTitle }) => {
   const [editMode, setEditMode] = useState(false);
   const [markers, setMarkers] = useState([]);
   const [polyline, setPolyline] = useState(null);
+  const [markerPositions, setMarkerPositions] = useState([]);
 
   useEffect(() => {
     const mapOption = {
@@ -68,6 +69,9 @@ const Map = ({ destinationTitle }) => {
         const marker = new kakao.maps.Marker({ position });
         marker.setMap(map);
         setMarkers(prevMarkers => [...prevMarkers, marker]);
+        setMarkerPositions(prevPositions => [...prevPositions, position]);
+
+  
   
     kakao.maps.event.addListener(marker, 'click', function() {
         setMarkers(prevMarkers => prevMarkers.filter(prevMarker => prevMarker !== marker));
@@ -106,9 +110,16 @@ const Map = ({ destinationTitle }) => {
   }
 
   function handleHideMarkers() {
-    setMarkersOnMap(null);
-    setMarkers([]);
-    polyline.setMap(null);
+    window.location.reload()
+  }
+  
+
+    function handleSavePath() {
+      const positions = markerPositions.map((position) => ({
+        lat: position.getLat(),
+        lng: position.getLng(),
+      }));
+      console.log(positions)
     
   }
 
@@ -116,8 +127,8 @@ const Map = ({ destinationTitle }) => {
     <div css={map} ref={mapRef}>
         <div>
           <div css={guideBox}>
-            <button css={guideButton}>경로 저장</button>
-            <a css={guideButton}>2번 박스</a>
+            <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
+            <button css={guideButton} onClick={handleHideMarkers}>마커 전부 삭제</button>
             <a css={guideButton}>3번 박스</a>
             <a css={guideButton}>4번 박스</a>
           </div>

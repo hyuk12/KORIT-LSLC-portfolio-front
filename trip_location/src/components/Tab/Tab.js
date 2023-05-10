@@ -36,7 +36,7 @@ function TabPanel({ children, value, index, scheduleDays, coordinates, ...other 
             {scheduleDays.format('YYYY-MM-DD')}
             {coordinates.map(coordinate => (
               <div css={route}>
-                Latitude: {coordinate.lat}, Longitude: {coordinate.lng}
+                palce: {coordinate.addr}
               </div>
             ))}
           </Typography>
@@ -59,6 +59,8 @@ TabPanel.propTypes = {
   })
 };
 
+
+
 export default function VerticalTabs({ scheduleDays, coordinates }) {
   const [value, setValue] = useState(0);
 
@@ -66,6 +68,7 @@ export default function VerticalTabs({ scheduleDays, coordinates }) {
     setValue(newValue);
   };
 
+  console.log(value);
   return (
     <Box
       sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}
@@ -79,7 +82,7 @@ export default function VerticalTabs({ scheduleDays, coordinates }) {
         sx={{ borderRight: 1, borderColor: 'divider' }}
       >
         {scheduleDays.map((day, index) => (
-          <Tab label={day.format('YYYY-MM-DD')} {...a11yProps(index)} key={day.toString()} />
+          <Tab label={day.format('YYYY-MM-DD')} {...a11yProps(index)} key={day.toString()}/>
         ))}
       </Tabs>
       {scheduleDays.map((day, index) => (

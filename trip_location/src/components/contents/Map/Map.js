@@ -38,7 +38,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const [markers, setMarkers] = useState([]);
   const [polyline, setPolyline] = useState(null);
   const [markerPositions, setMarkerPositions] = useState([]);
-
+  const [address, setAddress] = useState([]);
 
   useEffect(() => {
     const mapOption = {
@@ -77,6 +77,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
       
             // TODO: do something with the address, such as displaying it in a popup or storing it in state
             console.log(address);
+            setAddress(addr => [...addr, address]);
           }
         });
         const marker = new kakao.maps.Marker({ position });
@@ -94,12 +95,13 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
             polyline.setPath(newLinePath);
           }
         marker.setMap(null);
-        });    
-        if (polyline) {
-            const linePath = polyline.getPath();
-            linePath.push(position);
-            polyline.setPath(linePath);
-          }
+        });
+
+    if (polyline) {
+        const linePath = polyline.getPath();
+        linePath.push(position);
+        polyline.setPath(linePath);
+      }
     });
 
     return () => {
@@ -108,7 +110,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   }, [editMode, destinationTitle]);
 
   function handleHideMarkers() {
-    setMarkersOnMap(null);
+
     if (polyline) {
       polyline.setMap(null);
     }
@@ -119,12 +121,15 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   
 
   function handleSavePath() {
-    const positions = markerPositions.map((position) => ({
-      lat: position.getLat(),
-      lng: position.getLng(),
-    }));
-    setPaths([...paths, ...positions]);
-
+    // const positions = markerPositions.map((position) => ({
+    //   lat: position.getLat(),
+    //   lng: position.getLng(),
+      
+    // }));
+    const addr = address.map((address)=>({
+      addr: address,
+    }))
+    setPaths([...paths, ...addr]);
   }
   
 

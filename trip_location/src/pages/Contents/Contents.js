@@ -64,7 +64,7 @@ const Contents = ({ destinationTitle }) => {
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
-
+  const [tabs, setTabs] = useState([]);
 
   const startDayHandle = (newValue) => {
     setStartDay(newValue);

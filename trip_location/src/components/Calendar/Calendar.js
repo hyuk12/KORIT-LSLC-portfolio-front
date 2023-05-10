@@ -24,11 +24,6 @@ const Total=css`
 
 export default function Calendar(props) {
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, paths } = props;
-  const [route, setRoute] =useState([]);
-
-  const savelocation = (location) =>{
-    setRoute(location);
-  }
 
   const resetDay = () => {
     onStartDayChange(startDay);

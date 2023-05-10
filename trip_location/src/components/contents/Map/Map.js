@@ -85,8 +85,6 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         setMarkers(prevMarkers => [...prevMarkers, marker]);
         setMarkerPositions(prevPositions => [...prevPositions, position]);
 
-  
-  
     kakao.maps.event.addListener(marker, 'click', function() {
         setMarkers(prevMarkers => prevMarkers.filter(prevMarker => prevMarker !== marker));
         if (polyline) {
@@ -118,20 +116,12 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     setEditMode(prevEditMode => !prevEditMode);
   }
   
-  
-
-  function handleSavePath() {
-    // const positions = markerPositions.map((position) => ({
-    //   lat: position.getLat(),
-    //   lng: position.getLng(),
-      
-    // }));
-    const addr = address.map((address)=>({
-      addr: address,
-    }))
-    setPaths([...paths, ...addr]);
-  }
-  
+function handleSavePath() {
+  const addr = address.map((address) => ({
+    addr: address,
+  }));
+  setPaths(addr);
+}
 
   return (
     <div css={map} ref={mapRef}>

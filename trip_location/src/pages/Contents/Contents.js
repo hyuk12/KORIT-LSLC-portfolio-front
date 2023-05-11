@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
@@ -64,8 +64,37 @@ const Contents = ({ destinationTitle }) => {
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
-  const [tabs, setTabs] = useState([]);
+  
+  const dataStructor = {
+    date: '',
+    locationData: [],
+  };
 
+  // const scheduldays = Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'));
+  // console.log(scheduldays);
+
+  // // scheduldays.map(day=>{day.format('YYYY-MM-')})
+
+  /*
+    useEffect에서 remove 
+
+    마커에서 클릭이벤트 할 때만다 local에 update
+
+    마커의 상태를 local에 덮어 쓰기
+
+    날짜 별로 쌓이려면 
+    [
+      {
+        날짜, 정렬
+        [위치배열]
+      },
+      {
+        날짜,
+        [위치배열]
+      },
+
+    ]
+  */
   const startDayHandle = (newValue) => {
     setStartDay(newValue);
     setTotalDate(endDay.diff(newValue, 'day') + 1);
@@ -82,6 +111,12 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(1);
   }
   
+  useEffect(()=>{
+    // localStorage.removeItem("markers");
+
+  },[dataStructor])
+
+
   return (
     
     <div css={container}>

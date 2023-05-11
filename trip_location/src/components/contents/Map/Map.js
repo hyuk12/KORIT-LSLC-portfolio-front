@@ -117,10 +117,16 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   }
   
 function handleSavePath() {
-  const addr = address.map((address) => ({
-    addr: address,
+
+  const positions = markerPositions.map((position,index)=>({
+    addr: address[index],
+    lat:position.getLat(),
+    lng: position.getLng(),
   }));
-  setPaths(addr);
+  
+  localStorage.setItem("markers", JSON.stringify(positions));
+  setPaths(positions);
+
 }
 
   return (

@@ -12,6 +12,9 @@ const route=css`
   font-size: 16px;
   font-weight: 400;
 `;
+/*
+  세로로 바꿔주는 함수
+*/
 
 function a11yProps(index) {
   return {
@@ -19,7 +22,9 @@ function a11yProps(index) {
     'aria-controls': `vertical-tabpanel-${index}`,
   };
 }
-
+/*
+  TabPanel은 Tab 내용 함수
+*/
 function TabPanel({ children, value, index, scheduleDays, coordinates, ...other }) {
   const localStorageKey = `scheduleDays_${index}`;
 
@@ -37,7 +42,8 @@ function TabPanel({ children, value, index, scheduleDays, coordinates, ...other 
             {scheduleDays.format('YYYY-MM-DD')}
             {coordinates.map((coordinate, coordIndex) => (
               <div css={route} key={coordIndex}>
-                place: {coordinate.addr}
+                place {coordIndex} : {coordinate.addr}
+                {/* lat: {coordinate.lat} lng: {coordinate.lng} */}
               </div>
             ))}
           </Typography>
@@ -56,6 +62,8 @@ TabPanel.propTypes = {
   scheduleDays: PropTypes.instanceOf(dayjs).isRequired,
   coordinates: PropTypes.shape({
     date: PropTypes.string.isRequired,
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
   })
 };
 
@@ -66,7 +74,11 @@ export default function VerticalTabs({ scheduleDays, coordinates }) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    localStorage.setItem(`scheduleDay-${newValue}`, JSON.stringify(coordinates.map(coordinate => coordinate.addr)));
+    /**
+     * Tab변화가 나올때 처음은 빈 값
+     * get으로 나오면 배열에 다시 값을 받으면 될듯??
+     */
+    localStorage.getItem(`scheduleDay-${newValue}`, JSON.stringify(coordinates));
   };
   
 

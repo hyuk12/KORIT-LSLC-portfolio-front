@@ -29,7 +29,7 @@ const AuthRouter = ({ path, element }) => {
 
 
     if (!isLoading) {
-        const permitAll = ['/login', '/user'];
+        const permitAll = ['/login', '/signup'];
 
         if(!data.data) {
             if (permitAll.includes(path)) {

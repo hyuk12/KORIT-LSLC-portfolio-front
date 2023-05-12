@@ -37,7 +37,8 @@ export default function Calendar(props) {
   const endDayHandle = (newValue) => {
     onEndDayChange(newValue);
   }
-  console.log(paths)
+  // console.log(paths)
+  
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -71,7 +71,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) { //coord2Address 좌표 값에 해당하는 구 주소와 도로명 주소 정보를 요청
           if (status === kakao.maps.services.Status.OK) {
             const address = result[0].address.address_name;
-            console.log(position);
+            // console.log(position);
             setAddress(addr => [...addr, address]);
           }
         });

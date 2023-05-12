@@ -126,7 +126,6 @@ function handleSavePath() {
   
   localStorage.setItem("markers", JSON.stringify(positions));
   setPaths(positions);
-
 }
 
   return (

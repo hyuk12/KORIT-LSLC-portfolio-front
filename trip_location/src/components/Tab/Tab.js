@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const route=css`
   font-size: 16px;
@@ -26,8 +26,7 @@ function a11yProps(index) {
   TabPanel은 Tab 내용 함수
 */
 function TabPanel({ children, value, index, scheduleDays, coordinates, ...other }) {
-  const localStorageKey = `scheduleDays_${index}`;
-
+ 
   return (
     <div
       role="tabpanel"
@@ -70,19 +69,23 @@ TabPanel.propTypes = {
 
 
 export default function VerticalTabs({ scheduleDays, coordinates }) {
-  const [value, setValue] = useState(0);
+  const storedTab = localStorage.getItem('selectedTab');
+  const initialTab = storedTab
+    ? scheduleDays.findIndex((day) => day.format('YYYY-MM-DD') === storedTab)
+    : 0;
+    const [value, setValue] = useState(initialTab >= 0 ? initialTab : 0);
+
+  useEffect(() => {
+    localStorage.setItem('selectedTab', scheduleDays[value]);
+    localStorage.setItem('selectedSchedule', JSON.stringify(scheduleDays[value].format('YYYY-MM-DD'))); // Save the selected schedule
+    localStorage.setItem('markers', JSON.stringify(coordinates));
+  }, [value, scheduleDays, coordinates]);
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    /**
-     * Tab변화가 나올때 처음은 빈 값
-     * get으로 나오면 배열에 다시 값을 받으면 될듯??
-     */
-    localStorage.getItem(`scheduleDay-${newValue}`, JSON.stringify(coordinates));
   };
-  
 
-  console.log(value);
   return (
     <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}>
       <Tabs

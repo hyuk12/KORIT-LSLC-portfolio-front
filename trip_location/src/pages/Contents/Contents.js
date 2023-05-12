@@ -64,11 +64,8 @@ const Contents = ({ destinationTitle }) => {
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
-  
-  const dataStructor = {
-    date: '',
-    locationData: [],
-  };
+
+
 
   // const scheduldays = Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'));
   // console.log(scheduldays);
@@ -100,7 +97,7 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(endDay.diff(newValue, 'day') + 1);
   }
 
-  const endDayHanlde = (newValue) => {
+  const endDayHandle = (newValue) => {
     setEndDay(newValue);
     setTotalDate(newValue.diff(startDay, 'Day') + 1)
   }
@@ -111,12 +108,24 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(1);
   }
   
-  useEffect(()=>{
-    // localStorage.removeItem("markers");
+  const [dataStructor, setDataStructor] = useState({
+    date: '',
+    locationData: [],
+  });
 
-  },[dataStructor])
+  useEffect(() => {
+    const selectedSchedule = localStorage.getItem('selectedSchedule');
+    const markers = localStorage.getItem('markers');
 
-
+    if (selectedSchedule && markers) {
+      setDataStructor({
+        date: JSON.parse(selectedSchedule),
+        locationData: JSON.parse(markers),
+      });
+      localStorage.setItem('dataStructor', JSON.stringify(dataStructor));
+    }
+  }, [dataStructor]);
+  
   return (
     
     <div css={container}>
@@ -131,7 +140,7 @@ const Contents = ({ destinationTitle }) => {
               endDay={endDay}
               totalDate={totalDate}
               onStartDayChange={startDayHandle}
-              onEndDayChange={endDayHanlde}
+              onEndDayChange={endDayHandle}
               paths={paths}
             />
             <div css={group}>

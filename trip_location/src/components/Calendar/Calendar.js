@@ -34,7 +34,7 @@ export default function Calendar(props) {
     onStartDayChange(newValue);
   }
 
-  const endDayHanlde = (newValue) => {
+  const endDayHandle = (newValue) => {
     onEndDayChange(newValue);
   }
   console.log(paths)
@@ -57,7 +57,7 @@ export default function Calendar(props) {
               label="end"
               value={endDay}
               onMonthChange={false}
-              onChange={endDayHanlde}
+              onChange={endDayHandle}
               minDate={startDay}
               maxDate={startDay.add(1, 'month')}
               />

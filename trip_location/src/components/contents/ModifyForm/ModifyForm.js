@@ -154,6 +154,15 @@ const ModifyForm = () => {
     const navigate = useNavigate();
     const [ refresh, setRefresh ] = useState(false);
     const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
+
+    const principal = useQuery(["principal"], async () => {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
+        return response;
+    }, {
+        enabled: refresh
+    });
+
     const [inputDisabled, setInputDisabled] = useState({
         name: true,
         phone: true,
@@ -171,10 +180,11 @@ const ModifyForm = () => {
         profileImg: '',
         email: '',
         password: '',
-        name: '',
-        phone: '',
-        address: ''
+        name: principal && principal.data && principal.data.data && principal.data.data.name ? principal.data.data.name : '',
+        phone: principal && principal.data && principal.data.data && principal.data.data.phone ? principal.data.data.phone : '',
+        address: principal && principal.data && principal.data.data && principal.data.data.address ? principal.data.data.address : ''
     });
+
     const [ errorMessages, setErrorMessages ] = useState({
         profileImg: '',
         email: '',
@@ -184,13 +194,7 @@ const ModifyForm = () => {
         address: ''
     });
 
-    const principal = useQuery(["principal"], async () => {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
-        return response;
-    }, {
-        enabled: refresh
-    });
+
 
     useEffect(() => {
         setRefresh(isLoggedOut);
@@ -207,6 +211,7 @@ const ModifyForm = () => {
 
 
 
+
     // 로그인
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
@@ -218,17 +223,21 @@ const ModifyForm = () => {
         )
     };
 
-    const signupHandleSubmit = async () => {
+    const updateUserHandleSubmit = async () => {
         const data = { ...signupUser, address: addressList };
 
         const option = {
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
 
         try{
-            const response = await axios.post("http://localhost:8080/api/v1/auth/user", JSON.stringify(data), option);
+            const updatedUser = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, data, option);
+            return updatedUser;
+            console.log(updatedUser);
+
             setErrorMessages({
                 profileImg: '',
                 email: '',
@@ -237,7 +246,7 @@ const ModifyForm = () => {
                 phone: '',
                 address: ''});
 
-            const accessToken = response.data.grantType + " " + response.data.accessToken;
+            const accessToken = updatedUser.grantType + " " + updatedUser.accessToken;
             localStorage.setItem("accessToken", accessToken);
             navigate('/');
 
@@ -306,7 +315,7 @@ const ModifyForm = () => {
                                 name="name"
                                 autoComplete="name"
                                 onChange={onChangeHandler}
-
+                                value={signupUser.name}
                                 disabled={inputDisabled.name}
                             />
                             <div css={errorMsg}>{errorMessages.name}</div>
@@ -322,12 +331,13 @@ const ModifyForm = () => {
                                 placeholder="010-1234-1234"
                                 name="phone"
                                 autoComplete="tel"
+                                value={signupUser.phone}
                                 onChange={onChangeHandler}
                                 disabled={inputDisabled.phone}
                             />
                             <div css={errorMsg}>{errorMessages.phone}</div>
                             <button type={"button"} css={editButtonStyle} onClick={() => toggleEdit("phone")}>
-                                {buttonText.name}
+                                {buttonText.phone}
                             </button>
                         </div>
                         <div css={editInputStyle}>
@@ -338,7 +348,7 @@ const ModifyForm = () => {
 
                                         labelId="addressSelectLabel"
                                         id="address"
-                                        value={addressList}
+                                        value={signupUser.address}
                                         label="주소"
                                         onChange={(event) => setAddressList(event.target.value)}
                                         disabled={inputDisabled.address}
@@ -354,23 +364,18 @@ const ModifyForm = () => {
                             </Box>
                             <div css={errorMsg}>{errorMessages.address}</div>
                             <button type={"button"} css={addressEditButtonStyle} onClick={() => toggleEdit("address")}>
-                                {buttonText.name}
+                                {buttonText.address}
                             </button>
                         </div>
 
-
-
-
-
-
                         <Button css={submitButton}
                                 type='button'
-                                onClick={signupHandleSubmit}
+                                onClick={updateUserHandleSubmit}
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            Modify Member
                         </Button>
                     </Box>
                 </Box>

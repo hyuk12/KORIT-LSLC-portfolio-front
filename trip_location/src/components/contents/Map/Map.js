@@ -22,7 +22,6 @@ const guideButton = css`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-
   margin: 8px;
   width: 100px;
   height: 50px;
@@ -40,7 +39,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => { //지도의 시작 좌표,확대 단계 조절
     const mapOption = {
       center: new kakao.maps.LatLng(35.152380, 129.059647),
       level: 9,
@@ -48,7 +47,6 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     const map = new kakao.maps.Map(mapRef.current, mapOption);
     const geocoder = new kakao.maps.services.Geocoder();
 
-    console.log(destinationTitle)
     //geocoder 사용으로 주소로 장소표시
     geocoder.addressSearch(destinationTitle, function(result, status) {
       if (status === kakao.maps.services.Status.OK) {
@@ -58,7 +56,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
       }
     });
     
-    const polyline = new kakao.maps.Polyline({
+    const polyline = new kakao.maps.Polyline({ //마커 사이 선 설정
       path: linePath,
       strokeWeight: 5,
       strokeColor: 'blue',
@@ -68,34 +66,31 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     polyline.setMap(map);
     setPolyline(polyline);
 
-     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-        const position = mouseEvent.latLng;
-        geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) {
+     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {  //지도 클릭시 이벤트
+        const position = mouseEvent.latLng; //지도에서 클릭한 위치
+        geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) { //coord2Address 좌표 값에 해당하는 구 주소와 도로명 주소 정보를 요청
           if (status === kakao.maps.services.Status.OK) {
-            // Extract the address from the result object
             const address = result[0].address.address_name;
-      
-            // TODO: do something with the address, such as displaying it in a popup or storing it in state
-            console.log(address);
+            console.log(position);
             setAddress(addr => [...addr, address]);
           }
         });
-        const marker = new kakao.maps.Marker({ position });
-        marker.setMap(map);
-        setMarkers(prevMarkers => [...prevMarkers, marker]);
-        setMarkerPositions(prevPositions => [...prevPositions, position]);
+        const marker = new kakao.maps.Marker({ position }); //마커 객체 생성
+        marker.setMap(map); //마커 지도에 보여줌
+        setMarkers(prevMarkers => [...prevMarkers, marker]);  //새로 생성된 마커 저장
+        setMarkerPositions(prevPositions => [...prevPositions, position]);  //마커와 연결된 좌표 저장
 
-    kakao.maps.event.addListener(marker, 'click', function() {
-        setMarkers(prevMarkers => prevMarkers.filter(prevMarker => prevMarker !== marker));
-        if (polyline) {
+    kakao.maps.event.addListener(marker, 'click', function() {  //마커 클릭시 이벤트
+        setMarkers(prevMarkers => prevMarkers.filter(prevMarker => prevMarker !== marker)); //클릭한 마커 배열에서 제거
+        if (polyline) { //마커 사이 선 경로를 수정
             const linePath = polyline.getPath();
             const newLinePath = linePath.filter(latlng => latlng !== position);
             polyline.setPath(newLinePath);
           }
-        marker.setMap(null);
+        marker.setMap(null);  //클릭한 마커 지도에서 제거
         });
 
-    if (polyline) {
+    if (polyline) { //클릭한 위치 polyline경로에 저장
         const linePath = polyline.getPath();
         linePath.push(position);
         polyline.setPath(linePath);
@@ -107,8 +102,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     };
   }, [editMode, destinationTitle]);
 
-  function handleHideMarkers() {
-
+  function handleHideMarkers() {  //마커 전체 삭제
     if (polyline) {
       polyline.setMap(null);
     }
@@ -116,15 +110,14 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     setEditMode(prevEditMode => !prevEditMode);
   }
   
-function handleSavePath() {
-
+function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정보 저장
   const positions = markerPositions.map((position,index)=>({
     addr: address[index],
     lat:position.getLat(),
     lng: position.getLng(),
   }));
   
-  localStorage.setItem("markers", JSON.stringify(positions));
+  localStorage.setItem("markers", JSON.stringify(positions)); 
   setPaths(positions);
 
 }

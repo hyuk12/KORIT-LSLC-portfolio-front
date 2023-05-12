@@ -26,7 +26,12 @@ function a11yProps(index) {
   TabPanel은 Tab 내용 함수
 */
 function TabPanel({ children, value, index, scheduleDays, coordinates, ...other }) {
- 
+  let formattedDate = '';
+  if (scheduleDays[index] instanceof dayjs) {
+    formattedDate = scheduleDays[index].format('YYYY-MM-DD');
+    formattedDate = scheduleDays[index].format('YYYY-MM-DD');
+  }
+
   return (
     <div
       role="tabpanel"
@@ -38,7 +43,7 @@ function TabPanel({ children, value, index, scheduleDays, coordinates, ...other 
       {value === index && (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography sx={{ px: 2, py: 1 }}>
-            {scheduleDays.format('YYYY-MM-DD')}
+            {formattedDate}
             {coordinates.map((coordinate, coordIndex) => (
               <div css={route} key={coordIndex}>
                 place {coordIndex} : {coordinate.addr}
@@ -53,18 +58,20 @@ function TabPanel({ children, value, index, scheduleDays, coordinates, ...other 
   );
 }
 
-
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
-  scheduleDays: PropTypes.instanceOf(dayjs).isRequired,
-  coordinates: PropTypes.shape({
-    date: PropTypes.string.isRequired,
-    latitude: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired,
-  })
+  scheduleDays: PropTypes.arrayOf(PropTypes.instanceOf(dayjs)).isRequired,
+  coordinates: PropTypes.arrayOf(
+    PropTypes.shape({
+      date: PropTypes.string.isRequired,
+      latitude: PropTypes.number.isRequired,
+      longitude: PropTypes.number.isRequired,
+    })
+  ).isRequired,
 };
+
 
 
 
@@ -77,7 +84,7 @@ export default function VerticalTabs({ scheduleDays, coordinates }) {
 
   useEffect(() => {
     localStorage.setItem('selectedTab', scheduleDays[value]);
-    localStorage.setItem('selectedSchedule', JSON.stringify(scheduleDays[value].format('YYYY-MM-DD'))); // Save the selected schedule
+    localStorage.setItem('selectedSchedule', JSON.stringify(scheduleDays[value])); // Save the selected schedule
     localStorage.setItem('markers', JSON.stringify(coordinates));
   }, [value, scheduleDays, coordinates]);
 

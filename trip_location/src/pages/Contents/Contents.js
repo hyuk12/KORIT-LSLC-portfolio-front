@@ -126,6 +126,7 @@ const Contents = ({ destinationTitle }) => {
     }
   }, [dataStructor]);
   
+
   return (
     
     <div css={container}>

@@ -61,7 +61,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
       strokeWeight: 5,
       strokeColor: 'blue',
       strokeOpacity: 0.7,
-      strokeStyle: 'solid'
+      strokeStyle: 'dashed'
     });
     polyline.setMap(map);
     setPolyline(polyline);
@@ -71,7 +71,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) { //coord2Address 좌표 값에 해당하는 구 주소와 도로명 주소 정보를 요청
           if (status === kakao.maps.services.Status.OK) {
             const address = result[0].address.address_name;
-            // console.log(position);
+            console.log(position);
             setAddress(addr => [...addr, address]);
           }
         });
@@ -80,6 +80,22 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         setMarkers(prevMarkers => [...prevMarkers, marker]);  //새로 생성된 마커 저장
         setMarkerPositions(prevPositions => [...prevPositions, position]);  //마커와 연결된 좌표 저장
 
+        if (!polyline) { // Check if polyline doesn't exist
+          const newPolyline = new kakao.maps.Polyline({
+            path: [position], // Start with current position
+            strokeWeight: 5,
+            strokeColor: 'blue',
+            strokeOpacity: 0.7,
+            strokeStyle: 'dashed'
+          });
+          newPolyline.setMap(map);
+          setPolyline(newPolyline);
+        } else {
+          const linePath = polyline.getPath();
+          linePath.push(position);
+          polyline.setPath(linePath);
+        }
+      
     kakao.maps.event.addListener(marker, 'click', function() {  //마커 클릭시 이벤트
         setMarkers(prevMarkers => prevMarkers.filter(prevMarker => prevMarker !== marker)); //클릭한 마커 배열에서 제거
         if (polyline) { //마커 사이 선 경로를 수정
@@ -108,17 +124,30 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     }
     setPolyline(null);
     setEditMode(prevEditMode => !prevEditMode);
+    setAddress([]); // Clear address array
+    setMarkers([]); // Clear markers array
   }
   
 function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정보 저장
-  const positions = markerPositions.map((position,index)=>({
+  const markerData = markerPositions.map((position,index)=>({
     addr: address[index],
     lat:position.getLat(),
     lng: position.getLng(),
   }));
   
-  localStorage.setItem("markers", JSON.stringify(positions)); 
-  setPaths(positions);
+  localStorage.setItem("markers", JSON.stringify(markerData)); 
+  setPaths(markerData);
+  
+  setMarkerPositions([]);
+  setAddress([]);
+  setMarkers([]);
+
+  if (polyline) {
+    polyline.setMap(null);
+  }
+  setPolyline(null);
+  
+  markers.forEach(marker => marker.setMap(null));
 }
 
   return (

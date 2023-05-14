@@ -7,6 +7,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import PopularDestinations from '../components/contents/main/PopularDestinations';
 import styled from "@emotion/styled";
 import LocationCard from "../components/contents/main/LocationCard";
+import {useRecoilState} from "recoil";
+import {authenticatedState} from "../atoms/Auth/AuthAtoms";
 
 
 const MainWrapper = styled.main`
@@ -56,6 +58,7 @@ const StyleSubTitleTypography = styled(Typography)`
 `;
 
 const Home = () => {
+    const [authState, setAuthState] = useRecoilState(authenticatedState);
     const images = useMemo(() => [cityNight, building], []);
     const [currentImage, setCurrentImage] = useState(images[0]);
 

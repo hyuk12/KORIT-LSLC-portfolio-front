@@ -1,17 +1,17 @@
 /** @jsxImportSource @emotion/react */
 
-import { css } from '@emotion/react';
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import {css} from '@emotion/react';
+import {Box, Button, Grid, Link, TextField, Typography} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import axios from "axios";
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, {useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import loginImg from '../../images/busan_night.jpg';
 import googleBtn from '../../images/google_btn.png';
 import kakaoBtn from '../../images/kakaolink_btn.png';
 import naverBtn from '../../images/naver_btn.png';
 import {useRecoilState} from "recoil";
-import {isLoggedOutState, refreshState} from "../../atoms/Auth/AuthAtoms";
+import {authenticatedState} from "../../atoms/Auth/AuthAtoms";
 
 
 const submitButton = css`
@@ -123,13 +123,14 @@ const oauthImg = css`
 
 
 const Login = () => {
+
+    const [authState, setAuthState] = useRecoilState(authenticatedState);
     const [ loginUser, setLoginUser ] = useState({
         email: '',
         password: ''
     })
     const [ errorMessages, setErrorMessages ] = useState({email: '', password: ''});
-    const [refresh, setRefresh] = useRecoilState(refreshState);
-    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
+    const [ isLoggedOut, setIsLoggedOut ] = useState(true);
     const navigate = useNavigate();
 
     const onChangeHandler = (e) => {
@@ -157,8 +158,8 @@ const Login = () => {
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
-            setRefresh(false);
             setIsLoggedOut(true);
+            setAuthState(true);
             navigate('/');
 
         }catch (error) {

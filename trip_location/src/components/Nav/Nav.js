@@ -1,12 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Button, Toolbar, Typography} from "@mui/material";
 import {css} from "@emotion/react";
 import logoTitle from '../../images/logotitle.png';
 import {useNavigate} from "react-router-dom";
-import {useQuery, useQueryClient} from "react-query";
-import {useRecoilState} from "recoil";
-import {isLoggedOutState} from "../../atoms/Auth/AuthAtoms";
+import {useQuery} from "react-query";
 import axios from "axios";
 
 const navStyles = css`
@@ -48,31 +46,22 @@ const buttonStyle = css`
 
 const Nav = () => {
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const [ refresh, setRefresh ] = useState(false);
-    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
+    const [isLoggedOut, setIsLoggedOut] = useState(true);
 
-    console.log(isLoggedOut)
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-        enabled: refresh
+        onSuccess: (response) => {
+            if(response.status === 200) {
+                setIsLoggedOut(true);
+            }
+        }
     });
 
-    useEffect(() => {
-        setRefresh(isLoggedOut);
-    }, [isLoggedOut]);
 
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        if(accessToken) {
-            setIsLoggedOut(true);
-        }else {
-            setIsLoggedOut(false);
-        }
-    }, []);
+
 
     const handleLogoClick = () => {
         navigate("/");

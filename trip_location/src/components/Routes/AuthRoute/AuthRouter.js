@@ -1,49 +1,50 @@
 import React, {useEffect} from 'react';
 import {useRecoilState} from "recoil";
-import {refreshState} from "../../../atoms/Auth/AuthAtoms";
+import {authenticatedState} from "../../../atoms/Auth/AuthAtoms";
 import {useQuery} from "react-query";
 import axios from "axios";
-import {Navigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const AuthRouter = ({ path, element }) => {
-    // refreshState를 쓰겠다.
-    const [refresh, setRefresh] = useRecoilState(refreshState);
-    const {data, isLoading} = useQuery(["authenticated"], async () => {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://localhost:8080/api/v1/auth/authenticated', {params: {accessToken}});
-        return response;
+    const navigate = useNavigate();
+    const [authState, setAuthState] = useRecoilState(authenticatedState);
+
+    const authenticated = useQuery(["authenticated"], async () => {
+        const option = {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+            }
+        }
+        return await axios.get('http://localhost:8080/api/v1/auth/authenticated', option)
     }, {
-        enabled: refresh
+        onSuccess: (response) => {
+            if(response.status === 200) {
+                if(response.data) {
+                    setAuthState(true);
+                }
+            }
+        }
     });
 
 
     useEffect(() => {
-        if(!refresh) {
-            setRefresh(true);
+        const authenticatedPaths = ["/user" ,"/"];
+        const authPath = "/auth";
+        if(authState && path.startsWith(authPath)) {
+            navigate("/");
         }
-    },[refresh]);
 
-    if (isLoading) {
+        if(!authState && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {
+            navigate("/auth/login")
+        }
+    },[authState, path, navigate]);
+
+    if (authenticated.isLoading) {
         return (<div>loading...</div>);
     }
 
+    return element;
 
-    if (!isLoading) {
-        const permitAll = ['/login', '/signup'];
-
-        if(!data.data) {
-            if (permitAll.includes(path)) {
-                return element;
-            }
-            return <Navigate to="/login" />;
-        }
-
-        if(permitAll.includes(path)) {
-            return <Navigate to="/" />;
-        }
-
-        return element;
-    }
 
 };
 

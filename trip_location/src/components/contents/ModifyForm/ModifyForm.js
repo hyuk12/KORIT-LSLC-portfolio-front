@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import {css} from '@emotion/react';
 import styled from '@emotion/styled';
 import {
     Box,
@@ -14,12 +14,9 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {useQuery} from "react-query";
-import {useRecoilState} from "recoil";
-import {isLoggedOutState} from "../../../atoms/Auth/AuthAtoms";
-import {isDisabled} from "@testing-library/user-event/dist/utils";
 
 
 const signupContainer = css`
@@ -152,15 +149,18 @@ const address = [
 
 const ModifyForm = () => {
     const navigate = useNavigate();
-    const [ refresh, setRefresh ] = useState(false);
-    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
+    const [isLoggedOut, setIsLoggedOut] = useState(true);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-        enabled: refresh
+        onSuccess: (response) => {
+            if (response.status === 200) {
+                setIsLoggedOut(true);
+            }
+        }
     });
 
     const [inputDisabled, setInputDisabled] = useState({
@@ -195,23 +195,6 @@ const ModifyForm = () => {
     });
 
 
-
-    useEffect(() => {
-        setRefresh(isLoggedOut);
-    }, [isLoggedOut]);
-
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        if(accessToken) {
-            setIsLoggedOut(true);
-        }else {
-            setIsLoggedOut(false);
-        }
-    }, []);
-
-
-
-
     // 로그인
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
@@ -235,8 +218,6 @@ const ModifyForm = () => {
 
         try{
             const updatedUser = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, data, option);
-            return updatedUser;
-            console.log(updatedUser);
 
             setErrorMessages({
                 profileImg: '',

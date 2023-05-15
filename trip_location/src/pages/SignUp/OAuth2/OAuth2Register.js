@@ -91,8 +91,15 @@ const address = [
 
 const OAuth2Register = () => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const [passwords, setPasswords] = useState({passwords: '', checkPasswords: ''});
+    const registerToken = searchParams.get("registerToken");
+
+    console.log(registerToken);
+    const email = searchParams.get("email");
+    const name = searchParams.get("name");
+    const provider = searchParams.get("provider");
+
     const oauth2Register = useMutation(async (registerData) => {
         const option = {
             headers: {
@@ -116,15 +123,6 @@ const OAuth2Register = () => {
             }
         }
     });
-
-    const [searchParams, setSearchParams] = useSearchParams();
-
-    const registerToken = searchParams.get("registerToken");
-
-    console.log(registerToken);
-    const email = searchParams.get("email");
-    const name = searchParams.get("name");
-    const provider = searchParams.get("provider");
 
     const [ oauth2User, setOauth2User ] = useState({
         profileImg: '',

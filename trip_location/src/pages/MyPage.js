@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
 import defaultImg from '../images/logotitle.png';
 import {Button} from "@mui/material";
@@ -7,6 +7,8 @@ import styled from "@emotion/styled";
 import {useQuery} from "react-query";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {useRecoilState} from "recoil";
+import {authenticationState} from "../store/atoms/AuthAtoms";
 
 const container = css`
   display: flex;
@@ -76,11 +78,31 @@ const myPlanAndReview = css`
 
 const MyPage = () => {
     const navigate = useNavigate();
+    const [authState, setAuthState] = useRecoilState(authenticationState);
+    const [ refresh, setRefresh ] = useState(false);
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
+    }, {
+        enabled: refresh
     });
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        if(accessToken) {
+            setAuthState(true);
+        }else {
+            setAuthState(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log(principal.status);
+        if (principal.status === 'success') {
+            setRefresh(authState)
+        }
+    },[authState])
 
     if(principal.isLoading) {
         return (<div>is Loading...</div>)

@@ -6,7 +6,7 @@ import logoTitle from '../../images/logotitle.png';
 import {useNavigate} from "react-router-dom";
 import {useQuery} from "react-query";
 import axios from "axios";
-import {isLoggedOutState} from "../../atoms/Auth/AuthAtoms";
+
 import {useRecoilState} from "recoil";
 import {authenticationState} from "../../store/atoms/AuthAtoms";
 
@@ -56,7 +56,8 @@ const Nav = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-       enabled: refresh
+       enabled: refresh,
+
     });
 
     useEffect(() => {
@@ -70,7 +71,7 @@ const Nav = () => {
         }else {
             setAuthState(false);
         }
-    }, []);
+    }, [localStorage.getItem('accessToken'), authState]);
 
 
     const handleLogoClick = () => {
@@ -93,6 +94,7 @@ const Nav = () => {
         if (window.confirm('로그아웃 하시겠습니까?')) {
             localStorage.removeItem('accessToken');
             setAuthState(false);
+            navigate("/auth/login")
         }
     }
 

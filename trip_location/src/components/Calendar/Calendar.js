@@ -47,14 +47,15 @@ export default function Calendar(props) {
     // Generate the schedule data based on the total number of days and paths
     const generatedData = Array.from({ length: totalDate }, (_, i) => {
       const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
-      const coordinates = paths.map((path) => ({
+      // 수정한 부분
+      const coordinates = paths.map((path) => ([{
         addr: path.addr,
         lat: path.lat,
         lng: path.lng,
-      }));
+      }]));
       return { date, coordinates };
     });
-
+    console.log(generatedData);
     // Set the generated schedule data to the state
     setScheduleData(generatedData);
   }, [startDay, endDay, paths]);

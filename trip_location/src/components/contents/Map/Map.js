@@ -2,6 +2,26 @@
 import { css } from '@emotion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
+/*
+장소를 주는 구성 형태
+[
+  {
+    id:1,
+    date:'일자',
+    location:
+    [
+      {
+        addr
+        lat
+        lng
+
+      }
+
+    ]
+  
+  }
+]
+*/
 const { kakao } = window;
 
 const map = css`
@@ -30,7 +50,7 @@ const guideButton = css`
   box-shadow: 0 4px 8px 0;
 `;
 
-const Map = ({ destinationTitle, paths, setPaths }) => {
+const Map = ({ destinationTitle, paths, setPaths, onSavePath }) => {
   const linePath = [];
   const mapRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
@@ -38,6 +58,8 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const [polyline, setPolyline] = useState(null);
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
+
+
 
   useEffect(() => { //지도의 시작 좌표,확대 단계 조절
     const mapOption = {
@@ -71,7 +93,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) { //coord2Address 좌표 값에 해당하는 구 주소와 도로명 주소 정보를 요청
           if (status === kakao.maps.services.Status.OK) {
             const address = result[0].address.address_name;
-            console.log(position);
+            // console.log(position);
             setAddress(addr => [...addr, address]);
           }
         });
@@ -128,16 +150,18 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     setMarkers([]); // Clear markers array
   }
   
-function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정보 저장
+function handleSavePath(newValue) { //로컬저장소에 마커 위도,경도,주소 정보 저장
+  
   const markerData = markerPositions.map((position,index)=>({
     addr: address[index],
     lat:position.getLat(),
     lng: position.getLng(),
   }));
   
-  localStorage.setItem("markers", JSON.stringify(markerData)); 
+  // localStorage.setItem("markers", JSON.stringify(markerData)); 
+  console.log(markerData);
+
   setPaths(markerData);
-  
   setMarkerPositions([]);
   setAddress([]);
   setMarkers([]);
@@ -162,3 +186,24 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
 };
 
 export default Map;
+
+
+/*
+[
+  {
+    id:1,
+    date:'일자',
+    location:
+    [
+      {
+        addr
+        lat
+        lng
+
+      }
+
+    ]
+  
+  }
+]
+*/

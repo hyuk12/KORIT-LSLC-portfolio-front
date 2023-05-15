@@ -65,6 +65,7 @@ const Contents = ({ destinationTitle }) => {
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
+  
 
   const startDayHandle = (newValue) => {
     setStartDay(newValue);
@@ -81,41 +82,6 @@ const Contents = ({ destinationTitle }) => {
     setEndDay(dayjs().add(1,'day'));
     setTotalDate(1);
   }
-  
-  const [dataStructor, setDataStructor] = useState({
-    date: '',
-    locationData: [],
-  });
-  const [newDataStructor, setNewDataStructor] = useState({
-    date: '',
-    locationData: [],
-  });
-
-  useEffect(() => {
-    const selectedSchedule = localStorage.getItem('selectedSchedule');
-    const markers = localStorage.getItem('markers');
-  
-    if (selectedSchedule && markers) {
-      let parsedSchedule;
-      let parsedMarkers;
-  
-      try {
-        parsedSchedule = JSON.parse(selectedSchedule);
-        parsedMarkers = JSON.parse(markers);
-      } catch (error) {
-        console.error('Error parsing JSON data:', error);
-        // Handle the parsing error here, such as setting default values
-        return;
-      }
-  
-      setNewDataStructor({
-        date: parsedSchedule,
-        locationData: parsedMarkers,
-      });
-      setDataStructor([newDataStructor]);
-      localStorage.setItem('dataStructor', JSON.stringify(dataStructor));
-    }
-  }, [dataStructor,newDataStructor]);
   
 
   return (
@@ -148,3 +114,24 @@ const Contents = ({ destinationTitle }) => {
 };
 
 export default Contents;
+
+
+/*
+[
+  {
+    id:1,
+    date:'일자',
+    location:
+    [
+      {
+        addr
+        lat
+        lng
+
+      }
+
+    ]
+  
+  }
+]
+*/

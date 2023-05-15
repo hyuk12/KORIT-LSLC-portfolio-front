@@ -11,7 +11,7 @@ import googleBtn from '../../images/google_btn.png';
 import kakaoBtn from '../../images/kakaolink_btn.png';
 import naverBtn from '../../images/naver_btn.png';
 import {useRecoilState} from "recoil";
-import {authenticatedState, isLoggedOutState, refreshState} from "../../atoms/Auth/AuthAtoms";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 
 const submitButton = css`
@@ -133,8 +133,8 @@ const Login = () => {
         password: ''
     })
     const [ errorMessages, setErrorMessages ] = useState({email: '', password: ''});
-    const [refresh, setRefresh] = useRecoilState(refreshState);
-    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
+    const [authState, setAuthState] = useRecoilState(authenticationState);
+    const [ refresh, setRefresh ] = useState(false);
     const navigate = useNavigate();
 
     const onChangeHandler = (e) => {
@@ -163,7 +163,7 @@ const Login = () => {
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
             setRefresh(false);
-            setIsLoggedOut(true);
+            setAuthState(true);
 
             navigate('/');
 

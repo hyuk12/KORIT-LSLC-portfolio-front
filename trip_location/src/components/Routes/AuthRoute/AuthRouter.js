@@ -18,6 +18,7 @@ const AuthRouter = ({ path, element }) => {
         return await axios.get('http://localhost:8080/api/v1/auth/authenticated', option)
     }, {
         onSuccess: (response) => {
+            console.log("responsedata", response.status)
             if (response.status === 200) {
                 if(response.data) {
                     setAuthState(true);
@@ -27,19 +28,21 @@ const AuthRouter = ({ path, element }) => {
     });
 
     useEffect(() => {
-        const authenticatedPaths = ['/user', '/contents']
-        const authPath = '/auth';
+        if(authenticated.isSuccess) {
+            const authenticatedPaths = ['/user', '/contents']
+            const authPath = '/auth';
 
-        console.log(authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0);
-        if(authState && path.startsWith(authPath)) {
-            navigate("/");
-        }
+            console.log(authState);
+            if(authState && path.startsWith(authPath)) {
+                navigate("/");
+            }
 
-        if(!authState && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {
-            alert("로그인이 필요한 페이지입니다.")
-            navigate("/auth/login");
+            if(!authState && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {
+                alert("로그인이 필요한 페이지입니다.")
+                navigate("/auth/login");
+            }
         }
-    }, [authState, path, navigate])
+    }, [authState, authenticated.isSuccess, path, navigate])
 
     if (authenticated.isLoading) {
         return <></>

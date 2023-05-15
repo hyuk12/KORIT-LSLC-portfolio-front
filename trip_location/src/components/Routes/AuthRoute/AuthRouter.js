@@ -27,14 +27,16 @@ const AuthRouter = ({ path, element }) => {
     });
 
     useEffect(() => {
-        const authenticatedPaths = ['/', '/user']
+        const authenticatedPaths = ['/user', '/contents']
         const authPath = '/auth';
 
+        console.log(authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0);
         if(authState && path.startsWith(authPath)) {
             navigate("/");
         }
 
         if(!authState && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {
+            alert("로그인이 필요한 페이지입니다.")
             navigate("/auth/login");
         }
     }, [authState, path, navigate])

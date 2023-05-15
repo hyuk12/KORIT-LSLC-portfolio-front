@@ -32,12 +32,16 @@ const submitButton = css`
     }
 `;
 
-const signUpContainer = css`
+const signupContainer = css`
     align-items: center;
     justify-content: center;
     font-size: 14px;
     margin-top: 5px;
     margin-bottom: 5px;
+`;
+
+const signupLink = css`
+    margin-left: 7px;
 `;
 
 const errorMsg = css`
@@ -250,13 +254,13 @@ const Login = () => {
                             Sign In
                         </Button>
 
-                        <Grid container css={signUpContainer}>
+                        <Grid container css={signupContainer}>
                             <Grid item>
                                 회원이 아니세요?
                             </Grid>
-                            <Grid item>
-                                <Link to={"/signup"} variant="body2" marginLeft="7px">
-                                    {"회원가입하기"}
+                            <Grid item css={signupLink}>
+                                <Link href="/signup" variant="body2">
+                                    회원가입하기
                                 </Link>
                             </Grid>
                         </Grid>

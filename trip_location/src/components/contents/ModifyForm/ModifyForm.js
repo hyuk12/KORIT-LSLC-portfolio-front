@@ -160,6 +160,7 @@ const ModifyForm = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
+
         onSuccess: (response) => {
             setUpdateUser({
                 profileImg: response.data.profileImg,
@@ -183,12 +184,14 @@ const ModifyForm = () => {
         address: 'Edit'
     });
 
+
     const [ updateUser, setUpdateUser ] = useState({
         profileImg: '',
         email: '',
         name:  '',
         phone: '',
         address:  ''
+
     });
 
     const [ errorMessages, setErrorMessages ] = useState({
@@ -222,6 +225,7 @@ const ModifyForm = () => {
         )
     };
 
+
     const modifyUser = useMutation(async (modifyData) => {
         try {
             const option = {
@@ -230,13 +234,14 @@ const ModifyForm = () => {
                 }
             }
             const response = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, modifyData, option);
+
             setErrorMessages({
                 profileImg: '',
                 email: '',
-                password: '',
                 name: '',
                 phone: '',
                 address: ''});
+
             return response
         }catch (error) {
 
@@ -248,6 +253,7 @@ const ModifyForm = () => {
                 alert("정보 수정 완료");
                 window.location.replace('/');
             }
+
         }
     })
 
@@ -266,6 +272,7 @@ const ModifyForm = () => {
             [field]: prevState[field] === "Edit" ? "Modify" : "Edit"
         }));
     };
+    
 
     if(authState) {
         if (principal.isLoading) {
@@ -273,6 +280,9 @@ const ModifyForm = () => {
                 <CircularProgress />
             </Box>)
         }
+
+        
+
         return (
             <Grid component="main" maxWidth="xs" css={signupContainer}>
 
@@ -340,7 +350,9 @@ const ModifyForm = () => {
                                         id="address"
                                         value={updateUser.address}
                                         label="주소"
+
                                         onChange={(event) => setUpdateUser({...updateUser, address: event.target.value})}
+
                                         disabled={inputDisabled.address}
                                     >
                                         {address.map((item) => (

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {css} from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import {
     Box,
@@ -14,11 +14,12 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {useMutation, useQuery} from "react-query";
-import {useRecoilState} from "recoil";
-import {authenticationState} from "../../../store/atoms/AuthAtoms";
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from "react-query";
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from "recoil";
+import defaultImg from '../../../images/logotitle.png';
+import { authenticationState } from "../../../store/atoms/AuthAtoms";
 
 //다시돌아옴
 
@@ -27,19 +28,30 @@ const signupContainer = css`
     align-items: center;
     justify-content: center;
     height: 800px;
+    margin-top: 100px;
 `
 ;
+
 const signupBox = css`
     width: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin-top: 8px;
+`;
+
+const profileImgContainer = css`
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    background-image: url(${defaultImg});
+    background-size: cover;
+    background-position: center;
 `;
 
 const signupText = css`
-    margin-top: 80px;
     margin-bottom: 30px;
 `;
 
@@ -195,12 +207,12 @@ const ModifyForm = () => {
     });
 
     const [ errorMessages, setErrorMessages ] = useState({
-        profileImg: '',
-        email: '',
         name: '',
         phone: '',
-        address: ''
     });
+
+    const [ isName, setIsName ] = useState(true)
+    const [ isPhone, setIsPhone ] = useState(true)
 
 
     useEffect(() => {
@@ -213,16 +225,49 @@ const ModifyForm = () => {
     }, [localStorage.getItem('accessToken')]);
 
 
-
-    // 로그인
+    // 유효성 검사 -> user 정보수정
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
+
+        if(name === 'name') {
+            const nameRegex = /^[가-힣]{2,8}$/;
+            if(!nameRegex.test(value)) {
+                setErrorMessages((errors) => ({
+                    ...errors,
+                    name: '2글자 이상 8글자 미만으로 입력해주세요.'
+                }));
+                setIsName(false);
+            } else {
+                setErrorMessages((errors) => ({
+                    ...errors,
+                    name: '올바른 이름 형식입니다 :)'
+                }));
+                setIsName(true);
+            }
+        } else if (name === 'phone') {
+            const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
+            if (!phoneRegex.test(value)) {
+              setErrorMessages((errors) => ({
+                ...errors,
+                phone: '올바른 전화번호 형식이 아닙니다.'
+              }));
+              setIsPhone(false);
+            } else {
+              setErrorMessages((errors) => ({
+                ...errors,
+                phone: '올바른 전화번호 형식입니다 :)'
+              }));
+              setIsPhone(true);
+            }
+        }
+
         setUpdateUser(
             {
                 ...updateUser,
                 [name]: value
             }
         )
+
     };
 
 
@@ -258,7 +303,9 @@ const ModifyForm = () => {
     })
 
     const updateUserHandleSubmit = () => {
-        modifyUser.mutate(updateUser);
+        if(isName && isPhone) {
+            modifyUser.mutate(updateUser);
+        }
     }
 
     const toggleEdit = (field) => {
@@ -291,6 +338,11 @@ const ModifyForm = () => {
                         Edit Member Information
                     </Typography>
 
+                    <div css={profileImgContainer}>
+                        <label>
+                        </label>
+                    </div>
+
 
                     <Box component="form" css={inputContainer}>
                         <StyleInput
@@ -318,11 +370,11 @@ const ModifyForm = () => {
                                 value={updateUser.name}
                                 disabled={inputDisabled.name}
                             />
-                            <div css={errorMsg}>{errorMessages.name}</div>
                             <button type={"button"} css={editButtonStyle} onClick={() => toggleEdit("name")}>
                                 {buttonText.name}
                             </button>
                         </div>
+                        <div css={errorMsg}>{errorMessages.name}</div>
                         <div css={editInputStyle}>
                             <StyleInput
 
@@ -335,11 +387,11 @@ const ModifyForm = () => {
                                 onChange={onChangeHandler}
                                 disabled={inputDisabled.phone}
                             />
-                            <div css={errorMsg}>{errorMessages.phone}</div>
                             <button type={"button"} css={editButtonStyle} onClick={() => toggleEdit("phone")}>
                                 {buttonText.phone}
                             </button>
                         </div>
+                        <div css={errorMsg}>{errorMessages.phone}</div>
                         <div css={editInputStyle}>
                             <Box width={"100%"}>
                                 <FormControl css={addressForm}>
@@ -364,11 +416,11 @@ const ModifyForm = () => {
                                     </Select>
                                 </FormControl>
                             </Box>
-                            <div css={errorMsg}>{errorMessages.address}</div>
                             <button type={"button"} css={addressEditButtonStyle} onClick={() => toggleEdit("address")}>
                                 {buttonText.address}
                             </button>
                         </div>
+                        <div css={errorMsg}>{errorMessages.address}</div>
 
                         <Button css={submitButton}
                                 type='button'

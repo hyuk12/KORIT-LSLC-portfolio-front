@@ -56,6 +56,7 @@ const resetButton= css`
 `;
 
 const group = css`
+
   text-align: center;
 `;
 const Contents = ({ destinationTitle }) => {
@@ -65,33 +66,6 @@ const Contents = ({ destinationTitle }) => {
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
 
-
-
-  // const scheduldays = Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'));
-  // console.log(scheduldays);
-
-  // // scheduldays.map(day=>{day.format('YYYY-MM-')})
-
-  /*
-    useEffect에서 remove 
-
-    마커에서 클릭이벤트 할 때만다 local에 update
-
-    마커의 상태를 local에 덮어 쓰기
-
-    날짜 별로 쌓이려면 
-    [
-      {
-        날짜, 정렬
-        [위치배열]
-      },
-      {
-        날짜,
-        [위치배열]
-      },
-
-    ]
-  */
   const startDayHandle = (newValue) => {
     setStartDay(newValue);
     setTotalDate(endDay.diff(newValue, 'day') + 1);
@@ -112,19 +86,36 @@ const Contents = ({ destinationTitle }) => {
     date: '',
     locationData: [],
   });
+  const [newDataStructor, setNewDataStructor] = useState({
+    date: '',
+    locationData: [],
+  });
 
   useEffect(() => {
     const selectedSchedule = localStorage.getItem('selectedSchedule');
     const markers = localStorage.getItem('markers');
-
+  
     if (selectedSchedule && markers) {
-      setDataStructor({
-        date: JSON.parse(selectedSchedule),
-        locationData: JSON.parse(markers),
+      let parsedSchedule;
+      let parsedMarkers;
+  
+      try {
+        parsedSchedule = JSON.parse(selectedSchedule);
+        parsedMarkers = JSON.parse(markers);
+      } catch (error) {
+        console.error('Error parsing JSON data:', error);
+        // Handle the parsing error here, such as setting default values
+        return;
+      }
+  
+      setNewDataStructor({
+        date: parsedSchedule,
+        locationData: parsedMarkers,
       });
+      setDataStructor([newDataStructor]);
       localStorage.setItem('dataStructor', JSON.stringify(dataStructor));
     }
-  }, [dataStructor]);
+  }, [dataStructor,newDataStructor]);
   
 
   return (
@@ -144,6 +135,7 @@ const Contents = ({ destinationTitle }) => {
               onEndDayChange={endDayHandle}
               paths={paths}
             />
+
             <div css={group}>
               여긴 친구 추가 
             </div>

@@ -25,13 +25,11 @@ function a11yProps(index) {
 /*
   TabPanel은 Tab 내용 함수
 */
-function TabPanel({ children, value, index, scheduleDays, coordinates, ...other }) {
-  let formattedDate = '';
-  if (scheduleDays[index] instanceof dayjs) {
-    formattedDate = scheduleDays[index].format('YYYY-MM-DD');
-    formattedDate = scheduleDays[index].format('YYYY-MM-DD');
+function TabPanel({ children, value, index, scheduleData, ...other }) {
+  const scheduleDay = scheduleData[index];
+  if (!scheduleDay) {
+    return null; // or any other fallback behavior
   }
-
   return (
     <div
       role="tabpanel"
@@ -43,8 +41,8 @@ function TabPanel({ children, value, index, scheduleDays, coordinates, ...other 
       {value === index && (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography sx={{ px: 2, py: 1 }}>
-            {formattedDate}
-            {coordinates.map((coordinate, coordIndex) => (
+            {scheduleDay.date}
+            {scheduleDay.coordinates.map((coordinate, coordIndex) => (
               <div css={route} key={coordIndex}>
                 place {coordIndex} : {coordinate.addr}
                 {/* lat: {coordinate.lat} lng: {coordinate.lng} */}
@@ -62,36 +60,43 @@ TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
-  scheduleDays: PropTypes.arrayOf(PropTypes.instanceOf(dayjs)).isRequired,
-  coordinates: PropTypes.arrayOf(
+  scheduleData: PropTypes.arrayOf(
     PropTypes.shape({
       date: PropTypes.string.isRequired,
-      latitude: PropTypes.number.isRequired,
-      longitude: PropTypes.number.isRequired,
+      coordinates: PropTypes.arrayOf(
+        PropTypes.shape({
+          addr: PropTypes.string.isRequired,
+          lat: PropTypes.number.isRequired,
+          lng: PropTypes.number.isRequired,
+        })
+      ).isRequired,
     })
   ).isRequired,
 };
 
 
 
-
-export default function VerticalTabs({ scheduleDays, coordinates }) {
+export default function VerticalTabs({ scheduleData }) {
   const storedTab = localStorage.getItem('selectedTab');
   const initialTab = storedTab
-    ? scheduleDays.findIndex((day) => day.format('YYYY-MM-DD') === storedTab)
-    : 0;
-    const [value, setValue] = useState(initialTab >= 0 ? initialTab : 0);
+    ? scheduleData.findIndex((day) => day.date === storedTab) : 0;
+  const [value, setValue] = useState(initialTab >= 0 ? initialTab : 0);
 
+  console.log(scheduleData);
   useEffect(() => {
-    localStorage.setItem('selectedTab', scheduleDays[value]);
-    localStorage.setItem('selectedSchedule', JSON.stringify(scheduleDays[value])); // Save the selected schedule
-    localStorage.setItem('markers', JSON.stringify(coordinates));
-  }, [value, scheduleDays, coordinates]);
-
+    if (scheduleData.length > 0) {
+      localStorage.setItem('selectedTab', scheduleData[value].date);
+      localStorage.setItem('selectedSchedule', JSON.stringify(scheduleData[value]));
+      localStorage.setItem('markers', JSON.stringify(scheduleData[value].coordinates));
+    }
+  }, [value, scheduleData]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  if (!scheduleData || scheduleData.length === 0) {
+    return <div>No schedule data available.</div>; // or any other fallback behavior
+  }
 
   return (
     <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}>
@@ -103,20 +108,15 @@ export default function VerticalTabs({ scheduleDays, coordinates }) {
         aria-label="Vertical tabs example"
         sx={{ borderRight: 1, borderColor: 'divider' }}
       >
-        {scheduleDays.map((day, index) => (
-          <Tab label={day.format('YYYY-MM-DD')} {...a11yProps(index)} key={day.toString()} />
+        {scheduleData.map((day, index) => (
+          <Tab label={day.date} {...a11yProps(index)} key={day.date} />
         ))}
       </Tabs>
-      {scheduleDays.map((day, index) => (
-        <TabPanel
-          value={value}
-          index={index}
-          key={day.toString()}
-          scheduleDays={day}
-          coordinates={coordinates}
-        />
+      {scheduleData.map((day, index) => (
+        <TabPanel value={value} index={index} key={day.date} scheduleData={scheduleData} />
       ))}
     </Box>
   );
 }
+
 

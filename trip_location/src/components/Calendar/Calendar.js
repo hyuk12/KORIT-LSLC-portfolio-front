@@ -5,7 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
 
 const calendarContainer = css`
@@ -24,7 +24,8 @@ const Total=css`
 
 export default function Calendar(props) {
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, paths } = props;
-
+  const [scheduleData, setScheduleData] = useState([]);
+  
   const resetDay = () => {
     onStartDayChange(startDay);
     onEndDayChange(endDay);
@@ -38,7 +39,25 @@ export default function Calendar(props) {
     onEndDayChange(newValue);
   }
   // console.log(paths)
-  
+
+  useEffect(() => {
+    // Calculate the total number of days
+    const totalDate = endDay.diff(startDay, 'day') + 1;
+
+    // Generate the schedule data based on the total number of days and paths
+    const generatedData = Array.from({ length: totalDate }, (_, i) => {
+      const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
+      const coordinates = paths.map((path) => ({
+        addr: path.addr,
+        lat: path.lat,
+        lng: path.lng,
+      }));
+      return { date, coordinates };
+    });
+
+    // Set the generated schedule data to the state
+    setScheduleData(generatedData);
+  }, [startDay, endDay, paths]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -64,10 +83,10 @@ export default function Calendar(props) {
               />
           </DemoContainer>
           <VerticalTabs 
-            scheduleDays={Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'))}
-            coordinates={paths}/>
-          {/* <Map /> */}
-          {/* <SubButton/> */}
+            // scheduleDays={Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'))}
+            // coordinates={paths}
+            scheduleData={scheduleData}
+            />
         </div>
       </div>
     </LocalizationProvider>

@@ -12,6 +12,7 @@ import SignUp from './pages/SignUp/SignUp';
 import MyPage from "./pages/MyPage";
 import AuthRouter from "./components/Routes/AuthRoute/AuthRouter";
 import ModifyForm from "./components/contents/ModifyForm/ModifyForm";
+import OAuth2Register from "./pages/SignUp/OAuth2/OAuth2Register";
 
 
 const mainStyles = css`
@@ -25,8 +26,9 @@ function App() {
           <Nav />
             <Routes css={mainStyles}>
                 <Route path={"/"} element={<AuthRouter path={'/'} element={<Home />} />}/>
-                <Route path={"/login"} element={<AuthRouter path={'/login'} element={<Login />} />}/>
-                <Route path={"/signup"} element={<AuthRouter path={'/signup'} element={<SignUp />} />}/>
+                <Route path={"/auth/login"} element={<AuthRouter path={'/auth/login'} element={<Login />} />}/>
+                <Route path={"/auth/signup"} element={<AuthRouter path={'/auth/signup'} element={<SignUp />} />}/>
+                <Route path={"/auth/oauth2/signup"} element={<AuthRouter path={'/auth/oauth2/signup'} element={<OAuth2Register />} />}/>
                 <Route path={"/user/:id"} element={<AuthRouter path={'/user/:id'} element={<MyPage />} />}/>
                 <Route path={"/user/modify/:id"} element={<AuthRouter path={'/user/modify/:id'} element={<ModifyForm />} />}/>
                 <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />}/>

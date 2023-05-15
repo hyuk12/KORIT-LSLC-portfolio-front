@@ -1,12 +1,10 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {useMutation} from "react-query";
-
+import axios from "axios";
+import {Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography} from "@mui/material";
+import {css} from "@emotion/react";
+import styled from "@emotion/styled";
 
 const signupContainer = css`
     display: flex;
@@ -90,9 +88,45 @@ const address = [
     "제주특별자치도"
 ];
 
-const SignUp = () => {
+
+const OAuth2Register = () => {
     const navigate = useNavigate();
-    const [ signupUser, setSignupUser ] = useState({
+
+    const [passwords, setPasswords] = useState({passwords: '', checkPasswords: ''});
+    const oauth2Register = useMutation(async (registerData) => {
+        const option = {
+            headers: {
+                registerToken: `Bearer ${registerToken}`
+            }
+        }
+        try {
+            console.log(registerData)
+            const response = await axios.post('http://localhost:8080/api/v1/auth/oauth2/register', registerData, option);
+            return response
+        }catch (error) {
+            alert("page 가 만료되었습니다")
+            navigate("/auth/login", {replace: true});
+            return error;
+        }
+    }, {
+        onSuccess: (response) => {
+            if(response.status === 200) {
+                alert("Successfully registered");
+                navigate("/auth/login", {replace: true});
+            }
+        }
+    });
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const registerToken = searchParams.get("registerToken");
+
+    console.log(registerToken);
+    const email = searchParams.get("email");
+    const name = searchParams.get("name");
+    const provider = searchParams.get("provider");
+
+    const [ oauth2User, setOauth2User ] = useState({
         profileImg: '',
         email: '',
         password: '',
@@ -109,55 +143,24 @@ const SignUp = () => {
         phone: '',
         address: ''
     });
-      
-    // 로그인
+
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        setSignupUser(
+        setOauth2User(
             {
-                ...signupUser,
+                ...oauth2User,
                 [name]: value
             }
         )
     };
 
-    const signUpMember = useMutation(async (signUpData) => {
-        try {
-            const option = {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-
-            const response = await axios.post(`http://localhost:8080/api/v1/auth/user`, signUpData, option);
-            setErrorMessages({
-                profileImg: '',
-                email: '',
-                password: '',
-                name: '',
-                phone: '',
-                address: ''});
-
-            const accessToken = response.data.grantType + " " + response.data.accessToken;
-            localStorage.setItem("accessToken", accessToken);
-
-            return response;
-        }catch (error) {
-            setErrorMessages(error.response.data);
-        }
-    }, {
-        onSuccess: (response) => {
-
-            if (response.status === 200) {
-                alert("회원가입 완료");
-                window.location.replace("/auth/login");
-            }
-        }
-    });
-
-    const signupHandleSubmit = async () => {
-       signUpMember.mutate(signupUser);
-
+    const oauth2RegisterSubmitHandler = () => {
+        oauth2Register.mutate({
+            email,
+            name,
+            provider,
+            ...oauth2User
+        });
     }
 
     return (
@@ -174,12 +177,13 @@ const SignUp = () => {
                         required
                         id="email"
                         label="이메일"
-                        placeholder="abc@gmail.com"
+                        value={email}
                         name="email"
                         autoComplete="email"
-                        onChange={onChangeHandler}
                         autoFocus
-                        />
+                        onChange={onChangeHandler}
+                        disabled={true}
+                    />
                     <div css={errorMsg}>{errorMessages.email}</div>
 
                     <StyleInput
@@ -195,11 +199,24 @@ const SignUp = () => {
 
                     <StyleInput
                         required
+                        id="password"
+                        label="비밀번호 확인"
+                        name="checkPassword"
+                        type="password"
+                        autoComplete="current-password"
+                        onChange={onChangeHandler}
+                    />
+                    <div css={errorMsg}>{errorMessages.password}</div>
+
+                    <StyleInput
+                        required
                         id="name"
                         label="이름"
                         name="name"
+                        value={name}
                         autoComplete="name"
                         onChange={onChangeHandler}
+                        disabled={true}
                     />
                     <div css={errorMsg}>{errorMessages.name}</div>
 
@@ -221,9 +238,9 @@ const SignUp = () => {
                                 required
                                 labelId="addressSelectLabel"
                                 id="address"
-                                value={signupUser.address}
+                                value={oauth2Register.address}
                                 label="주소"
-                                onChange={(event) => setSignupUser({...signupUser, address: event.target.value})}
+                                onChange={(event) => setOauth2User({...oauth2User, address: event.target.value})}
                             >
                                 {address.map((item) => (
                                     <MenuItem key={item} value={item}>
@@ -237,19 +254,19 @@ const SignUp = () => {
                     <div css={errorMsg}>{errorMessages.address}</div>
 
                     <Button css={submitButton}
-                        type='button'
-                        onClick={signupHandleSubmit}
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                        >
+                            type='button'
+                            onClick={oauth2RegisterSubmitHandler}
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                    >
                         Sign Up
                     </Button>
                 </Box>
             </Box>
-            
+
         </Grid>
     );
 };
 
-export default SignUp;
+export default OAuth2Register;

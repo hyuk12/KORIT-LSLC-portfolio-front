@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {css} from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import {
     Box,
@@ -14,11 +14,12 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {useQuery} from "react-query";
-import {isLoggedOutState} from "../../../atoms/Auth/AuthAtoms";
-import {useRecoilState} from "recoil";
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from "react-query";
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from "recoil";
+import defaultImg from '../../../images/logotitle.png';
+import { authenticationState } from "../../../store/atoms/AuthAtoms";
 
 //다시돌아옴
 
@@ -27,19 +28,30 @@ const signupContainer = css`
     align-items: center;
     justify-content: center;
     height: 800px;
+    margin-top: 100px;
 `
 ;
+
 const signupBox = css`
     width: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin-top: 8px;
+`;
+
+const profileImgContainer = css`
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    background-image: url(${defaultImg});
+    background-size: cover;
+    background-position: center;
 `;
 
 const signupText = css`
-    margin-top: 80px;
     margin-bottom: 30px;
 `;
 
@@ -153,16 +165,16 @@ const address = [
 const ModifyForm = () => {
     const navigate = useNavigate();
     const [ refresh, setRefresh ] = useState(false);
-    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
+    const [authState, setAuthState ] = useRecoilState(authenticationState);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-        enabled: refresh,
+
         onSuccess: (response) => {
-            setSignupUser({
+            setUpdateUser({
                 profileImg: response.data.profileImg,
                 email: response.data.email,
                 name: response.data.name,
@@ -184,58 +196,89 @@ const ModifyForm = () => {
         address: 'Edit'
     });
 
-    const [ signupUser, setSignupUser ] = useState({
+
+    const [ updateUser, setUpdateUser ] = useState({
         profileImg: '',
         email: '',
-        name: '',
+        name:  '',
         phone: '',
-        address: ''
+        address:  ''
+
     });
 
     const [ errorMessages, setErrorMessages ] = useState({
-        profileImg: '',
-        email: '',
         name: '',
         phone: '',
-        address: ''
     });
 
-    useEffect(() => {
-        setRefresh(isLoggedOut);
-    }, [isLoggedOut]);
+    const [ isName, setIsName ] = useState(true)
+    const [ isPhone, setIsPhone ] = useState(true)
+
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         if(accessToken) {
-            setIsLoggedOut(true);
+            setAuthState(true);
         }else {
-            setIsLoggedOut(false);
+            setAuthState(false);
         }
-    }, []);
+    }, [localStorage.getItem('accessToken')]);
 
 
-
-    // 로그인
+    // 유효성 검사 -> user 정보수정
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        setSignupUser(
+
+        if(name === 'name') {
+            const nameRegex = /^[가-힣]{2,8}$/;
+            if(!nameRegex.test(value)) {
+                setErrorMessages((errors) => ({
+                    ...errors,
+                    name: '2글자 이상 8글자 미만으로 입력해주세요.'
+                }));
+                setIsName(false);
+            } else {
+                setErrorMessages((errors) => ({
+                    ...errors,
+                    name: '올바른 이름 형식입니다 :)'
+                }));
+                setIsName(true);
+            }
+        } else if (name === 'phone') {
+            const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
+            if (!phoneRegex.test(value)) {
+              setErrorMessages((errors) => ({
+                ...errors,
+                phone: '올바른 전화번호 형식이 아닙니다.'
+              }));
+              setIsPhone(false);
+            } else {
+              setErrorMessages((errors) => ({
+                ...errors,
+                phone: '올바른 전화번호 형식입니다 :)'
+              }));
+              setIsPhone(true);
+            }
+        }
+
+        setUpdateUser(
             {
-                ...signupUser,
+                ...updateUser,
                 [name]: value
             }
         )
+
     };
 
-    const updateUserHandleSubmit = async () => {
-        const option = {
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `${localStorage.getItem('accessToken')}`
-            }
-        }
 
-        try{
-            const updatedUser = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, signupUser, option);
+    const modifyUser = useMutation(async (modifyData) => {
+        try {
+            const option = {
+                headers: {
+                    'Authorization': `${localStorage.getItem('accessToken')}`
+                }
+            }
+            const response = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, modifyData, option);
 
             setErrorMessages({
                 profileImg: '',
@@ -243,19 +286,26 @@ const ModifyForm = () => {
                 name: '',
                 phone: '',
                 address: ''});
-            navigate('/');
 
-        } catch (error) {
-            setErrorMessages({
-                profileImg: '',
-                email: '',
-                name: '',
-                phone: '',
-                address: '',
-                ...error.response.data.errorData
-            });
+            return response
+        }catch (error) {
+
+            setErrorMessages(error.response.data)
         }
+    }, {
+        onSuccess: (response) => {
+            if (response.status === 200) {
+                alert("정보 수정 완료");
+                window.location.replace('/');
+            }
 
+        }
+    })
+
+    const updateUserHandleSubmit = () => {
+        if(isName && isPhone) {
+            modifyUser.mutate(updateUser);
+        }
     }
 
     const toggleEdit = (field) => {
@@ -271,7 +321,7 @@ const ModifyForm = () => {
     };
     
 
-    if(isLoggedOut) {
+    if(authState) {
         if (principal.isLoading) {
             return (<Box sx={{ display: 'flex' }}>
                 <CircularProgress />
@@ -287,6 +337,11 @@ const ModifyForm = () => {
                     <Typography component="h1" variant="h5" css={signupText}>
                         Edit Member Information
                     </Typography>
+
+                    <div css={profileImgContainer}>
+                        <label>
+                        </label>
+                    </div>
 
 
                     <Box component="form" css={inputContainer}>
@@ -312,14 +367,14 @@ const ModifyForm = () => {
                                 name="name"
                                 autoComplete="name"
                                 onChange={onChangeHandler}
-                                value={signupUser.name}
+                                value={updateUser.name}
                                 disabled={inputDisabled.name}
                             />
-                            <div css={errorMsg}>{errorMessages.name}</div>
                             <button type={"button"} css={editButtonStyle} onClick={() => toggleEdit("name")}>
                                 {buttonText.name}
                             </button>
                         </div>
+                        <div css={errorMsg}>{errorMessages.name}</div>
                         <div css={editInputStyle}>
                             <StyleInput
 
@@ -328,15 +383,15 @@ const ModifyForm = () => {
                                 placeholder="010-1234-1234"
                                 name="phone"
                                 autoComplete="tel"
-                                value={signupUser.phone}
+                                value={updateUser.phone}
                                 onChange={onChangeHandler}
                                 disabled={inputDisabled.phone}
                             />
-                            <div css={errorMsg}>{errorMessages.phone}</div>
                             <button type={"button"} css={editButtonStyle} onClick={() => toggleEdit("phone")}>
                                 {buttonText.phone}
                             </button>
                         </div>
+                        <div css={errorMsg}>{errorMessages.phone}</div>
                         <div css={editInputStyle}>
                             <Box width={"100%"}>
                                 <FormControl css={addressForm}>
@@ -345,9 +400,11 @@ const ModifyForm = () => {
 
                                         labelId="addressSelectLabel"
                                         id="address"
-                                        value={signupUser.address}
+                                        value={updateUser.address}
                                         label="주소"
-                                        onChange={(event) => setSignupUser({...signupUser, address: event.target.value})}
+
+                                        onChange={(event) => setUpdateUser({...updateUser, address: event.target.value})}
+
                                         disabled={inputDisabled.address}
                                     >
                                         {address.map((item) => (
@@ -359,11 +416,11 @@ const ModifyForm = () => {
                                     </Select>
                                 </FormControl>
                             </Box>
-                            <div css={errorMsg}>{errorMessages.address}</div>
                             <button type={"button"} css={addressEditButtonStyle} onClick={() => toggleEdit("address")}>
                                 {buttonText.address}
                             </button>
                         </div>
+                        <div css={errorMsg}>{errorMessages.address}</div>
 
                         <Button css={submitButton}
                                 type='button'

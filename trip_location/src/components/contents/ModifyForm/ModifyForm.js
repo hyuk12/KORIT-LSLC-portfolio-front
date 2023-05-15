@@ -160,7 +160,16 @@ const ModifyForm = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-        enabled: refresh
+        enabled: refresh,
+        onSuccess: (response) => {
+            setSignupUser({
+                profileImg: response.data.profileImg,
+                email: response.data.email,
+                name: response.data.name,
+                phone: response.data.phone,
+                address: response.data.address
+            })
+        }
     });
 
     const [inputDisabled, setInputDisabled] = useState({
@@ -175,20 +184,17 @@ const ModifyForm = () => {
         address: 'Edit'
     });
 
-    const [ addressList, setAddressList ] = useState([]);
     const [ signupUser, setSignupUser ] = useState({
         profileImg: '',
         email: '',
-        password: '',
-        name: principal && principal.data && principal.data.data && principal.data.data.name ? principal.data.data.name : '',
-        phone: principal && principal.data && principal.data.data && principal.data.data.phone ? principal.data.data.phone : '',
-        address: principal && principal.data && principal.data.data && principal.data.data.address ? principal.data.data.address : ''
+        name: '',
+        phone: '',
+        address: ''
     });
 
     const [ errorMessages, setErrorMessages ] = useState({
         profileImg: '',
         email: '',
-        password: '',
         name: '',
         phone: '',
         address: ''
@@ -221,41 +227,33 @@ const ModifyForm = () => {
     };
 
     const updateUserHandleSubmit = async () => {
-        const data = { ...signupUser, address: addressList };
-
         const option = {
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                'Authorization': `${localStorage.getItem('accessToken')}`
             }
         }
 
         try{
-            const updatedUser = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, data, option);
+            const updatedUser = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, signupUser, option);
 
             setErrorMessages({
                 profileImg: '',
                 email: '',
-                password: '',
                 name: '',
                 phone: '',
                 address: ''});
-
-            const accessToken = updatedUser.grantType + " " + updatedUser.accessToken;
-            localStorage.setItem("accessToken", accessToken);
             navigate('/');
 
         } catch (error) {
             setErrorMessages({
                 profileImg: '',
                 email: '',
-                password: '',
                 name: '',
                 phone: '',
                 address: '',
                 ...error.response.data.errorData
             });
-
         }
 
     }
@@ -271,6 +269,7 @@ const ModifyForm = () => {
             [field]: prevState[field] === "Edit" ? "Modify" : "Edit"
         }));
     };
+    
 
     if(isLoggedOut) {
         if (principal.isLoading) {
@@ -278,6 +277,9 @@ const ModifyForm = () => {
                 <CircularProgress />
             </Box>)
         }
+
+        
+
         return (
             <Grid component="main" maxWidth="xs" css={signupContainer}>
 
@@ -345,7 +347,7 @@ const ModifyForm = () => {
                                         id="address"
                                         value={signupUser.address}
                                         label="주소"
-                                        onChange={(event) => setAddressList(event.target.value)}
+                                        onChange={(event) => setSignupUser({...signupUser, address: event.target.value})}
                                         disabled={inputDisabled.address}
                                     >
                                         {address.map((item) => (

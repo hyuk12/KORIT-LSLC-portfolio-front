@@ -14,9 +14,11 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useQuery} from "react-query";
+import {isLoggedOutState} from "../../../atoms/Auth/AuthAtoms";
+import {useRecoilState} from "recoil";
 
 //다시돌아옴
 
@@ -150,18 +152,15 @@ const address = [
 
 const ModifyForm = () => {
     const navigate = useNavigate();
-    const [isLoggedOut, setIsLoggedOut] = useState(true);
+    const [ refresh, setRefresh ] = useState(false);
+    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-        onSuccess: (response) => {
-            if (response.status === 200) {
-                setIsLoggedOut(true);
-            }
-        }
+        enabled: refresh
     });
 
     const [inputDisabled, setInputDisabled] = useState({
@@ -194,6 +193,20 @@ const ModifyForm = () => {
         phone: '',
         address: ''
     });
+
+    useEffect(() => {
+        setRefresh(isLoggedOut);
+    }, [isLoggedOut]);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        if(accessToken) {
+            setIsLoggedOut(true);
+        }else {
+            setIsLoggedOut(false);
+        }
+    }, []);
+
 
 
     // 로그인

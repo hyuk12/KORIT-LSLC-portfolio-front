@@ -147,6 +147,18 @@ const Login = () => {
         )
     }
 
+    const googleAuthLoginClickHandler = () => {
+        window.location.href= "http://localhost:8080/oauth2/authorization/google"
+    }
+
+    const naverAuthLoginClickHandler = () => {
+        window.location.href= "http://localhost:8080/oauth2/authorization/naver"
+    }
+
+    const kakaoAuthLoginClickHandler = () => {
+        window.location.href= "http://localhost:8080/oauth2/authorization/kakao"
+    }
+
     const loginHandleSubmit = async () => {
         const data = { ...loginUser };
 
@@ -259,7 +271,7 @@ const Login = () => {
                                 회원이 아니세요?
                             </Grid>
                             <Grid item css={signupLink}>
-                                <Link href="/signup" variant="body2">
+                                <Link href="/auth/signup" variant="body2">
                                     회원가입하기
                                 </Link>
                             </Grid>
@@ -277,14 +289,14 @@ const Login = () => {
                             <div css={oauthLoginText}>SNS 간편 로그인</div>
                             <Grid item css={oauthBtnList}>
 
-                                <button css={oauthBtn}>
+                                <button css={oauthBtn} onClick={kakaoAuthLoginClickHandler}>
                                     <img src={kakaoBtn} alt="kakao" css={oauthImg}/>
                                 </button>
-                                <button css={oauthBtn}>
-                                    <img src={naverBtn} alt="kakao" css={oauthImg}/>
+                                <button css={oauthBtn} onClick={naverAuthLoginClickHandler}>
+                                    <img src={naverBtn} alt="naver" css={oauthImg}/>
                                 </button>
-                                <button css={oauthBtn}>
-                                    <img src={googleBtn} alt="kakao" css={oauthImg}/>
+                                <button css={oauthBtn} onClick={googleAuthLoginClickHandler}>
+                                    <img src={googleBtn} alt="google" css={oauthImg}/>
                                 </button>
                             </Grid>
                         </Grid>

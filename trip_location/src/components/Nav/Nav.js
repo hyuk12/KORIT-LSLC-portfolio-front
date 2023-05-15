@@ -8,6 +8,7 @@ import {useQuery} from "react-query";
 import axios from "axios";
 import {isLoggedOutState} from "../../atoms/Auth/AuthAtoms";
 import {useRecoilState} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 const navStyles = css`
   position: fixed;
@@ -48,8 +49,8 @@ const buttonStyle = css`
 
 const Nav = () => {
     const navigate = useNavigate();
+    const [authState, setAuthState] = useRecoilState(authenticationState);
     const [ refresh, setRefresh ] = useState(false);
-    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
@@ -59,15 +60,15 @@ const Nav = () => {
     });
 
     useEffect(() => {
-        setRefresh(isLoggedOut);
-    }, [isLoggedOut]);
+        setRefresh(authState);
+    }, [authState]);
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         if(accessToken) {
-            setIsLoggedOut(true);
+            setAuthState(true);
         }else {
-            setIsLoggedOut(false);
+            setAuthState(false);
         }
     }, []);
 
@@ -77,11 +78,11 @@ const Nav = () => {
     }
 
     const handleSignInClick = () => {
-        navigate("/login");
+        navigate("/auth/login");
     }
 
     const handleSignUpClick = () => {
-        navigate("/signup");
+        navigate("/auth/signup");
     }
 
     const handleMyPageClick = () => {
@@ -91,7 +92,7 @@ const Nav = () => {
     const handleLogOut = () => {
         if (window.confirm('로그아웃 하시겠습니까?')) {
             localStorage.removeItem('accessToken');
-            setIsLoggedOut(false);
+            setAuthState(false);
         }
     }
 
@@ -110,7 +111,7 @@ const Nav = () => {
                     sx={{ flex: 1 }}>
                     {"Trip Location"}
                 </Typography>
-                {!isLoggedOut ? (<div>
+                {!authState ? (<div>
                     <Button
                         css={buttonStyle}
                         size={"small"}

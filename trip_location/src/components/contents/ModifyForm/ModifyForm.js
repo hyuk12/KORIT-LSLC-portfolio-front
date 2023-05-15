@@ -16,9 +16,9 @@ import {
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {useQuery} from "react-query";
-import {isLoggedOutState} from "../../../atoms/Auth/AuthAtoms";
+import {useMutation, useQuery} from "react-query";
 import {useRecoilState} from "recoil";
+import {authenticationState} from "../../../store/atoms/AuthAtoms";
 
 //다시돌아옴
 
@@ -153,14 +153,22 @@ const address = [
 const ModifyForm = () => {
     const navigate = useNavigate();
     const [ refresh, setRefresh ] = useState(false);
-    const [ isLoggedOut, setIsLoggedOut ] = useRecoilState(isLoggedOutState);
+    const [authState, setAuthState ] = useRecoilState(authenticationState);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-        enabled: refresh
+        onSuccess: (response) => {
+            setUpdateUser({
+                profileImg: response.data.profileImg,
+                email: response.data.email,
+                name: response.data.name,
+                phone: response.data.phone,
+                address: response.data.address
+            })
+        }
     });
 
     const [inputDisabled, setInputDisabled] = useState({
@@ -175,64 +183,53 @@ const ModifyForm = () => {
         address: 'Edit'
     });
 
-    const [ addressList, setAddressList ] = useState([]);
-    const [ signupUser, setSignupUser ] = useState({
+    const [ updateUser, setUpdateUser ] = useState({
         profileImg: '',
         email: '',
-        password: '',
-        name: principal && principal.data && principal.data.data && principal.data.data.name ? principal.data.data.name : '',
-        phone: principal && principal.data && principal.data.data && principal.data.data.phone ? principal.data.data.phone : '',
-        address: principal && principal.data && principal.data.data && principal.data.data.address ? principal.data.data.address : ''
+        name:  '',
+        phone: '',
+        address:  ''
     });
 
     const [ errorMessages, setErrorMessages ] = useState({
         profileImg: '',
         email: '',
-        password: '',
         name: '',
         phone: '',
         address: ''
     });
 
-    useEffect(() => {
-        setRefresh(isLoggedOut);
-    }, [isLoggedOut]);
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         if(accessToken) {
-            setIsLoggedOut(true);
+            setAuthState(true);
         }else {
-            setIsLoggedOut(false);
+            setAuthState(false);
         }
-    }, []);
+    }, [localStorage.getItem('accessToken')]);
 
 
 
     // 로그인
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        setSignupUser(
+        setUpdateUser(
             {
-                ...signupUser,
+                ...updateUser,
                 [name]: value
             }
         )
     };
 
-    const updateUserHandleSubmit = async () => {
-        const data = { ...signupUser, address: addressList };
-
-        const option = {
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    const modifyUser = useMutation(async (modifyData) => {
+        try {
+            const option = {
+                headers: {
+                    'Authorization': `${localStorage.getItem('accessToken')}`
+                }
             }
-        }
-
-        try{
-            const updatedUser = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, data, option);
-
+            const response = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, modifyData, option);
             setErrorMessages({
                 profileImg: '',
                 email: '',
@@ -240,24 +237,22 @@ const ModifyForm = () => {
                 name: '',
                 phone: '',
                 address: ''});
+            return response
+        }catch (error) {
 
-            const accessToken = updatedUser.grantType + " " + updatedUser.accessToken;
-            localStorage.setItem("accessToken", accessToken);
-            navigate('/');
-
-        } catch (error) {
-            setErrorMessages({
-                profileImg: '',
-                email: '',
-                password: '',
-                name: '',
-                phone: '',
-                address: '',
-                ...error.response.data.errorData
-            });
-
+            setErrorMessages(error.response.data)
         }
+    }, {
+        onSuccess: (response) => {
+            if (response.status === 200) {
+                alert("정보 수정 완료");
+                window.location.replace('/');
+            }
+        }
+    })
 
+    const updateUserHandleSubmit = () => {
+        modifyUser.mutate(updateUser);
     }
 
     const toggleEdit = (field) => {
@@ -272,7 +267,7 @@ const ModifyForm = () => {
         }));
     };
 
-    if(isLoggedOut) {
+    if(authState) {
         if (principal.isLoading) {
             return (<Box sx={{ display: 'flex' }}>
                 <CircularProgress />
@@ -310,7 +305,7 @@ const ModifyForm = () => {
                                 name="name"
                                 autoComplete="name"
                                 onChange={onChangeHandler}
-                                value={signupUser.name}
+                                value={updateUser.name}
                                 disabled={inputDisabled.name}
                             />
                             <div css={errorMsg}>{errorMessages.name}</div>
@@ -326,7 +321,7 @@ const ModifyForm = () => {
                                 placeholder="010-1234-1234"
                                 name="phone"
                                 autoComplete="tel"
-                                value={signupUser.phone}
+                                value={updateUser.phone}
                                 onChange={onChangeHandler}
                                 disabled={inputDisabled.phone}
                             />
@@ -343,9 +338,9 @@ const ModifyForm = () => {
 
                                         labelId="addressSelectLabel"
                                         id="address"
-                                        value={signupUser.address}
+                                        value={updateUser.address}
                                         label="주소"
-                                        onChange={(event) => setAddressList(event.target.value)}
+                                        onChange={(event) => setUpdateUser({...updateUser, address: event.target.value})}
                                         disabled={inputDisabled.address}
                                     >
                                         {address.map((item) => (

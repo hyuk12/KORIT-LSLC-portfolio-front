@@ -52,6 +52,7 @@ const guideButton = css`
 
 const Map = ({ destinationTitle, paths, setPaths, onSavePath }) => {
   const linePath = [];
+  const markerId = useRef(1);
   const mapRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
   const [markers, setMarkers] = useState([]);
@@ -110,12 +111,19 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
 
   const markerData = markerPositions.map((position,index)=>(
       {
-        addr: address[index],
-        lat:position.getLat(),
-        lng: position.getLng(),
+        id:markerId.current,
+        date:'',
+        location:[
+          {
+            addr: address[index],
+            lat:position.getLat(),
+            lng: position.getLng(),
+          },
+        ]
       }
   ));
-  
+  markerId.current += 1;
+
   // localStorage.setItem("markers", JSON.stringify(markerData)); 
   console.log(markerData);
 
@@ -141,24 +149,3 @@ function abc() {
 };
 
 export default Map;
-
-
-/*
-[
-  {
-    id:1,
-    date:'일자',
-    location:
-    [
-      {
-        addr
-        lat
-        lng
-
-      }
-
-    ]
-  
-  }
-]
-*/

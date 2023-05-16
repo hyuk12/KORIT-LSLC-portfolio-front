@@ -27,7 +27,7 @@ function a11yProps(index) {
   TabPanel은 Tab 내용 함수
 */
 
-function TabPanel({ children, value, index, paths, scheduleData, ...other }) {
+function TabPanel({ children, value, index, scheduleData, ...other }) {
   const scheduleDay = scheduleData[index];
   const storedTabPath = localStorage.getItem(scheduleDay.date);
   const [tabPaths, setTabPaths] = useState([]);
@@ -59,7 +59,7 @@ function TabPanel({ children, value, index, paths, scheduleData, ...other }) {
             {scheduleDay.date}
             {tabPaths.map((coordinate, coordIndex) => (
               <div css={route} key={coordIndex}>
-                place {coordIndex} : {coordinate.addr}
+                place {coordIndex} : {coordinate.location.addr}
               </div>
             ))}
           </Typography>
@@ -74,15 +74,11 @@ TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
-  paths: PropTypes.arrayOf(
-    PropTypes.shape({
-      addr: PropTypes.string.isRequired,
-    })
-  ).isRequired,
   scheduleData: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.number.isRequired,
       date: PropTypes.string.isRequired,
-      coordinates: PropTypes.arrayOf(
+      location: PropTypes.arrayOf(
         PropTypes.shape({
           addr: PropTypes.string.isRequired,
           lat: PropTypes.number.isRequired,
@@ -92,39 +88,35 @@ TabPanel.propTypes = {
     })
   ).isRequired,
 };
+
 export default function VerticalTabs({ scheduleData }) {
   const storedTab = localStorage.getItem('selectedTab');
-  const initialTab = storedTab
-    ? scheduleData.findIndex((day) => day.date === storedTab) : 0;
+  const initialTab = storedTab ? scheduleData.findIndex((day) => day.date === storedTab) : 0;
   const [value, setValue] = useState(initialTab >= 0 ? initialTab : 0);
-  const [paths, setPaths] = useState([]);
-  
-  
+  const [paths, setPaths] = useState([]); // Added the missing setPaths
+
   useEffect(() => {
     if (scheduleData && scheduleData.length > 0) {
       const selectedTabDate = scheduleData[value].date;
       const selectedTabPath = JSON.parse(localStorage.getItem(selectedTabDate));
 
-      // Check if the selected schedule's coordinates exist in localStorage
       if (selectedTabPath) {
+        // Check if the selected schedule's coordinates exist in localStorage
         setPaths(selectedTabPath);
       } else {
-        // Fetch the coordinates from the selected schedule
         const selectedSchedule = scheduleData[value];
-        const selectedScheduleCoordinates = selectedSchedule.coordinates;
+        const selectedScheduleCoordinates = selectedSchedule.location; // Updated: Accessing `location` instead of `coordinates`
 
-        // Update the localStorage and set the paths
         localStorage.setItem('selectedTab', selectedTabDate);
         localStorage.setItem('selectedSchedule', JSON.stringify(selectedSchedule));
         localStorage.setItem('markers', JSON.stringify(selectedScheduleCoordinates));
         setPaths(selectedScheduleCoordinates);
 
-        // Update the dataStructor array with the selected schedule's coordinates
         const updatedDataStructor = scheduleData.map((day) => {
           if (day.date === selectedTabDate) {
             return {
               ...day,
-              coordinates: selectedScheduleCoordinates,
+              location: selectedScheduleCoordinates, // Updated: Updating `location` instead of `coordinates`
             };
           } else {
             return day;
@@ -178,6 +170,7 @@ export default function VerticalTabs({ scheduleData }) {
 VerticalTabs.propTypes = {
   scheduleData: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.number.isRequired,
       date: PropTypes.string.isRequired,
       coordinates: PropTypes.arrayOf(
         PropTypes.shape({
@@ -189,24 +182,3 @@ VerticalTabs.propTypes = {
     })
   ).isRequired,
 };
-
-
-/*
-[
-  {
-    id:1,
-    date:'일자',
-    location:
-    [
-      {
-        addr:
-        lat:
-        lng:
-
-      }
-
-    ]
-  
-  }
-]
-*/

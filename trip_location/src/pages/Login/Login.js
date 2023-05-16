@@ -159,6 +159,7 @@ const Login = () => {
         window.location.href= "http://localhost:8080/oauth2/authorization/kakao"
     }
 
+
     const loginHandleSubmit = async () => {
         const data = { ...loginUser };
 
@@ -169,7 +170,7 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, JSON.stringify(data), option);
+            const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, data, option);
             setErrorMessages({email: '', password: ''});
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
@@ -220,89 +221,95 @@ const Login = () => {
                         Sign in
                     </Typography>
 
-                    <Box sx={{ mt: 1 }}>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            loginHandleSubmit();
+                        }}
+                    >
 
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            onChange={onChangeHandler}
-                        />
-                        <div css={errorMsg}>{errorMessages.email}</div>
+                        <Box sx={{ mt: 1 }}>
 
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={onChangeHandler}
-                        />
-                        <div css={errorMsg}>{errorMessages.password}</div>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                                onChange={onChangeHandler}
+                            />
+                            <div css={errorMsg}>{errorMessages.email}</div>
 
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    비밀번호를 잊으셨나요?
-                                </Link>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                onChange={onChangeHandler}
+                            />
+                            <div css={errorMsg}>{errorMessages.password}</div>
+
+                            <Grid container>
+                                <Grid item xs>
+                                    <Link href="#" variant="body2">
+                                        비밀번호를 잊으셨나요?
+                                    </Link>
+                                </Grid>
                             </Grid>
-                        </Grid>
 
-                        <Button
-                            onClick={loginHandleSubmit}
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2, backgroundColor: '#0BD0AF', color: 'white' }}
-                            css={submitButton}
-                        >
-                            Sign In
-                        </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, backgroundColor: '#0BD0AF', color: 'white' }}
+                                css={submitButton}
+                            >
+                                Sign In
+                            </Button>
 
-                        <Grid container css={signupContainer}>
-                            <Grid item>
-                                회원이 아니세요?
+                            <Grid container css={signupContainer}>
+                                <Grid item>
+                                    회원이 아니세요?
+                                </Grid>
+                                <Grid item css={signupLink}>
+                                    <Link href="/auth/signup" variant="body2">
+                                        회원가입하기
+                                    </Link>
+                                </Grid>
                             </Grid>
-                            <Grid item css={signupLink}>
-                                <Link href="/auth/signup" variant="body2">
-                                    회원가입하기
-                                </Link>
+
+                            <Grid container css={orBorderContainer}>
+                                <Grid item>
+                                    <span css={or}>
+                                        or
+                                    </span>
+                                </Grid>
                             </Grid>
-                        </Grid>
 
-                        <Grid container css={orBorderContainer}>
-                            <Grid item>
-                                <span css={or}>
-                                    or
-                                </span>
+                            <Grid container css={oauthContainer}>
+                                <div css={oauthLoginText}>SNS 간편 로그인</div>
+                                <Grid item css={oauthBtnList}>
+
+                                    <button css={oauthBtn} onClick={kakaoAuthLoginClickHandler}>
+                                        <img src={kakaoBtn} alt="kakao" css={oauthImg}/>
+                                    </button>
+                                    <button css={oauthBtn} onClick={naverAuthLoginClickHandler}>
+                                        <img src={naverBtn} alt="naver" css={oauthImg}/>
+                                    </button>
+                                    <button css={oauthBtn} onClick={googleAuthLoginClickHandler}>
+                                        <img src={googleBtn} alt="google" css={oauthImg}/>
+                                    </button>
+                                </Grid>
                             </Grid>
-                        </Grid>
-
-                        <Grid container css={oauthContainer}>
-                            <div css={oauthLoginText}>SNS 간편 로그인</div>
-                            <Grid item css={oauthBtnList}>
-
-                                <button css={oauthBtn} onClick={kakaoAuthLoginClickHandler}>
-                                    <img src={kakaoBtn} alt="kakao" css={oauthImg}/>
-                                </button>
-                                <button css={oauthBtn} onClick={naverAuthLoginClickHandler}>
-                                    <img src={naverBtn} alt="naver" css={oauthImg}/>
-                                </button>
-                                <button css={oauthBtn} onClick={googleAuthLoginClickHandler}>
-                                    <img src={googleBtn} alt="google" css={oauthImg}/>
-                                </button>
-                            </Grid>
-                        </Grid>
-
-                    </Box>
-
+                        </Box>
+                    </form>
                 </Box>
             </Grid>
 

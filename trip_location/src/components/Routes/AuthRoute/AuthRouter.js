@@ -18,7 +18,6 @@ const AuthRouter = ({ path, element }) => {
         return await axios.get('http://localhost:8080/api/v1/auth/authenticated', option)
     }, {
         onSuccess: (response) => {
-            console.log("responsedata", response.status)
             if (response.status === 200) {
                 if(response.data) {
                     setAuthState(true);
@@ -32,7 +31,6 @@ const AuthRouter = ({ path, element }) => {
             const authenticatedPaths = ['/user', '/contents']
             const authPath = '/auth';
 
-            console.log(authState);
             if(authState && path.startsWith(authPath)) {
                 navigate("/");
             }

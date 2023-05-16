@@ -95,15 +95,15 @@ const OAuth2Register = () => {
 
     const registerToken = searchParams.get("registerToken");
 
-    console.log(registerToken);
     const email = searchParams.get("email");
     const name = searchParams.get("name");
     const provider = searchParams.get("provider");
+    console.log(email, name)
 
     const oauth2Register = useMutation(async (registerData) => {
         const option = {
             headers: {
-                registerToken: `Bearer ${registerToken}`
+                registerToken: `${registerToken}`
             }
         }
         try {
@@ -153,12 +153,18 @@ const OAuth2Register = () => {
     };
 
     const oauth2RegisterSubmitHandler = () => {
-        oauth2Register.mutate({
-            email,
-            name,
-            provider,
-            ...oauth2User
-        });
+        if (email && name) {
+            oauth2Register.mutate({
+                email,
+                name,
+                provider,
+                ...oauth2User
+            });
+        } else {
+            // 여기에 email과 name이 null일 때의 처리를 추가합니다.
+            // 예를 들어, alert를 띄우거나, state를 사용하여 화면에 오류 메시지를 표시합니다.
+            console.log("Email and Name must be provided.");
+        }
     }
 
     return (
@@ -171,18 +177,7 @@ const OAuth2Register = () => {
 
 
                 <Box component="form" css={inputContainer}>
-                    <StyleInput
-                        required
-                        id="email"
-                        label="이메일"
-                        value={email}
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                        onChange={onChangeHandler}
-                        disabled={true}
-                    />
-                    <div css={errorMsg}>{errorMessages.email}</div>
+
 
                     <StyleInput
                         required
@@ -206,17 +201,6 @@ const OAuth2Register = () => {
                     />
                     <div css={errorMsg}>{errorMessages.password}</div>
 
-                    <StyleInput
-                        required
-                        id="name"
-                        label="이름"
-                        name="name"
-                        value={name}
-                        autoComplete="name"
-                        onChange={onChangeHandler}
-                        disabled={true}
-                    />
-                    <div css={errorMsg}>{errorMessages.name}</div>
 
                     <StyleInput
                         required

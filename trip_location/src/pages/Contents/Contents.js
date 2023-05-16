@@ -55,10 +55,12 @@ const resetButton= css`
 
 `;
 
-const group = css`
-
-  text-align: center;
+const addFriendButton =css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
 const Contents = ({ destinationTitle }) => {
   const [serchParams, setSearchParams] = useSearchParams();
   const [startDay, setStartDay] = useState(dayjs());
@@ -83,6 +85,9 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(1);
   }
   
+  const addSubmitFriendHandle = (e)=>{
+    
+  }
 
   return (
     
@@ -99,12 +104,9 @@ const Contents = ({ destinationTitle }) => {
               totalDate={totalDate}
               onStartDayChange={startDayHandle}
               onEndDayChange={endDayHandle}
-              paths={paths}
+              markerData={paths}
             />
-
-            <div css={group}>
-              여긴 친구 추가 
-            </div>
+            <button onClick={addSubmitFriendHandle}>친구추가 </button>
         </div>
         <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
       </div>

@@ -164,7 +164,6 @@ const address = [
 
 const ModifyForm = () => {
     const navigate = useNavigate();
-    const [ refresh, setRefresh ] = useState(false);
     const [authState, setAuthState ] = useRecoilState(authenticationState);
 
     const principal = useQuery(["principal"], async () => {
@@ -213,17 +212,6 @@ const ModifyForm = () => {
 
     const [ isName, setIsName ] = useState(true)
     const [ isPhone, setIsPhone ] = useState(true)
-
-
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        if(accessToken) {
-            setAuthState(true);
-        }else {
-            setAuthState(false);
-        }
-    }, [localStorage.getItem('accessToken')]);
-
 
     // 유효성 검사 -> user 정보수정
     const onChangeHandler = (e) => {
@@ -327,9 +315,6 @@ const ModifyForm = () => {
                 <CircularProgress />
             </Box>)
         }
-
-        
-
         return (
             <Grid component="main" maxWidth="xs" css={signupContainer}>
 

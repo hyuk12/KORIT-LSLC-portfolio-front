@@ -79,30 +79,13 @@ const myPlanAndReview = css`
 const MyPage = () => {
     const navigate = useNavigate();
     const [authState, setAuthState] = useRecoilState(authenticationState);
-    const [ refresh, setRefresh ] = useState(false);
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-        enabled: refresh
+        enabled: authState
     });
-
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        if(accessToken) {
-            setAuthState(true);
-        }else {
-            setAuthState(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        console.log(principal.status);
-        if (principal.status === 'success') {
-            setRefresh(authState)
-        }
-    },[authState])
 
     if(principal.isLoading) {
         return (<div>is Loading...</div>)
@@ -114,8 +97,8 @@ const MyPage = () => {
                 <div css={imgContainer}>
 
                 </div>
-                <div>{principal.data.data.email}</div>
-                <ModifyButton onClick={() => navigate(`/user/modify/${principal.data.data.userId}`)}>수정하기</ModifyButton>
+                <div>{principal?.data?.data?.email || '이메일 로딩 중...'}</div>
+                <ModifyButton onClick={() => navigate(`/user/modify/${principal?.data?.data?.userId || ''}`)}>수정하기</ModifyButton>
                 <div css={mainContents}>
                     <div css={myPlanAndReview}>
                         <span>나의 일정</span>

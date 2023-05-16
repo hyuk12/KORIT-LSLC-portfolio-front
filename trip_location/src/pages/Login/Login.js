@@ -134,7 +134,6 @@ const Login = () => {
     })
     const [ errorMessages, setErrorMessages ] = useState({email: '', password: ''});
     const [authState, setAuthState] = useRecoilState(authenticationState);
-    const [ refresh, setRefresh ] = useState(false);
     const navigate = useNavigate();
 
     const onChangeHandler = (e) => {
@@ -170,12 +169,11 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, data, option);
+            const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, JSON.stringify(data), option);
             setErrorMessages({email: '', password: ''});
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
-            setRefresh(false);
             setAuthState(true);
 
             navigate('/');

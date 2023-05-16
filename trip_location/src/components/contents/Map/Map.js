@@ -22,7 +22,7 @@ import React, { useEffect, useRef, useState } from 'react';
   }
 ]
 */
-const { kakao } = window;
+
 
 const map = css`
   position: relative;
@@ -50,7 +50,9 @@ const guideButton = css`
   box-shadow: 0 4px 8px 0;
 `;
 
-const Map = ({ destinationTitle, paths, setPaths, onSavePath }) => {
+const { kakao } = window;
+
+const Map = ({ destinationTitle, paths, setPaths }) => {
   const linePath = [];
   const markerId = useRef(1);
   const mapRef = useRef(null);

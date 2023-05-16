@@ -7,6 +7,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
+import { constSelector } from 'recoil';
 
 const calendarContainer = css`
   display:flex;
@@ -25,7 +26,6 @@ const Total=css`
 export default function Calendar(props) {
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, markerData } = props;
   const [scheduleData, setScheduleData] = useState([]);
-  const schedulId = useRef(1);
   const resetDay = () => {
     onStartDayChange(startDay);
     onEndDayChange(endDay);
@@ -41,13 +41,15 @@ export default function Calendar(props) {
   // console.log(paths)
 
   useEffect(() => {
+    
     const totalDate = endDay.diff(startDay, 'day') + 1;
   
     const generatedData = Array.from({ length: totalDate }, (_, i) => {
       const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
+      console.log(markerData);
       const locationByDate = markerData.map((marker) => {
-        const location = marker.location.find((loc) => loc.date === date);
-        if (location) {
+      const location = marker.location.find((loc) => loc.date === date);
+        if (!!location) {
           return {
             addr: location.addr,
             lat: location.lat,
@@ -63,15 +65,15 @@ export default function Calendar(props) {
       });
     
       return {
-        id: i + 1, // Assign individual ID to each date
+        id: i + 1,
         date: date,
         location: locationByDate,
       };
     });
-    
+    // console.log(generatedData);
     setScheduleData(generatedData);
   }, [startDay, endDay, markerData]);
-  // console.log(scheduleData);
+  console.log(scheduleData);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

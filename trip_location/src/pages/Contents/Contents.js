@@ -88,6 +88,7 @@ const Contents = ({ destinationTitle }) => {
   const addSubmitFriendHandle = (e)=>{
     
   }
+  console.log(paths);
 
   return (
     

@@ -64,14 +64,14 @@ const Nav = () => {
         setRefresh(authState);
     }, [authState]);
 
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        if(accessToken) {
-            setAuthState(true);
-        }else {
-            setAuthState(false);
-        }
-    }, [localStorage.getItem('accessToken'), authState]);
+    // useEffect(() => {
+    //     const accessToken = localStorage.getItem('accessToken');
+    //     if(accessToken) {
+    //         setAuthState(true);
+    //     }else {
+    //         setAuthState(false);
+    //     }
+    // }, [localStorage.getItem('accessToken'), authState]);
 
 
     const handleLogoClick = () => {

@@ -138,11 +138,7 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
     return result;
   }, []);
   
-  markerId.current += 1;
-
-  // localStorage.setItem("markers", JSON.stringify(markerData)); 
-  console.log(groupedMarkerData);
-
+  markerId.current += 1; 
   setPaths(groupedMarkerData);
   setMarkerPositions([]);
   setMarkers([]);

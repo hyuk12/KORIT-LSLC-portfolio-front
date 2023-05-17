@@ -5,7 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
 
 const calendarContainer = css`
@@ -25,6 +25,7 @@ const Total=css`
 export default function Calendar(props) {
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, markerData } = props;
   const [scheduleData, setScheduleData] = useState([]);
+
   const resetDay = () => {
     onStartDayChange(startDay);
     onEndDayChange(endDay);
@@ -37,7 +38,6 @@ export default function Calendar(props) {
   const endDayHandle = (newValue) => {
     onEndDayChange(newValue);
   }
-  // console.log(paths)
 
 
 useEffect(() => {
@@ -45,7 +45,7 @@ useEffect(() => {
 
   const generatedData = Array.from({ length: totalDate }, (_, i) => {
     const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
-    const id = i+1; // Generate a unique identifier for each item
+    const id = i+1; 
 
     const markerItem = markerData.find((item) => item.id === id);
     const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
@@ -65,7 +65,6 @@ useEffect(() => {
     const markerItem = markerData.find((item) => item.id === schedule.id);
     const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
 
-    // Update the location property only if the id matches
     if (markerItem) {
       return {
         ...schedule,
@@ -77,11 +76,8 @@ useEffect(() => {
   });
 
   setScheduleData(updatedData);
+  localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 }, [markerData]);
-
-
-
-  console.log(scheduleData);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

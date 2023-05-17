@@ -55,7 +55,7 @@ const resetButton= css`
 
 `;
 
-const addFriendButton =css`
+const submitPlanButton =css`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,10 +85,9 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(1);
   }
   
-  const addSubmitFriendHandle = (e)=>{
+  const submitPlanHandle = (e)=>{
     
   }
-  console.log(paths);
 
   return (
     
@@ -97,6 +96,7 @@ const Contents = ({ destinationTitle }) => {
         <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
         <div css={sidebar}>
             <div css={Title}>{serchParams.get("destinationTitle")}</div>
+            <div>친구아바타</div>
             <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
             <Calendar 
               css={calendar}
@@ -107,7 +107,7 @@ const Contents = ({ destinationTitle }) => {
               onEndDayChange={endDayHandle}
               markerData={paths}
             />
-            <button onClick={addSubmitFriendHandle}>친구추가 </button>
+            <button css={submitPlanButton} onClick={submitPlanHandle}>일정확인</button>
         </div>
         <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
       </div>

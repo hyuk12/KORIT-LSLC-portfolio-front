@@ -7,7 +7,6 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
-import { constSelector } from 'recoil';
 
 const calendarContainer = css`
   display:flex;
@@ -40,39 +39,48 @@ export default function Calendar(props) {
   }
   // console.log(paths)
 
-  useEffect(() => {
-    
-    const totalDate = endDay.diff(startDay, 'day') + 1;
-  
-    const generatedData = Array.from({ length: totalDate }, (_, i) => {
-      const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
-      console.log(markerData);
-      const locationByDate = markerData.map((marker) => {
-      const location = marker.location.find((loc) => loc.date === date);
-        if (!!location) {
-          return {
-            addr: location.addr,
-            lat: location.lat,
-            lng: location.lng,
-          };
-        } else {
-          return {
-            addr: '',
-            lat: null,
-            lng: null,
-          };
-        }
-      });
-    
+
+useEffect(() => {
+  const totalDate = endDay.diff(startDay, 'day') + 1;
+
+  const generatedData = Array.from({ length: totalDate }, (_, i) => {
+    const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
+    const id = i+1; // Generate a unique identifier for each item
+
+    const markerItem = markerData.find((item) => item.id === id);
+    const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
+
+    return {
+      id: id,
+      date: date,
+      location: location,
+    };
+  });
+
+  setScheduleData(generatedData);
+}, [startDay, endDay, markerData]);
+
+useEffect(() => {
+  const updatedData = scheduleData.map((schedule) => {
+    const markerItem = markerData.find((item) => item.id === schedule.id);
+    const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
+
+    // Update the location property only if the id matches
+    if (markerItem) {
       return {
-        id: i + 1,
-        date: date,
-        location: locationByDate,
+        ...schedule,
+        location: location,
       };
-    });
-    // console.log(generatedData);
-    setScheduleData(generatedData);
-  }, [startDay, endDay, markerData]);
+    }
+
+    return schedule;
+  });
+
+  setScheduleData(updatedData);
+}, [markerData]);
+
+
+
   console.log(scheduleData);
 
   return (

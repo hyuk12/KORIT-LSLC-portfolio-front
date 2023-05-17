@@ -12,6 +12,7 @@ import kakaoBtn from '../../images/kakaolink_btn.png';
 import naverBtn from '../../images/naver_btn.png';
 import {useRecoilState} from "recoil";
 import {authenticationState} from "../../store/atoms/AuthAtoms";
+import {useMutation} from "react-query";
 
 
 const submitButton = css`
@@ -158,29 +159,30 @@ const Login = () => {
         window.location.href= "http://localhost:8080/oauth2/authorization/kakao"
     }
 
-
-    const loginHandleSubmit = async () => {
-        const data = { ...loginUser };
-
-        const option = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-
+    const signInUser = useMutation(async (loginData) => {
         try {
-            const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, JSON.stringify(data), option);
+            const option = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, loginData, option);
             setErrorMessages({email: '', password: ''});
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
             setAuthState(true);
-
             navigate('/');
+
 
         }catch (error) {
             setErrorMessages({email: '', password: '', ...error.response.data.errorData});
         }
+    })
+
+    const loginHandleSubmit = () => {
+        signInUser.mutate(loginUser)
+
     };
 
     return (

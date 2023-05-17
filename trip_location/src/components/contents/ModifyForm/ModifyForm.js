@@ -14,7 +14,7 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from "recoil";
@@ -165,6 +165,9 @@ const address = [
 const ModifyForm = () => {
     const navigate = useNavigate();
     const [authState, setAuthState ] = useRecoilState(authenticationState);
+    const [imgFiles, setImgFiles] = useState([]);
+    const fileId = useRef(1);
+
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -261,12 +264,23 @@ const ModifyForm = () => {
 
     const modifyUser = useMutation(async (modifyData) => {
         try {
+            const formData = new FormData();
+
+            formData.append("email", modifyData.email)
+            formData.append("name", modifyData.name)
+            formData.append("phone", modifyData.phone)
+            formData.append("address", modifyData.address)
+
+            imgFiles.forEach(imgFile => {
+                formData.append("imgFiles", imgFile.file)
+            })
+
             const option = {
                 headers: {
-                    'Authorization': `${localStorage.getItem('accessToken')}`
+                    Authorization: `${localStorage.getItem('accessToken')}`
                 }
             }
-            const response = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, modifyData, option);
+            const response = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, formData, option);
 
             setErrorMessages({
                 profileImg: '',
@@ -307,7 +321,26 @@ const ModifyForm = () => {
             [field]: prevState[field] === "Edit" ? "Modify" : "Edit"
         }));
     };
-    
+
+    const addFileHandle = (e) =>{
+        const newImgFiles = [];
+        for(const file of e.target.files) {
+            const fileData = {
+                id: fileId.current,
+                file
+            }
+            fileId.current += 1;
+            newImgFiles.push(fileData);
+        }
+
+        setImgFiles([...imgFiles, ...newImgFiles]);
+        e.target.value = null;
+    }
+
+    const removeFileHandle = (e) => {
+        const idToRemove = parseInt(e.target.value);
+        setImgFiles(prevImgFiles => prevImgFiles.filter(imgFile => imgFile.id !== idToRemove));
+    }
 
     if(authState) {
         if (principal.isLoading) {
@@ -324,10 +357,15 @@ const ModifyForm = () => {
                     </Typography>
 
                     <div css={profileImgContainer}>
+                        <input type="file" multiple={true} accept={".jpg, .png, .jpeg"}  onChange={addFileHandle}/>
                         <label>
+                            {imgFiles && imgFiles.map(imgFile =>
+                                <li key={imgFile.id}>
+                                    {imgFile.file.name}
+                                    <button value={imgFile.id} onClick={removeFileHandle}>삭제</button>
+                                </li>)}
                         </label>
                     </div>
-
 
                     <Box component="form" css={inputContainer}>
                         <StyleInput
@@ -416,6 +454,7 @@ const ModifyForm = () => {
                         >
                             Modify Member
                         </Button>
+
                     </Box>
                 </Box>
 

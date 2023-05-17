@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/** @jsxImportSource @emotion/react */
+import React, {useEffect, useState} from 'react';
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useMutation} from "react-query";
 import axios from "axios";
@@ -95,6 +96,24 @@ const OAuth2Register = () => {
 
     const registerToken = searchParams.get("registerToken");
 
+    const [ oauth2User, setOauth2User ] = useState({
+        profileImg: '',
+        email: '',
+        password: '',
+        name: '',
+        phone: '',
+        address: ''
+    });
+
+    const [ errorMessages, setErrorMessages ] = useState({
+        profileImg: '',
+        email: '',
+        password: '',
+        name: '',
+        phone: '',
+        address: ''
+    });
+
     const email = searchParams.get("email");
     const name = searchParams.get("name");
     const provider = searchParams.get("provider");
@@ -103,7 +122,7 @@ const OAuth2Register = () => {
     const oauth2Register = useMutation(async (registerData) => {
         const option = {
             headers: {
-                registerToken: `${registerToken}`
+                registerToken: `Bearer ${registerToken}`
             }
         }
         try {
@@ -124,23 +143,13 @@ const OAuth2Register = () => {
         }
     });
 
-    const [ oauth2User, setOauth2User ] = useState({
-        profileImg: '',
-        email: '',
-        password: '',
-        name: '',
-        phone: '',
-        address: ''
-    });
-
-    const [ errorMessages, setErrorMessages ] = useState({
-        profileImg: '',
-        email: '',
-        password: '',
-        name: '',
-        phone: '',
-        address: ''
-    });
+    useEffect(() => {
+        setOauth2User(prevUser =>({
+            ...prevUser,
+            email: email,
+            name: name
+        }))
+    },[email, name])
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;

@@ -24,19 +24,19 @@ const AuthRouter = ({ path, element }) => {
                 }
             }
         },
-        onError: () => {
-            setAuthState(false);
-            alert("로그인이 필요한 페이지입니다.")
-            navigate("/auth/login")
-        }
+        // onError: () => {
+        //     setAuthState(false);
+        //     alert("로그인이 필요한 페이지입니다.")
+        //     navigate("/auth/login")
+        // }
     });
 
     useEffect(() => {
-        console.log(authenticated.isSuccess)
+
         if(authenticated.isSuccess) {
             const authenticatedPaths = ['/user', '/contents']
             const authPath = '/auth';
-
+            console.log(authState)
             if(authState && path.startsWith(authPath)) {
                 navigate("/");
             }

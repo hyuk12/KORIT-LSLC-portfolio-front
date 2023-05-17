@@ -2,28 +2,6 @@
 import { css } from '@emotion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
-/*
-장소를 주는 구성 형태
-[
-  {
-    id:1,
-    date:'일자',
-    location:
-    [
-      {
-        addr
-        lat
-        lng
-
-      }
-
-    ]
-  
-  }
-]
-*/
-
-
 const map = css`
   position: relative;
   width: 100%;
@@ -61,8 +39,6 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
 
-
-
   useEffect(() => { //지도의 시작 좌표,확대 단계 조절
     const mapOption = {
       center: new kakao.maps.LatLng(35.152380, 129.059647),
@@ -71,8 +47,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     const map = new kakao.maps.Map(mapRef.current, mapOption);
     const geocoder = new kakao.maps.services.Geocoder();
 
-    //geocoder 사용으로 주소로 장소표시
-    geocoder.addressSearch(destinationTitle, function(result, status) {
+    geocoder.addressSearch(destinationTitle, function(result, status) {     //geocoder 사용으로 주소로 장소표시
       if (status === kakao.maps.services.Status.OK) {
         const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
         // 검색결과위치로 맵을 이동
@@ -103,7 +78,6 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         kakao.maps.event.removeListener(map, 'click');
     };
   }, [editMode, destinationTitle]);
-  
 
 function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정보 저장
   if (markerPositions.length === 0) {
@@ -142,18 +116,15 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
   setPaths(groupedMarkerData);
   setMarkerPositions([]);
   setMarkers([]);
+  setAddress([]);
   markers.forEach(marker => marker.setMap(null));
-}
-
-function abc() {
-  localStorage.removeItem('markers');
 }
 
   return (
     <div css={map} ref={mapRef}>
       <div css={guideBox}>
-            <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
-            <button css={guideButton} onClick={abc}>삭제</button>
+            <button css={guideButton} onClick={handleSavePath}>경로 저장</button> 
+            <button css={guideButton} onClick={handleSavePath}>경로 수정</button> 
       </div>
     </div>
   );

@@ -76,8 +76,8 @@ useEffect(() => {
   });
 
   setScheduleData(updatedData);
-  localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 }, [markerData]);
+localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

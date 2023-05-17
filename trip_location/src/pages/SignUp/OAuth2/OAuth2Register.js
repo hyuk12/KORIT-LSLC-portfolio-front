@@ -97,7 +97,7 @@ const OAuth2Register = () => {
     const registerToken = searchParams.get("registerToken");
 
     const [ oauth2User, setOauth2User ] = useState({
-        profileImg: '',
+        profileImgPath: '',
         email: '',
         password: '',
         name: '',
@@ -106,7 +106,7 @@ const OAuth2Register = () => {
     });
 
     const [ errorMessages, setErrorMessages ] = useState({
-        profileImg: '',
+        profileImgPath: '',
         email: '',
         password: '',
         name: '',

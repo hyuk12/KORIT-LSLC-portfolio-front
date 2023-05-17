@@ -111,25 +111,39 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
     return;
   }
 
-  const markerData = markerPositions.map((position,index)=>(
+  const markerData = markerPositions.map((position, index) => {
+    const locations = [
       {
-        id:markerId.current,
-        date:'',
-        location:[
-          {
-            addr: address[index],
-            lat:position.getLat(),
-            lng: position.getLng(),
-          },
-        ]
-      }
-  ));
+        addr: address[index],
+        lat: position.getLat(),
+        lng: position.getLng(),
+      },
+    ];
+  
+    return {
+      id: markerId.current,
+      location: locations,
+    };
+  });
+  
+  const groupedMarkerData = markerData.reduce((result, current) => {
+    const existingItem = result.find((item) => item.id === current.id);
+  
+    if (existingItem) {
+      existingItem.location.push(...current.location);
+    } else {
+      result.push(current);
+    }
+  
+    return result;
+  }, []);
+  
   markerId.current += 1;
 
   // localStorage.setItem("markers", JSON.stringify(markerData)); 
-  console.log(markerData);
+  console.log(groupedMarkerData);
 
-  setPaths(markerData);
+  setPaths(groupedMarkerData);
   setMarkerPositions([]);
   setMarkers([]);
   markers.forEach(marker => marker.setMap(null));

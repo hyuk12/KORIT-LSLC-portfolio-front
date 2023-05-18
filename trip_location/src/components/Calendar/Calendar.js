@@ -11,10 +11,9 @@ import VerticalTabs from '../Tab/Tab';
 const calendarContainer = css`
   display:flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: 400px; 
 `;
 const Total=css`
   text-align: center;

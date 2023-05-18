@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useRef, useState } from 'react';
+import MapSearch from './MapSearch';
 
 const map = css`
   position: relative;
@@ -126,6 +127,7 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button> 
             <button css={guideButton} onClick={handleSavePath}>경로 수정</button> 
       </div>
+      <MapSearch></MapSearch>
     </div>
   );
   

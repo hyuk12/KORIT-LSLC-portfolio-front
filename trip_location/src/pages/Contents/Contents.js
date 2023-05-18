@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
 import AddUserModal from '../../components/contents/Modal/AddUserModal';
+import MapSearch from '../../components/contents/Map/MapSearch';
 
 
 const container = css`
@@ -131,7 +132,6 @@ const Contents = () => {
                 markerData={paths}
               />
           </div>
-          <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
         </div>
       </div>
       <AddUserModal

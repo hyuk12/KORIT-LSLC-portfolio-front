@@ -41,65 +41,72 @@ export default function Calendar(props) {
   }
 
 
-useEffect(() => {
-  const totalDate = endDay.diff(startDay, 'day') + 1;
+  useEffect(() => {
+    const totalDate = endDay.diff(startDay, 'day') + 1;
 
-  const generatedData = Array.from({ length: totalDate }, (_, i) => {
-    const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
-    const id = i+1; 
+    const generatedData = Array.from({ length: totalDate }, (_, i) => {
+      const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
+      const id = i+1;
 
-    const markerItem = markerData.find((item) => item.id === id);
-    const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
+      const markerItem = markerData.find((item) => item.id === id);
+      const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
 
-    return {
-      id: id,
-      date: date,
-      location: location,
-    };
-  });
-
-  setScheduleData(generatedData);
-}, [startDay, endDay, markerData]);
-
-useEffect(() => {
-  const updatedData = scheduleData.map((schedule) => {
-    const markerItem = markerData.find((item) => item.id === schedule.id);
-    const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
-
-    if (markerItem) {
       return {
-        ...schedule,
+        id: id,
+        date: date,
         location: location,
       };
+    });
+
+    setScheduleData(generatedData);
+  }, [startDay, endDay, markerData]);
+
+  useEffect(() => {
+    const updatedData = scheduleData.map((schedule) => {
+      const markerItem = markerData.find((item) => item.id === schedule.id);
+      const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
+
+      if (markerItem) {
+        return {
+          ...schedule,
+          location: location,
+        };
+      }
+
+      return schedule;
+    });
+
+    setScheduleData(updatedData);
+  }, [markerData]);
+  localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
+
+  const requestData = useMutation(async (scheduleData) => {
+
+    const option = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${localStorage.getItem("accessToken")}`
+      }
+    }
+    try {
+      const response = await axios.post("http://localhost:8080/api/v1/travel/plan", scheduleData, option)
+      console.log(response.status);
+
+      window.location.replace("/")
+      return response;
+    }catch (error) {
+
     }
 
-    return schedule;
-  });
-
-  setScheduleData(updatedData);
-}, [markerData]);
-localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
-
-const requestData = useMutation(async (scheduleData) => {
-  console.log(scheduleData);
-  const option = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `${localStorage.getItem("accessToken")}`
+  }, {
+    onSuccess: (response) => {
+      localStorage.removeItem("scheduleData");
     }
+  })
+
+  const submitPlanHandler = () => {
+    requestData.mutate(localStorage.getItem("scheduleData"));
   }
-  try {
-    const response = await axios.post("http://localhost:8080/api/v1/travel/plan", scheduleData, option)
-    return response;
-  }catch (error) {
-
-  }
-
-})
-
-const submitPlanHandler = () => {
-  requestData.mutate(localStorage.getItem("scheduleData"));
-}
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -14,9 +14,8 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import { useMutation, useQuery } from "react-query";
-import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from "recoil";
 import defaultImg from '../../../images/logotitle.png';
 import { authenticationState } from "../../../store/atoms/AuthAtoms";
@@ -163,10 +162,8 @@ const address = [
 ];
 
 const ModifyForm = () => {
-    const navigate = useNavigate();
-    const [ refresh, setRefresh ] = useState(false);
     const [ authState, setAuthState ] = useRecoilState(authenticationState);
-    const [imgFiles, setImgFiles] = useState([]);
+    const [ imgFiles, setImgFiles ] = useState([]);
     const fileId = useRef(1);
 
     const principal = useQuery(["principal"], async () => {
@@ -447,6 +444,7 @@ const ModifyForm = () => {
                                 onClick={updateUserHandleSubmit}
                                 fullWidth
                                 variant="contained"
+                                disabled={!isName || !isPhone}
                                 sx={{ mt: 3, mb: 2 }}
                         >
                             Modify Member

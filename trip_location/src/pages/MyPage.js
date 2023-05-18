@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect, useState} from 'react';
-import {css} from "@emotion/react";
+import React, { useEffect, useState } from 'react';
+import { css } from "@emotion/react";
 import defaultImg from '../images/logotitle.png';
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
 import styled from "@emotion/styled";
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {useRecoilState} from "recoil";
-import {authenticationState} from "../store/atoms/AuthAtoms";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { authenticationState } from "../store/atoms/AuthAtoms";
 
 const container = css`
   display: flex;
@@ -17,7 +17,7 @@ const container = css`
   height: 100vh;
 `;
 
-const main =  css`
+const main = css`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -39,10 +39,14 @@ const imgContainer = css`
   background-position: center;
 `;
 
+const modifyButtons = css`
+
+`;
+
 const ModifyButton = styled(Button)`
-  margin-top: 20px;
+  margin: 20px 10px;
   border-radius: 0;
-  width: 100px;
+  width: 110px;
   background-color: #0BD0AF;
   color: #FFFFFF;
   font-weight: 600;
@@ -60,7 +64,6 @@ const mainContents = css`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin-top: 20px;
   width: 50%;
   
 `;
@@ -77,44 +80,47 @@ const myPlanAndReview = css`
 `;
 
 const MyPage = () => {
-    const navigate = useNavigate();
-    const [authState, setAuthState] = useRecoilState(authenticationState);
-    const principal = useQuery(["principal"], async () => {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
-        return response;
-    }, {
-        enabled: authState
-    });
+  const navigate = useNavigate();
+  const [authState, setAuthState] = useRecoilState(authenticationState);
+  const principal = useQuery(["principal"], async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
+    return response;
+  }, {
+    enabled: authState
+  });
 
-    if(principal.isLoading) {
-        return (<div>is Loading...</div>)
-    }
+  if (principal.isLoading) {
+    return (<div>is Loading...</div>)
+  }
 
-    return (
-        <div css={container}>
-            <main css={main}>
-                <div css={imgContainer}>
+  return (
+    <div css={container}>
+      <main css={main}>
+        <div css={imgContainer}>
 
-                </div>
-                <div>{principal?.data?.data?.email || '이메일 로딩 중...'}</div>
-                <ModifyButton onClick={() => navigate(`/user/modify/${principal?.data?.data?.userId || ''}`)}>수정하기</ModifyButton>
-                <div css={mainContents}>
-                    <div css={myPlanAndReview}>
-                        <span>나의 일정</span>
-                        <span>0</span>
-                    </div>
-                    <div css={myPlanAndReview}>
-                        <span>나의 리뷰</span>
-                        <span>0</span>
-                    </div>
-                </div>
-                <div>
-                    <h2>나의 일정</h2>
-                </div>
-            </main>
         </div>
-    );
+        <div>{principal?.data?.data?.email || '이메일 로딩 중...'}</div>
+        <div css={modifyButtons}>
+          <ModifyButton onClick={() => navigate(`/user/modify/${principal?.data?.data?.userId || ''}`)}>수정하기</ModifyButton>
+          <ModifyButton onClick={() => navigate(`/user/modify/password/${principal?.data?.data?.userId || ''}`)}>비밀번호 변경</ModifyButton>
+        </div>
+        <div css={mainContents}>
+          <div css={myPlanAndReview}>
+            <span>나의 일정</span>
+            <span>0</span>
+          </div>
+          <div css={myPlanAndReview}>
+            <span>나의 리뷰</span>
+            <span>0</span>
+          </div>
+        </div>
+        <div>
+          <h2>나의 일정</h2>
+        </div>
+      </main>
+    </div>
+  );
 };
 
 export default MyPage;

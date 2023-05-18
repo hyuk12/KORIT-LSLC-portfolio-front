@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const signupContainer = css`
     display: flex;
@@ -37,14 +37,14 @@ const StyleInput = styled(TextField)`
     width: 100%;
 `;
 
-const errorMsg = css`
+const guideMsg = css`
     margin-left: 5px;
     margin-bottom: 20px;
     font-size: 12px;
     color: red;
 `;
 
-const guideMsg = css`
+const inputMsg = css`
     font-size: 12px;
     color: #888;
 `;
@@ -69,43 +69,72 @@ const submitButton = css`
 `;
 
 const PasswordReset = () => {
-    const [ addressList, setAddressList ] = useState([]);
-    const [ searchUser, setSearchUser ] = useState({email: ''});
-    const [ errorMessages, setErrorMessages ] = useState({email: ''});
-
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const email = searchParams.get('email');
     const navigate = useNavigate();
 
-      
-    // 로그인
+    const [ updateUserPassword, setUpdateUserPassword ] = useState('');
+    const [ guideMessages, setGuideMessages ] = useState({
+        resetPassword: '',
+        confirmPassword: ''
+    });
+
+
+
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        setSearchUser(
-            {
-                [name]: value
+
+        if (name === 'resetPassword') {
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
+            if (!passwordRegex.test(value)) {
+                setGuideMessages((messages) => ({
+                    ...messages,
+                    resetPassword: '비밀번호는 영문, 숫자, 특수문자를 포함한 8~16자리로 입력해주세요.'
+                }));
+            } else {
+                setGuideMessages((messages) => ({
+                    ...messages,
+                    resetPassword: '올바른 비밀번호 형식입니다. :)'
+                }));
+                setUpdateUserPassword(value);
             }
-        )
-    };
+        } else if (name === 'confirmPassword') {
+            if (value !== updateUserPassword) {
+                setGuideMessages((messages) => ({
+                    ...messages,
+                    confirmPassword: '비밀번호가 일치하지 않습니다.'
+                }));
+            } else {
+                setGuideMessages((messages) => ({
+                    ...messages,
+                    confirmPassword: ''
+                }));
+            }
+        }
+    
+    }
+        
 
     const signupHandleSubmit = async () => {
-        const data = { ...searchUser };
+        const resetPasswordData = { 
+            email: email,
+            password: updateUserPassword
+        };
 
         const option = {
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             }
         }
 
-        try{
-            const response = await axios.get("http://localhost:8080/api/v1/auth/search", JSON.stringify(data), option);
-            setErrorMessages({email: ''});
-            
-            const accessToken = response.data.grantType + " " + response.data.accessToken;
-            localStorage.setItem("accessToken", accessToken);
-            navigate('/');
+        try {
+            const response = await axios.put('http://localhost:8080/api/v1/user/password/reset', resetPasswordData, option);
+            setGuideMessages('');
 
+            navigate('/auth/login');
         } catch (error) {
-            setErrorMessages({ email: '', ...error.response.data.errorData});
-
+            alert('ERROR');
         }
 
     }
@@ -120,40 +149,37 @@ const PasswordReset = () => {
 
 
                 <Box component="form" css={inputContainer}>
-                    <div css={errorMsg}>{errorMessages.email}</div>
                     <StyleInput
                         required
                         id="password"
                         label="비밀번호"
                         placeholder="8자 이상, 특수문자 포함"
-                        name="password"
+                        name="resetPassword"
                         type="password"
                         autoComplete="current-password"
                         onChange={onChangeHandler}
                         />
 
-                    <div css={guideMsg}>새로운 비밀번호를 입력해주세요.</div>
+                    <div css={inputMsg}>새로운 비밀번호를 입력해주세요.</div>
 
-                    <div css={errorMsg}>{errorMessages.email}</div>
+                    <div css={guideMsg}>{guideMessages.resetPassword}</div>
                     <StyleInput
                         required
                         id="password"
                         label="비밀번호 확인"
-                        // placeholder="8자 이상, 특수문자 포함"
-                        name="password"
+                        name="confirmPassword"
                         type="password"
                         autoComplete="current-password"
                         onChange={onChangeHandler}
                         />
 
-                    <div css={guideMsg}>비밀번호를 한번 더 입력해주세요.</div>
+                    <div css={guideMsg}>{guideMessages.confirmPassword}</div>
                     
                     <Button css={submitButton}
                         type='button'
                         onClick={signupHandleSubmit}
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
                         >
                         Next
                     </Button>

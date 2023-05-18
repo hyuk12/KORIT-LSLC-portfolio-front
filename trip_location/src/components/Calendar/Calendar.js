@@ -7,6 +7,8 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
+import {useMutation} from "react-query";
+import axios from "axios";
 
 const calendarContainer = css`
   display:flex;
@@ -78,6 +80,27 @@ useEffect(() => {
 }, [markerData]);
 localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 
+const requestData = useMutation(async (scheduleData) => {
+  console.log(scheduleData);
+  const option = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${localStorage.getItem("accessToken")}`
+    }
+  }
+  try {
+    const response = await axios.post("http://localhost:8080/api/v1/travel/plan", scheduleData, option)
+    return response;
+  }catch (error) {
+
+  }
+
+})
+
+const submitPlanHandler = () => {
+  requestData.mutate(localStorage.getItem("scheduleData"));
+}
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div id='calendar'>
@@ -106,6 +129,7 @@ localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
             // coordinates={paths}
             scheduleData={scheduleData}
             />
+          <button onClick={submitPlanHandler}>일정 확정하기 </button>
         </div>
       </div>
     </LocalizationProvider>

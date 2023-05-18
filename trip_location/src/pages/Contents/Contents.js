@@ -130,7 +130,6 @@ const Contents = () => {
                 onEndDayChange={endDayHandle}
                 markerData={paths}
               />
-              <button css={submitPlanButton} onClick={submitPlanHandle}>일정확인</button>
           </div>
           <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
         </div>

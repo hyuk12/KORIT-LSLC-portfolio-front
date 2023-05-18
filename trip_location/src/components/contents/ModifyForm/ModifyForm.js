@@ -165,7 +165,7 @@ const address = [
 const ModifyForm = () => {
     const navigate = useNavigate();
     const [ refresh, setRefresh ] = useState(false);
-    const [authState, setAuthState ] = useRecoilState(authenticationState);
+    const [ authState, setAuthState ] = useRecoilState(authenticationState);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -208,7 +208,7 @@ const ModifyForm = () => {
 
     const [ errorMessages, setErrorMessages ] = useState({
         name: '',
-        phone: '',
+        phone: ''
     });
 
     const [ isName, setIsName ] = useState(true)
@@ -240,7 +240,7 @@ const ModifyForm = () => {
             } else {
                 setErrorMessages((errors) => ({
                     ...errors,
-                    name: '올바른 이름 형식입니다 :)'
+                    name: '올바른 이름 형식입니다. :)'
                 }));
                 setIsName(true);
             }
@@ -255,7 +255,7 @@ const ModifyForm = () => {
             } else {
               setErrorMessages((errors) => ({
                 ...errors,
-                phone: '올바른 전화번호 형식입니다 :)'
+                phone: '올바른 전화번호 형식입니다. :)'
               }));
               setIsPhone(true);
             }
@@ -357,8 +357,6 @@ const ModifyForm = () => {
                             disabled={true}
                         />
 
-                        <div css={errorMsg}>{errorMessages.email}</div>
-
                         <div css={editInputStyle}>
                             <StyleInput
 
@@ -420,7 +418,6 @@ const ModifyForm = () => {
                                 {buttonText.address}
                             </button>
                         </div>
-                        <div css={errorMsg}>{errorMessages.address}</div>
 
                         <Button css={submitButton}
                                 type='button'

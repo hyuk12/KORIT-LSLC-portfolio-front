@@ -52,8 +52,6 @@ const guideMsg = css`
 
 const submitButton = css`
     height: 45px;
-    margin-top: 30px;
-    margin-bottom: 20px;
 
     background-color: #0BD0AF;
     color: white;
@@ -71,42 +69,49 @@ const submitButton = css`
 
 
 const CheckEmail = () => {
-    const [ addressList, setAddressList ] = useState([]);
-    const [ searchUser, setSearchUser ] = useState({email: ''});
-    const [ errorMessages, setErrorMessages ] = useState({email: ''});
-
+    
+    const [ searchUserEmail, setSearchUserEmail ] = useState('');
+    const [ errorMessage, setErrorMessage ] = useState('');
     const navigate = useNavigate();
-
+    
       
-    // 로그인
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        setSearchUser(
-            {
-                [name]: value
+
+        if(name === 'email') {
+            const emailRegex = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+            if(!emailRegex.test(value)) {
+                setErrorMessage('올바른 이메일 형식으로 입력해주세요.');
+            } else {
+                setErrorMessage('올바른 이메일 형식입니다. :)');
             }
-        )
+        }
+
+        setSearchUserEmail(value);
     };
 
-    const signupHandleSubmit = async () => {
-        const data = { ...searchUser };
+    const passwordRestHandleSubmit = async () => {
+        const email = searchUserEmail;
+        const params  = { 
+            type: 1,
+            value: searchUserEmail 
+        };
 
         const option = {
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            params
         }
 
         try{
-            const response = await axios.get("http://localhost:8080/api/v1/auth/search", JSON.stringify(data), option);
-            setErrorMessages({email: ''});
+            const response = await axios.get("http://localhost:8080/api/v1/user/search", option);
+            setErrorMessage('');
             
-            const accessToken = response.data.grantType + " " + response.data.accessToken;
-            localStorage.setItem("accessToken", accessToken);
-            navigate('/');
+            navigate(`/auth/password/reset?email=${encodeURIComponent(email)}`);
 
         } catch (error) {
-            setErrorMessages({ email: '', ...error.response.data.errorData});
+            setErrorMessage('일치하는 회원 정보가 없습니다.');
 
         }
 
@@ -123,7 +128,6 @@ const CheckEmail = () => {
 
 
                 <Box component="form" css={inputContainer}>
-                    <div css={errorMsg}>{errorMessages.email}</div>
                     <StyleInput
                         required
                         id="email"
@@ -136,13 +140,12 @@ const CheckEmail = () => {
                         />
 
                     <div css={guideMsg}>회원가입시 등록하셨던 이메일 주소를 입력해주세요.</div>
-                    
+                    <div css={errorMsg}>{errorMessage}</div>
                     <Button css={submitButton}
                         type='button'
-                        onClick={signupHandleSubmit}
+                        onClick={passwordRestHandleSubmit}
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
                         >
                         Next
                     </Button>

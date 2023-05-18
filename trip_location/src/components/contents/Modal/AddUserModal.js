@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import {css} from "@emotion/react";
-import styled from "@emotion/styled";
-import {Favorite, Person} from "@mui/icons-material";
-import {useNavigate} from "react-router-dom";
 import logoTitle from '../../../images/logotitle.png';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import axios from 'axios';
+
 const modalStyle = css`
   display: flex;
   justify-content: center;
@@ -22,17 +23,12 @@ const modalContent = css`
   display: flex;
   flex-direction: row;
   background-color: white;
-  width: 80%;
+  width: 50%;
   max-height: 60%;
   overflow: auto;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
-`;
-
-const infoWrapper = css`
-  flex-basis: 70%;
-  padding-left: 20px;
 `;
 
 const buttonStyle = css`
@@ -55,23 +51,20 @@ const buttonStyle = css`
 `;
 const modalContainer =css`
   display: flex;
-
+  justify-content: flex-start;
+  align-items: flex-start;
+  /* border: 1px solid #dbdbdb; */
   width: 100%;
-
+  height: 100%;
 `;
-
-const search = css`
+const searchContainer = css`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
-  border: 1px solid #dbdbdb;
-  width: 80%;
-`;
-const searchBox = css`
-  display: flex;
+
+  /* border: 1px solid #dbdbdb; */
   width: 70%;
-  border: 1px solid #dbdbdb;
+  height: 400px;
 `;
 
 const listUser = css`
@@ -79,82 +72,196 @@ const listUser = css`
   justify-content: center;
   align-items: center;
   border: 1px solid #dbdbdb;
-  width: 20%;
+  width: 30%;
+  height: 400px;
 `; 
 
-const logoIcon = css`
+const searchHeader =css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  /* border: 1px solid #dbdbdb; */
+  width: 100%;
+  height: 125px;
+`;
+const logoBox = css`
   display: flex;
   justify-content: space-around;
-  border-right: 1px solid #dbdbdb;
-  border-bottom: 1px solid #dbdbdb;
+  border: 1px solid #dbdbdb;
+
   width: 30%;
+  height: 100%;
+`;
+
+const searchBox = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  width: 70%;
+  height: 100%;
+  border: 1px solid #dbdbdb;
+`;
+
+const searchText = css`
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 5px 0;
+  font-size: 16px;
+`;
+const titleText =css`
+  margin: 0;
+  padding: 0px 5px;
+  padding-right: 0px;
+  font-size: 20px;
+  text-align: center;
+`;
+const text =css`
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+`;
+const searchSubmit =css`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px 5px;
+  width: 100%; 
+  height: 100%;
+`;
+
+const searchBar = css`
+  width: 80%;
+  height: 30px;
+  text-align: center;
+`;
+
+const searchButton = css`
+  width: 20%;
+  height: 30px;
+  text-align: center;
+`;
+
+const selectRadio =css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  height: 20%;
+`;
+
+const searchMain =css`
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  border: 1px solid #dbdbdb;
+  width: 100%;
+  height: 300px;
+`;
+const menberUser =css`
+  display: flex;
+  /* flex-wrap: wrap; */
+  justify-content: flex-start;
+  align-items: center;
+  height: 50px;
 `;
 
 const logoImage = css`
+  width: 50%;
+  box-sizing: border-box;
   border-radius: 50%;
-  width: 50px;
-  
-`;
-
-const UserIconStyle = styled(Person)`
-  font-size: 2rem;
-`;
-
-const FavoriteIcon = styled(Favorite)`
-  font-size: 2rem;
-`;
-
-
-const Pstyle = css`
-  color: #808080;
 `;
 
 const AddUserModal = ({ isOpen, onClose, destination }) => {
-    const navigate = useNavigate();
+  const [searchType, setSearchType] = useState('email');
+  const [searchValue, setSearchValue] = useState('');
 
-    if (!isOpen || !destination) {
-        return null;
+  const { image, title, englishing } = destination;
+
+  const searchUser = useQuery(['searchUser',searchType, searchValue], async() => {
+    if (!searchValue) {
+      return null;
     }
 
-    const { image, title, englishing } = destination;
+    const params = {
+      type: searchType === 'email' ? 1 : 2,
+      value: searchValue,
+    }
 
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/user/search',{params});
+      // console.log(response.data);
+      return response;
+    } catch (error) {
+      console.log("해당 유저는 없습니다.");
+    }
+  },{
+    onSuccess: (response) => {
+      if (response && response.status === 200) {
+        console.log("Successfully search");
+      }
+    }    
+  });
 
-    return (
-        <div css={modalStyle} onClick={onClose}>
-            <div css={modalContent} onClick={(e) => e.stopPropagation()}>
-                <div css={modalContainer}>
-                  <div css={search}>
-                      <div css={searchBox}>
+  const submitSearchHandler = (e) => {
+    e.preventDefault();
+    const inputValue = e.target.elements.searchMember.value;
+    setSearchValue(inputValue);
+    e.target.reset();
+  };
+  
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
+  };
+
+  if (!isOpen || !destination) {
+      return null;
+  }
+//  console.log(searchUser.data.data.data.name);
+  return (
+      <div css={modalStyle} onClick={onClose}>
+          <div css={modalContent} onClick={(e) => e.stopPropagation()}>
+              <div css={modalContainer}>
+                <div css={searchContainer}>
+                  <div css={searchHeader}>
+                      <div css={logoBox}>
                         <img css={logoImage} src={logoTitle} alt={logoTitle}/>
-                      <div>
-                        <input type='search'/>
-                        <button>검색</button>
                       </div>
-                        <button>이메일</button>
-                        <button>전화번호</button>
+                      <div css={searchBox}>
+                        <div css={searchText}>
+                          <h4 css={titleText}>{title}</h4>
+                          <p css={text}> 에 함께갈 친구를 검색하세요</p>
+                        </div>
+                          <form css={searchSubmit} onSubmit={submitSearchHandler}>                              
+                            <input css={searchBar} type="text" name="searchMember" placeholder="검색할 email 또는 전화번호를 입력하세요" />
+                            <input css={searchButton} type="submit" value="search" />
+                          </form>
+                        <div css={selectRadio}>
+                          <input type="radio" name="chk_info" value="email" checked={searchType === 'email'} onChange={handleSearchTypeChange}/>E-Mail
+                          <input type="radio" name="chk_info" value="phone" checked={searchType === 'phone'} onChange={handleSearchTypeChange}/>Phone
+                        </div>
                       </div>
-                      <ul>
-                        <li>1</li>
-                        <li>1</li>
-                        <li>1</li>
-                        <li>1</li>
-                      </ul>
-                  </div>
-                  <div css={listUser}>
-                    <div>함께하는 친구</div>
-                    <div>
-                      <ul>
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                      </ul>
                     </div>
-                  </div>
-
+                    <div css={searchMain}>
+                      {/* {searchUser.isError ? (<p>해당하는 유저는 없습니다.</p>):( */}
+                        {searchUser.data && searchUser.data.data && searchUser.data.data.data ? (
+                          <div>{searchUser.data.data.data.name}</div>
+                        ): (<p>No result</p>)}
+                       {/* )} */}
+                    </div>
                 </div>
-            </div>
-        </div>
-    );
+                <div css={listUser}>
+                  
+                </div>
+              </div>
+          </div>
+      </div>
+  );
 };
 
 export default AddUserModal;

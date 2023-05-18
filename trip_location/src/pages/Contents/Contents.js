@@ -23,6 +23,7 @@ const sidebar=css`
 `;
 
 const calendar = css`
+  max-width: 80%;
   height: 100%;
 `;
 
@@ -42,13 +43,21 @@ const rightsidebar = css`
 
 
 const Title =css`
+  margin-top: 30px;
   font-size: 24px;
   font-weight: 600;
   text-align: center;
 `;
 
+const avatarBox = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0px;
+  height: 15vh;
+`;
+
 const resetButton= css`
-  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,7 +73,7 @@ const submitPlanButton =css`
 `;
 
 
-const Contents = ({ destinationTitle }) => {
+const Contents = () => {
   const [serchParams, setSearchParams] = useSearchParams();
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
@@ -93,9 +102,13 @@ const Contents = ({ destinationTitle }) => {
 
     localStorage.removeItem('scheduleData');
   }
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  
   const closeModal = () => {
     setIsModalOpen(false);
-  }
+  };
   return (
     <>
       <div css={container}>
@@ -103,7 +116,10 @@ const Contents = ({ destinationTitle }) => {
           <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
           <div css={sidebar}>
               <div css={Title}>{serchParams.get("destinationTitle")}</div>
-              <div>친구아바타</div>
+              <div css={avatarBox}>
+                친구아바타
+                <button onClick={openModal}>Open Modal</button>
+              </div>
               <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
               <Calendar 
                 css={calendar}
@@ -122,7 +138,7 @@ const Contents = ({ destinationTitle }) => {
       <AddUserModal
       isOpen={isModalOpen}
       onClose={closeModal}
-      destination={{ image: 'image-url', title: 'Destination Title', englishing: 'Englishing' }}
+      destination={{ image: 'image-url', title: serchParams.get("destinationTitle"), englishing: 'Englishing' }}
     />
     </>
 
@@ -130,24 +146,3 @@ const Contents = ({ destinationTitle }) => {
 };
 
 export default Contents;
-
-
-/*
-[
-  {
-    id:1,
-    date:'일자',
-    location:
-    [
-      {
-        addr
-        lat
-        lng
-
-      }
-
-    ]
-  
-  }
-]
-*/

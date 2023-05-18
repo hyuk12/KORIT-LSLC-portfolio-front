@@ -93,7 +93,7 @@ const address = [
 const SignUp = () => {
     const navigate = useNavigate();
     const [ signupUser, setSignupUser ] = useState({
-        profileImg: '',
+        profileImgPath: '',
         email: '',
         password: '',
         name: '',
@@ -102,7 +102,7 @@ const SignUp = () => {
     });
 
     const [ errorMessages, setErrorMessages ] = useState({
-        profileImg: '',
+        profileImgPath: '',
         email: '',
         password: '',
         name: '',
@@ -121,7 +121,9 @@ const SignUp = () => {
         )
     };
 
-    const signUpMember = useMutation(async (signUpData) => {
+
+
+    const signupHandleSubmit = async () => {
         try {
             const option = {
                 headers: {
@@ -129,9 +131,9 @@ const SignUp = () => {
                 }
             }
 
-            const response = await axios.post(`http://localhost:8080/api/v1/auth/user`, signUpData, option);
+            const response = await axios.post(`http://localhost:8080/api/v1/auth/user`, signupUser, option);
             setErrorMessages({
-                profileImg: '',
+                profileImgPath: '',
                 email: '',
                 password: '',
                 name: '',
@@ -140,23 +142,12 @@ const SignUp = () => {
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem("accessToken", accessToken);
-
+            alert("회원가입 완료");
+            window.location.replace("/auth/login");
             return response;
         }catch (error) {
             setErrorMessages(error.response.data);
         }
-    }, {
-        onSuccess: (response) => {
-
-            if (response.status === 200) {
-                alert("회원가입 완료");
-                window.location.replace("/auth/login");
-            }
-        }
-    });
-
-    const signupHandleSubmit = async () => {
-       signUpMember.mutate(signupUser);
 
     }
 

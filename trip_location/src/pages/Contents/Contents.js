@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
+import AddUserModal from '../../components/contents/Modal/AddUserModal';
 
 
 const container = css`
@@ -55,17 +56,21 @@ const resetButton= css`
 
 `;
 
-const group = css`
-
-  text-align: center;
+const submitPlanButton =css`
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
+
 const Contents = ({ destinationTitle }) => {
   const [serchParams, setSearchParams] = useSearchParams();
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
-  
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const startDayHandle = (newValue) => {
     setStartDay(newValue);
@@ -83,32 +88,43 @@ const Contents = ({ destinationTitle }) => {
     setTotalDate(1);
   }
   
-
-  return (
+  const submitPlanHandle = (e)=>{
     
-    <div css={container}>
-      <div css={main}>
-        <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
-        <div css={sidebar}>
-            <div css={Title}>{serchParams.get("destinationTitle")}</div>
-            <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
-            <Calendar 
-              css={calendar}
-              startDay={startDay}
-              endDay={endDay}
-              totalDate={totalDate}
-              onStartDayChange={startDayHandle}
-              onEndDayChange={endDayHandle}
-              paths={paths}
-            />
 
-            <div css={group}>
-              여긴 친구 추가 
-            </div>
+    localStorage.removeItem('scheduleData');
+  }
+  const closeModal = () => {
+    setIsModalOpen(false);
+  }
+  return (
+    <>
+      <div css={container}>
+        <div css={main}>
+          <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
+          <div css={sidebar}>
+              <div css={Title}>{serchParams.get("destinationTitle")}</div>
+              <div>친구아바타</div>
+              <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
+              <Calendar 
+                css={calendar}
+                startDay={startDay}
+                endDay={endDay}
+                totalDate={totalDate}
+                onStartDayChange={startDayHandle}
+                onEndDayChange={endDayHandle}
+                markerData={paths}
+              />
+              <button css={submitPlanButton} onClick={submitPlanHandle}>일정확인</button>
+          </div>
+          <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
         </div>
-        <div css={rightsidebar}>여긴 추천장소가 들어갈 자리</div>
       </div>
-    </div>
+      <AddUserModal
+      isOpen={isModalOpen}
+      onClose={closeModal}
+      destination={{ image: 'image-url', title: 'Destination Title', englishing: 'Englishing' }}
+    />
+    </>
 
   );
 };

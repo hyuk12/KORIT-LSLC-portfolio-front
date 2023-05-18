@@ -12,7 +12,7 @@ const AuthRouter = ({ path, element }) => {
     const authenticated = useQuery(["authenticated"], async () => {
         const option = {
             headers: {
-                "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                "Authorization": `${localStorage.getItem("accessToken")}`
             }
         }
         return await axios.get('http://localhost:8080/api/v1/auth/authenticated', option)
@@ -23,14 +23,20 @@ const AuthRouter = ({ path, element }) => {
                     setAuthState(true);
                 }
             }
-        }
+        },
+        // onError: () => {
+        //     setAuthState(false);
+        //     alert("로그인이 필요한 페이지입니다.")
+        //     navigate("/auth/login")
+        // }
     });
 
     useEffect(() => {
+
         if(authenticated.isSuccess) {
             const authenticatedPaths = ['/user', '/contents']
             const authPath = '/auth';
-
+            console.log(authState)
             if(authState && path.startsWith(authPath)) {
                 navigate("/");
             }

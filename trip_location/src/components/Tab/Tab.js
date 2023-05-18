@@ -27,20 +27,8 @@ function a11yProps(index) {
   TabPanel은 Tab 내용 함수
 */
 
-function TabPanel({ children, value, index, paths, scheduleData, ...other }) {
-  const scheduleDay = scheduleData[index];
-  const storedTabPath = localStorage.getItem(scheduleDay.date);
-  const [tabPaths, setTabPaths] = useState([]);
-
-  useEffect(() => {
-    if (storedTabPath) {
-      const selectedTabPath = JSON.parse(storedTabPath);
-      setTabPaths(selectedTabPath);
-    } else {
-      setTabPaths([]);
-    }
-  }, [storedTabPath]);
-
+function TabPanel({ children, value, index, scheduleData, ...other }) {
+  const scheduleDay = scheduleData.find(day => day.id === index +1);
   if (!scheduleDay) {
     return null;
   }
@@ -57,9 +45,9 @@ function TabPanel({ children, value, index, paths, scheduleData, ...other }) {
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography sx={{ px: 2, py: 1 }}>
             {scheduleDay.date}
-            {tabPaths.map((coordinate, coordIndex) => (
-              <div css={route} key={coordIndex}>
-                place {coordIndex} : {coordinate.addr}
+            {scheduleDay.location.map((loc, locIndex) => (
+              <div css={route} key={locIndex}>
+                place {locIndex} : {loc.addr}
               </div>
             ))}
           </Typography>
@@ -74,15 +62,11 @@ TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
-  paths: PropTypes.arrayOf(
-    PropTypes.shape({
-      addr: PropTypes.string.isRequired,
-    })
-  ).isRequired,
   scheduleData: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.number.isRequired,
       date: PropTypes.string.isRequired,
-      coordinates: PropTypes.arrayOf(
+      location: PropTypes.arrayOf(
         PropTypes.shape({
           addr: PropTypes.string.isRequired,
           lat: PropTypes.number.isRequired,
@@ -92,65 +76,66 @@ TabPanel.propTypes = {
     })
   ).isRequired,
 };
+
 export default function VerticalTabs({ scheduleData }) {
   const storedTab = localStorage.getItem('selectedTab');
-  const initialTab = storedTab
-    ? scheduleData.findIndex((day) => day.date === storedTab) : 0;
+  const initialTab = storedTab ? scheduleData.findIndex((day) => day.date === storedTab) : 0;
   const [value, setValue] = useState(initialTab >= 0 ? initialTab : 0);
   const [paths, setPaths] = useState([]);
-  
-  
+
   useEffect(() => {
     if (scheduleData && scheduleData.length > 0) {
       const selectedTabDate = scheduleData[value].date;
-      const selectedTabPath = JSON.parse(localStorage.getItem(selectedTabDate));
+      const selectedTabPath = scheduleData[value].location;
 
-      // Check if the selected schedule's coordinates exist in localStorage
       if (selectedTabPath) {
         setPaths(selectedTabPath);
       } else {
-        // Fetch the coordinates from the selected schedule
         const selectedSchedule = scheduleData[value];
-        const selectedScheduleCoordinates = selectedSchedule.coordinates;
+        const selectedSchedulelocation = selectedSchedule.location; 
 
-        // Update the localStorage and set the paths
         localStorage.setItem('selectedTab', selectedTabDate);
         localStorage.setItem('selectedSchedule', JSON.stringify(selectedSchedule));
-        localStorage.setItem('markers', JSON.stringify(selectedScheduleCoordinates));
-        setPaths(selectedScheduleCoordinates);
+        localStorage.setItem('markers', JSON.stringify(selectedSchedulelocation));
+        setPaths(selectedSchedulelocation);
 
-        // Update the dataStructor array with the selected schedule's coordinates
         const updatedDataStructor = scheduleData.map((day) => {
           if (day.date === selectedTabDate) {
             return {
               ...day,
-              coordinates: selectedScheduleCoordinates,
+              location: selectedSchedulelocation,
             };
           } else {
             return day;
           }
         });
-        localStorage.setItem('dataStructor', JSON.stringify(updatedDataStructor));
+        localStorage.setItem("dataStructor", JSON.stringify(updatedDataStructor));
       }
     }
   }, [value, scheduleData]);
   
   const handleChange = (event, newValue) => {
-    const previousTabDate = scheduleData[value].date;
-    const previousTabPath = JSON.stringify(scheduleData[value].coordinates);
-    localStorage.setItem(previousTabDate, previousTabPath);
+    // const previousTabDate = scheduleData[value].date;
+    // const previousTabPath = JSON.stringify(scheduleData[value].location);
+    // localStorage.setItem(previousTabDate, previousTabPath);
     localStorage.removeItem('markers');
-
+  
     setValue(newValue);
-
+  
     const selectedTabDate = scheduleData[newValue].date;
-    const selectedTabPath = JSON.parse(localStorage.getItem(selectedTabDate));
-    setPaths(selectedTabPath || []);
+    const selectedTabPath = localStorage.getItem(selectedTabDate);
+  
+    if (selectedTabPath) {
+      const parsedTabPath = JSON.parse(selectedTabPath);
+      setPaths(parsedTabPath || []);
+    } else {
+      setPaths([]);
+    }
   };
  
 
   if (!scheduleData || scheduleData.length === 0) {
-    return <div>No schedule data available.</div>; // or any other fallback behavior
+    return <div>No schedule data available.</div>; 
   }
 
   return (
@@ -164,7 +149,7 @@ export default function VerticalTabs({ scheduleData }) {
         sx={{ borderRight: 1, borderColor: 'divider' }}
       >
         {scheduleData.map((day, index) => (
-          <Tab label={day.date} {...a11yProps(index)} key={day.date} />
+          <Tab label={day.date} {...a11yProps(index+1)} key={day.date} />
         ))}
       </Tabs>
       {scheduleData.map((day, index) => (
@@ -178,8 +163,9 @@ export default function VerticalTabs({ scheduleData }) {
 VerticalTabs.propTypes = {
   scheduleData: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.number.isRequired,
       date: PropTypes.string.isRequired,
-      coordinates: PropTypes.arrayOf(
+      location: PropTypes.arrayOf(
         PropTypes.shape({
           addr: PropTypes.string.isRequired,
           lat: PropTypes.number.isRequired,
@@ -189,24 +175,3 @@ VerticalTabs.propTypes = {
     })
   ).isRequired,
 };
-
-
-/*
-[
-  {
-    id:1,
-    date:'일자',
-    location:
-    [
-      {
-        addr:
-        lat:
-        lng:
-
-      }
-
-    ]
-  
-  }
-]
-*/

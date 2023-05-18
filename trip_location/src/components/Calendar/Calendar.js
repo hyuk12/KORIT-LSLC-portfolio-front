@@ -23,9 +23,9 @@ const Total=css`
 `;
 
 export default function Calendar(props) {
-  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, paths } = props;
+  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, markerData } = props;
   const [scheduleData, setScheduleData] = useState([]);
-  
+
   const resetDay = () => {
     onStartDayChange(startDay);
     onEndDayChange(endDay);
@@ -38,27 +38,46 @@ export default function Calendar(props) {
   const endDayHandle = (newValue) => {
     onEndDayChange(newValue);
   }
-  // console.log(paths)
 
-  useEffect(() => {
-    // Calculate the total number of days
-    const totalDate = endDay.diff(startDay, 'day') + 1;
 
-    // Generate the schedule data based on the total number of days and paths
-    const generatedData = Array.from({ length: totalDate }, (_, i) => {
-      const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
-      // 수정한 부분
-      const coordinates = paths.map((path) => ([{
-        addr: path.addr,
-        lat: path.lat,
-        lng: path.lng,
-      }]));
-      return { date, coordinates };
-    });
-    console.log(generatedData);
-    // Set the generated schedule data to the state
-    setScheduleData(generatedData);
-  }, [startDay, endDay, paths]);
+useEffect(() => {
+  const totalDate = endDay.diff(startDay, 'day') + 1;
+
+  const generatedData = Array.from({ length: totalDate }, (_, i) => {
+    const date = startDay.clone().add(i, 'day').format('YYYY-MM-DD');
+    const id = i+1; 
+
+    const markerItem = markerData.find((item) => item.id === id);
+    const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
+
+    return {
+      id: id,
+      date: date,
+      location: location,
+    };
+  });
+
+  setScheduleData(generatedData);
+}, [startDay, endDay, markerData]);
+
+useEffect(() => {
+  const updatedData = scheduleData.map((schedule) => {
+    const markerItem = markerData.find((item) => item.id === schedule.id);
+    const location = markerItem ? markerItem.location : [{ addr: '', lat: null, lng: null }];
+
+    if (markerItem) {
+      return {
+        ...schedule,
+        location: location,
+      };
+    }
+
+    return schedule;
+  });
+
+  setScheduleData(updatedData);
+}, [markerData]);
+localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

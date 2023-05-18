@@ -2,28 +2,6 @@
 import { css } from '@emotion/react';
 import React, { useEffect, useRef, useState } from 'react';
 
-/*
-장소를 주는 구성 형태
-[
-  {
-    id:1,
-    date:'일자',
-    location:
-    [
-      {
-        addr
-        lat
-        lng
-
-      }
-
-    ]
-  
-  }
-]
-*/
-const { kakao } = window;
-
 const map = css`
   position: relative;
   width: 100%;
@@ -50,15 +28,16 @@ const guideButton = css`
   box-shadow: 0 4px 8px 0;
 `;
 
-const Map = ({ destinationTitle, paths, setPaths, onSavePath }) => {
+const { kakao } = window;
+
+const Map = ({ destinationTitle, paths, setPaths }) => {
   const linePath = [];
+  const markerId = useRef(1);
   const mapRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
   const [markers, setMarkers] = useState([]);
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
-
-
 
   useEffect(() => { //지도의 시작 좌표,확대 단계 조절
     const mapOption = {
@@ -68,8 +47,7 @@ const Map = ({ destinationTitle, paths, setPaths, onSavePath }) => {
     const map = new kakao.maps.Map(mapRef.current, mapOption);
     const geocoder = new kakao.maps.services.Geocoder();
 
-    //geocoder 사용으로 주소로 장소표시
-    geocoder.addressSearch(destinationTitle, function(result, status) {
+    geocoder.addressSearch(destinationTitle, function(result, status) {     //geocoder 사용으로 주소로 장소표시
       if (status === kakao.maps.services.Status.OK) {
         const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
         // 검색결과위치로 맵을 이동
@@ -100,7 +78,6 @@ const Map = ({ destinationTitle, paths, setPaths, onSavePath }) => {
         kakao.maps.event.removeListener(map, 'click');
     };
   }, [editMode, destinationTitle]);
-  
 
 function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정보 저장
   if (markerPositions.length === 0) {
@@ -108,32 +85,46 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
     return;
   }
 
-  const markerData = markerPositions.map((position,index)=>(
+  const markerData = markerPositions.map((position, index) => {
+    const locations = [
       {
         addr: address[index],
-        lat:position.getLat(),
+        lat: position.getLat(),
         lng: position.getLng(),
-      }
-  ));
+      },
+    ];
   
-  // localStorage.setItem("markers", JSON.stringify(markerData)); 
-  console.log(markerData);
-
-  setPaths(markerData);
+    return {
+      id: markerId.current,
+      location: locations,
+    };
+  });
+  
+  const groupedMarkerData = markerData.reduce((result, current) => {
+    const existingItem = result.find((item) => item.id === current.id);
+  
+    if (existingItem) {
+      existingItem.location.push(...current.location);
+    } else {
+      result.push(current);
+    }
+  
+    return result;
+  }, []);
+  
+  markerId.current += 1; 
+  setPaths(groupedMarkerData);
   setMarkerPositions([]);
   setMarkers([]);
+  setAddress([]);
   markers.forEach(marker => marker.setMap(null));
-}
-
-function abc() {
-  localStorage.removeItem('markers');
 }
 
   return (
     <div css={map} ref={mapRef}>
       <div css={guideBox}>
-            <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
-            <button css={guideButton} onClick={abc}>삭제</button>
+            <button css={guideButton} onClick={handleSavePath}>경로 저장</button> 
+            <button css={guideButton} onClick={handleSavePath}>경로 수정</button> 
       </div>
     </div>
   );
@@ -141,24 +132,3 @@ function abc() {
 };
 
 export default Map;
-
-
-/*
-[
-  {
-    id:1,
-    date:'일자',
-    location:
-    [
-      {
-        addr
-        lat
-        lng
-
-      }
-
-    ]
-  
-  }
-]
-*/

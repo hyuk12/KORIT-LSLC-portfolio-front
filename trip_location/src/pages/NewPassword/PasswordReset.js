@@ -11,8 +11,8 @@ const signupContainer = css`
     align-items: center;
     justify-content: center;
     height: 800px;
-`
-;
+`;
+
 const signupBox = css`
     width: 500px;
     display: flex;
@@ -74,7 +74,7 @@ const PasswordReset = () => {
     const email = searchParams.get('email');
     const navigate = useNavigate();
 
-    const [ updateUserPassword, setUpdateUserPassword ] = useState('');
+    const [ resetUserPassword, setResetUserPassword ] = useState('');
     const [ guideMessages, setGuideMessages ] = useState({
         resetPassword: '',
         confirmPassword: ''
@@ -97,10 +97,10 @@ const PasswordReset = () => {
                     ...messages,
                     resetPassword: '올바른 비밀번호 형식입니다. :)'
                 }));
-                setUpdateUserPassword(value);
+                setResetUserPassword(value);
             }
         } else if (name === 'confirmPassword') {
-            if (value !== updateUserPassword) {
+            if (value !== resetUserPassword) {
                 setGuideMessages((messages) => ({
                     ...messages,
                     confirmPassword: '비밀번호가 일치하지 않습니다.'
@@ -112,14 +112,14 @@ const PasswordReset = () => {
                 }));
             }
         }
-    
+
     }
-        
+
 
     const signupHandleSubmit = async () => {
-        const resetPasswordData = { 
+        const resetPasswordData = {
             email: email,
-            password: updateUserPassword
+            password: resetUserPassword
         };
 
         const option = {
@@ -131,7 +131,7 @@ const PasswordReset = () => {
         try {
             const response = await axios.put('http://localhost:8080/api/v1/user/password/reset', resetPasswordData, option);
             setGuideMessages('');
-
+            alert('회원정보가 변경되었습니다.');
             navigate('/auth/login');
         } catch (error) {
             alert('ERROR');
@@ -158,7 +158,7 @@ const PasswordReset = () => {
                         type="password"
                         autoComplete="current-password"
                         onChange={onChangeHandler}
-                        />
+                    />
 
                     <div css={inputMsg}>새로운 비밀번호를 입력해주세요.</div>
 
@@ -171,21 +171,21 @@ const PasswordReset = () => {
                         type="password"
                         autoComplete="current-password"
                         onChange={onChangeHandler}
-                        />
+                    />
 
                     <div css={guideMsg}>{guideMessages.confirmPassword}</div>
-                    
+
                     <Button css={submitButton}
                         type='button'
                         onClick={signupHandleSubmit}
                         fullWidth
                         variant="contained"
-                        >
+                    >
                         Next
                     </Button>
                 </Box>
             </Box>
-            
+
         </Grid>
     );
 };

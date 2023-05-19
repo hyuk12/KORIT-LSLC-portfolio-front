@@ -74,7 +74,7 @@ const submitPlanButton =css`
 `;
 
 
-const Contents = () => {
+const Contents = ({ map }) => {
   const [serchParams, setSearchParams] = useSearchParams();
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
@@ -114,7 +114,7 @@ const Contents = () => {
     <>
       <div css={container}>
         <div css={main}>
-          <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
+          <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths} map={map}/>
           <div css={sidebar}>
               <div css={Title}>{serchParams.get("destinationTitle")}</div>
               <div css={avatarBox}>
@@ -131,6 +131,7 @@ const Contents = () => {
                 onEndDayChange={endDayHandle}
                 markerData={paths}
               />
+               {/* <MapSearch map={map} /> */}
           </div>
         </div>
       </div>

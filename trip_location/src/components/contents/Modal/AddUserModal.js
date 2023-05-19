@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {css} from "@emotion/react";
 import logoTitle from '../../../images/logotitle.png';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import { useRecoilState } from 'recoil';
+import { authenticationState } from '../../../store/atoms/AuthAtoms';
 
 const modalStyle = css`
   display: flex;
@@ -63,18 +65,9 @@ const searchContainer = css`
   justify-content: flex-start;
 
   /* border: 1px solid #dbdbdb; */
-  width: 70%;
-  height: 400px;
+  width: 100%;
+  height: 500px;
 `;
-
-const listUser = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #dbdbdb;
-  width: 30%;
-  height: 400px;
-`; 
 
 const searchHeader =css`
   display: flex;
@@ -83,61 +76,70 @@ const searchHeader =css`
   align-items: flex-start;
 
   /* border: 1px solid #dbdbdb; */
+  box-shadow: 0px 4px 6px #dbdbdb;
+  margin-bottom: 5px;
   width: 100%;
-  height: 125px;
+  height: 30%;
 `;
 const logoBox = css`
   display: flex;
-  justify-content: space-around;
-  border: 1px solid #dbdbdb;
-
-  width: 30%;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid #dbdbdb; */
+  width: 25%;
   height: 100%;
 `;
-
+const logoImage = css`
+  width: 50%;
+  box-sizing: border-box;
+  border-radius: 50%;
+`;
 const searchBox = css`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: flex-start;
-  width: 70%;
+  width: 75%;
   height: 100%;
-  border: 1px solid #dbdbdb;
+  /* border: 1px solid #dbdbdb; */
 `;
 
-const searchText = css`
+const searchTextBox = css`
   display: flex;
   justify-content: center;
   margin: 0;
   padding: 5px 0;
   font-size: 16px;
+  
 `;
 const titleText =css`
   margin: 0;
   padding: 0px 5px;
   padding-right: 0px;
-  font-size: 20px;
+  font-size: 24px;
   text-align: center;
 `;
 const text =css`
   margin: 0;
   padding: 5px 10px;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
 `;
+
 const searchSubmit =css`
   display: flex;
   flex-wrap: wrap;
   padding: 5px 5px;
   width: 100%; 
-  height: 100%;
+  height: 30%;
 `;
 
 const searchBar = css`
+  line-height: 30px;
+  text-align: center;
   width: 80%;
   height: 30px;
-  text-align: center;
 `;
 
 const searchButton = css`
@@ -159,28 +161,104 @@ const searchMain =css`
   justify-content: flex-start;
   align-items: flex-start;
 
-  border: 1px solid #dbdbdb;
+  /* border: 1px solid #dbdbdb; */
+  box-shadow: 0px 4px 6px #dbdbdb;
   width: 100%;
-  height: 300px;
+  height: 20%;
 `;
-const menberUser =css`
+const searchedUser = css`
   display: flex;
   /* flex-wrap: wrap; */
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  height: 50px;
+  width: 100%;
+  height: 100%;
+`;
+const searchUserInfo = css`
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  width: 100%;
+  height: 100%;
 `;
 
-const logoImage = css`
-  width: 50%;
+const profileImg =css`
+  width: 10%;
   box-sizing: border-box;
   border-radius: 50%;
+`;  
+
+const userText =css`
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 25px;
+  font-weight: 900;
+  text-align: center;
 `;
+const addPartyButton =css`
+  display: flex;
+  margin-right: 20px;
+  width: 50px;
+  text-align: center;
+`;
+
+const listContainer = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
+  /* border: 1px solid #dbdbdb; */
+  width: 100%;
+  height: 44%;
+`; 
+const withList =css`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  text-align: center;
+  font-size: 20px;
+  font-weight: 900;
+  box-shadow: 0px 4px 6px #dbdbdb;
+  /* border: 1px solid #dbdbdb; */
+  width: 100%;
+  height: 20%;
+  
+`;
+
+const listUserContainer = css`
+  width: 100%;
+  height: 80%;
+`;
+const listUser= css`
+  margin: 0;
+  display:flex; 
+  align-content:flex-start; 
+  flex-direction:column; 
+  flex-wrap:wrap; 
+  overflow:auto;
+  
+  padding-left: 20px;
+  border: 1px solid #dbdbdb;
+  list-style: none;
+  width: 100%;
+  height: 100%;
+`;
+
+
+const user = css`
+  padding: 5px 0px;
+`;
+
 
 const AddUserModal = ({ isOpen, onClose, destination }) => {
   const [searchType, setSearchType] = useState('email');
   const [searchValue, setSearchValue] = useState('');
+  const [authState, setAuthState] = useRecoilState(authenticationState);
+  const [partyData, setPartyData] = useState(null);
 
+  const partyId = useRef(1);
   const { image, title, englishing } = destination;
 
   const searchUser = useQuery(['searchUser',searchType, searchValue], async() => {
@@ -193,9 +271,16 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
       value: searchValue,
     }
 
+    const option ={
+      params,
+      headers:{
+        Authorization : `${localStorage.getItem("accessToken")}`
+      }
+    }
+
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/user/search',{params});
-      // console.log(response.data);
+      const response = await axios.get('http://localhost:8080/api/v1/user/search', option);
+      // console.log(response);
       return response;
     } catch (error) {
       console.log("해당 유저는 없습니다.");
@@ -207,6 +292,20 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
       }
     }    
   });
+
+  const principal = useQuery(["principal"], async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
+    return response;
+  }, {
+    enabled: authState,
+    onSuccess: (response)=>{
+      if (response && response.status === 200) {
+        console.log("Successfully search");
+      }
+    }
+  });
+  console.log(partyData);
 
   const submitSearchHandler = (e) => {
     e.preventDefault();
@@ -222,7 +321,19 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
   if (!isOpen || !destination) {
       return null;
   }
-//  console.log(searchUser.data.data.data.name);
+
+  const addPartyHandler = () => {
+
+    const inputValue = searchUser.data.data.data;
+    console.log(inputValue);
+    setPartyData(inputValue);
+  }
+  const removePartyHandler = (e)=>{
+    setPartyData(e.target.value);
+  }
+  // console.log(party);
+  // console.log(searchUser);
+  // console.log(principal.data.data);
   return (
       <div css={modalStyle} onClick={onClose}>
           <div css={modalContent} onClick={(e) => e.stopPropagation()}>
@@ -233,7 +344,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
                         <img css={logoImage} src={logoTitle} alt={logoTitle}/>
                       </div>
                       <div css={searchBox}>
-                        <div css={searchText}>
+                        <div css={searchTextBox}>
                           <h4 css={titleText}>{title}</h4>
                           <p css={text}> 에 함께갈 친구를 검색하세요</p>
                         </div>
@@ -248,15 +359,37 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
                       </div>
                     </div>
                     <div css={searchMain}>
-                      {/* {searchUser.isError ? (<p>해당하는 유저는 없습니다.</p>):( */}
                         {searchUser.data && searchUser.data.data && searchUser.data.data.data ? (
-                          <div>{searchUser.data.data.data.name}</div>
-                        ): (<p>No result</p>)}
-                       {/* )} */}
+                          <div css={searchedUser}>
+                            <div css={searchUserInfo}>
+                              <img css={profileImg} src={logoTitle} alt={logoTitle}/>
+                              <span css={userText}>
+                                {searchUser.data.data.data.name} {/*({searchUser.data.data.data.email})*/}
+                              </span>
+                            </div>
+                            <button css={addPartyButton} onClick={addPartyHandler}>추가</button>
+                          </div>
+                        ): (<p>검색 결과가 없습니다.</p>)}
                     </div>
-                </div>
-                <div css={listUser}>
-                  
+                  <div css={listContainer}>
+                    <span css={withList}>
+                      함께할 친구 목록
+                    </span>
+                    <div css={listUserContainer}>
+                      <ul css={listUser}>
+                        {principal.data && principal.data.data ? (
+                          <li css={user}>본인: {principal.data.data.name}  </li>
+                        ):(<p>로그인을 확인하세요</p>)}
+                        {partyData ? (
+                           <li css={user}>
+                              {/* <img src="" alt=""/> user의 프로필 이미지를 가져올 것 */}
+                              {partyData.name}
+                              <button onClick={removePartyHandler}>x</button>
+                            </li>
+                        ):(<li>없어~~</li>)}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
           </div>

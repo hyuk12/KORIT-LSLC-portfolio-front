@@ -1,4 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import React, {useEffect, useMemo, useState} from 'react';
+import { css } from "@emotion/react";
 import {Container, Paper, Typography} from '@mui/material';
 import cityNight from '../images/city_night.jpg';
 import building from '../images/building.jpg';
@@ -53,6 +55,11 @@ const StyleSubTitleTypography = styled(Typography)`
   text-align: center;
 `;
 
+const footerContainer = css`
+    height: 300px;
+`;
+
+
 const Home = () => {
 
     const images = useMemo(() => [cityNight, building], []);
@@ -94,11 +101,7 @@ const Home = () => {
                     여행지를 검색하거나 목록에서 직접 선택해주세요.
                 </StyleSubTitleTypography>
                 <LocationCard/>
-            </SectionWrapper>
-            <SectionWrapper>
-                <footer>
-
-                </footer>
+                <footer css={footerContainer} />
             </SectionWrapper>
 
         </MainWrapper>

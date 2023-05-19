@@ -113,6 +113,9 @@ const searchField = css`
 const LocationCard = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const [searchKeyword, setSearchKeyword] = useState('');
+
+    const filterData = cardData.filter((data) => data.title.includes(searchKeyword) || data.description.toLowerCase().includes(searchKeyword));
 
     const handleCardClick = (location) => {
         setSelectedLocation(location);
@@ -132,15 +135,15 @@ const LocationCard = () => {
                     <Grid item xs={12} sm={8} md={6} lg={4}>
                         <StyleInput
                             placeholder="여행지 검색"
-                            InputProps={{
-                                startAdornment: <SearchIcon />,
-                            }}
+                            InputProps={{ startAdornment: <SearchIcon /> }} 
+                            onChange={(e) => setSearchKeyword(e.target.value)} 
                         />
                     </Grid>
                 </Grid>
             </div>
             <Grid container spacing={4} css={contents}>
-                {cardData.map((data, index) => (
+                {/* {cardData.map((data, index) => ( */}
+                {filterData.map((data, index) => (
                     <Grid key={index} item xs={12} sm={6} md={3}>
                         <Card onClick={() => handleCardClick(data)}>
 

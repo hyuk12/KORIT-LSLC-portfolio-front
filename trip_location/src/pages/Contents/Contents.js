@@ -7,6 +7,10 @@ import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
 import AddUserModal from '../../components/contents/Modal/AddUserModal';
 import MapSearch from '../../components/contents/Map/MapSearch';
+import { useRecoilState } from 'recoil';
+import { authenticationState } from '../../store/atoms/AuthAtoms';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 
 const container = css`
@@ -20,11 +24,12 @@ const sidebar=css`
   z-index: 3;
   background-color: white;
   box-shadow: 0 4px 8px 0;
+  width: 30%;
   height: 100%;
 `;
 
 const calendar = css`
-  max-width: 80%;
+  max-width: 40%;
   height: 100%;
 `;
 
@@ -80,7 +85,16 @@ const Contents = () => {
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
+  const [authState, setAuthState] = useRecoilState(authenticationState);
   const [isModalOpen, setIsModalOpen] = useState(true);
+
+  const principal = useQuery(["principal"], async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
+    return response;
+  }, {
+    enabled: authState,
+  });
 
   const startDayHandle = (newValue) => {
     setStartDay(newValue);
@@ -98,17 +112,15 @@ const Contents = () => {
     setTotalDate(1);
   }
   
-  const submitPlanHandle = (e)=>{
-    
-
-    localStorage.removeItem('scheduleData');
-  }
+  // const submitPlanHandle = (e)=>{
+  //   localStorage.removeItem('scheduleData');
+  // }
   const openModal = () => {
-    setIsModalOpen(true);
+    setIsModalOpen(!isModalOpen);
   };
   
   const closeModal = () => {
-    setIsModalOpen(false);
+    setIsModalOpen(!isModalOpen);
   };
   return (
     <>
@@ -138,7 +150,7 @@ const Contents = () => {
       isOpen={isModalOpen}
       onClose={closeModal}
       destination={{ image: 'image-url', title: serchParams.get("destinationTitle"), englishing: 'Englishing' }}
-    />
+      />
     </>
 
   );

@@ -1,12 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useRef } from 'react';
-import {css} from "@emotion/react";
-import logoTitle from '../../../images/logotitle.png';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { css } from "@emotion/react";
 import axios from 'axios';
-import { useRecoilState } from 'recoil';
-import { authenticationState } from '../../../store/atoms/AuthAtoms';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import logoTitle from '../../../images/logotitle.png';
 
 const modalStyle = css`
   display: flex;
@@ -255,17 +252,31 @@ const user = css`
 const AddUserModal = ({ isOpen, onClose, destination }) => {
   const [searchType, setSearchType] = useState('email');
   const [searchValue, setSearchValue] = useState('');
-  const [authState, setAuthState] = useRecoilState(authenticationState);
-  const [partyData, setPartyData] = useState(null);
+  
+  const [partyData, setPartyData] = useState([
+    {
+      userId: '',
+      email: '',
+      name: '',
+      phone: '',
+      profileImg: '',
+    },
+  ]);
 
-  const partyId = useRef(1);
+  const [selectUser, setSelectUser] = useState({
+    userId: '',
+    email: '',
+    name: '',
+    phone: '',
+    profileImg: '',
+  })
+
   const { image, title, englishing } = destination;
 
   const searchUser = useQuery(['searchUser',searchType, searchValue], async() => {
     if (!searchValue) {
       return null;
     }
-
     const params = {
       type: searchType === 'email' ? 1 : 2,
       value: searchValue,
@@ -277,20 +288,25 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
         Authorization : `${localStorage.getItem("accessToken")}`
       }
     }
-
     try {
       const response = await axios.get('http://localhost:8080/api/v1/user/search', option);
-      // console.log(response);
+      console.log(response);
+      setSelectUser({
+        userId: response.data.userId,
+        email: response.data.email,
+        name: response.data.name,
+        phone: response.data.phone,
+        profileImg: response.data.postsImgUrl,
+      })
       return response;
+      
     } catch (error) {
-      console.log("해당 유저는 없습니다.");
+      return error;  
     }
   },{
     onSuccess: (response) => {
-      if (response && response.status === 200) {
         console.log("Successfully search");
-      }
-    }    
+     }    
   });
 
   const principal = useQuery(["principal"], async () => {
@@ -298,13 +314,18 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
     return response;
   }, {
-    enabled: authState,
     onSuccess: (response)=>{
-      if (response && response.status === 200) {
-        console.log("Successfully search");
-      }
+        console.log("Successfully principal");
+        setPartyData({
+          userId: response.data.userId,
+          email: response.data.email,
+          name: response.data.name,
+          phone: response.data.phone,
+          profileImg: response.data.postsImgUrl,
+        })
     }
   });
+  console.log(selectUser);
   console.log(partyData);
 
   const submitSearchHandler = (e) => {
@@ -323,17 +344,12 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
   }
 
   const addPartyHandler = () => {
-
-    const inputValue = searchUser.data.data.data;
-    console.log(inputValue);
-    setPartyData(inputValue);
+    setPartyData([...partyData, selectUser])
   }
   const removePartyHandler = (e)=>{
     setPartyData(e.target.value);
   }
-  // console.log(party);
-  // console.log(searchUser);
-  // console.log(principal.data.data);
+
   return (
       <div css={modalStyle} onClick={onClose}>
           <div css={modalContent} onClick={(e) => e.stopPropagation()}>
@@ -359,12 +375,12 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
                       </div>
                     </div>
                     <div css={searchMain}>
-                        {searchUser.data && searchUser.data.data && searchUser.data.data.data ? (
+                        {selectUser ? (
                           <div css={searchedUser}>
                             <div css={searchUserInfo}>
-                              <img css={profileImg} src={logoTitle} alt={logoTitle}/>
+                              <img css={profileImg} src={selectUser.profileImg} alt={selectUser.profileImg}/>
                               <span css={userText}>
-                                {searchUser.data.data.data.name} {/*({searchUser.data.data.data.email})*/}
+                                {selectUser.name} {/*({searchUser.data.data.data.email})*/}
                               </span>
                             </div>
                             <button css={addPartyButton} onClick={addPartyHandler}>추가</button>
@@ -380,12 +396,12 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
                         {principal.data && principal.data.data ? (
                           <li css={user}>본인: {principal.data.data.name}  </li>
                         ):(<p>로그인을 확인하세요</p>)}
-                        {partyData ? (
-                           <li css={user}>
-                              {/* <img src="" alt=""/> user의 프로필 이미지를 가져올 것 */}
-                              {partyData.name}
-                              <button onClick={removePartyHandler}>x</button>
-                            </li>
+                        {partyData ?  (
+                          <li css={user}>
+                          {/* <img src="" alt=""/> user의 프로필 이미지를 가져올 것 */}
+                          {partyData.name}
+                          {partyData.userId !== principal.data.data.userId ? (<button onClick={removePartyHandler}>x</button>):(<></>)}
+                        </li>
                         ):(<li>없어~~</li>)}
                       </ul>
                     </div>

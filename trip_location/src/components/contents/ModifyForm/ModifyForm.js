@@ -40,6 +40,7 @@ const signupBox = css`
 `;
 
 const profileImgContainer = css`
+    position: relative;
     margin-top: 20px;
     margin-bottom: 20px;
     border-radius: 50%;
@@ -48,6 +49,18 @@ const profileImgContainer = css`
     background-image: url(${defaultImg});
     background-size: cover;
     background-position: center;
+    overflow: hidden;
+`;
+
+const hiddenInput = css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+     
 `;
 
 const signupText = css`
@@ -173,7 +186,7 @@ const ModifyForm = () => {
 
         onSuccess: (response) => {
             setUpdateUser({
-                profileImg: response.data.profileImg,
+                profileImg: response.data.postsImgUrl,
                 email: response.data.email,
                 name: response.data.name,
                 phone: response.data.phone,
@@ -181,6 +194,8 @@ const ModifyForm = () => {
             })
         }
     });
+
+    console.log(principal)
 
     const [inputDisabled, setInputDisabled] = useState({
         name: true,
@@ -325,6 +340,10 @@ const ModifyForm = () => {
 
     }
 
+    const imgClickHandle = (e) => {
+
+    }
+
     // const removeFileHandle = (e) => {
     //     const idToRemove = parseInt(e.target.value);
     //     setImgFiles(prevImgFiles => prevImgFiles.filter(imgFile => imgFile.id !== idToRemove));
@@ -344,8 +363,9 @@ const ModifyForm = () => {
                         Edit Member Information
                     </Typography>
 
-                    <div css={profileImgContainer}>
-                        <input type="file" multiple={false} accept={".jpg, .png, .jpeg"}  onChange={saveImgFileHandle}/>
+                    <div css={profileImgContainer} onClick={imgClickHandle}>
+                        <img src={updateUser.profileImg} alt=""/>
+                        <input css={hiddenInput} type="file" multiple={false} accept={".jpg, .png, .jpeg"}  onChange={saveImgFileHandle}/>
                         <label>
 
                         </label>

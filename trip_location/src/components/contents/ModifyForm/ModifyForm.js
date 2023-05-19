@@ -14,7 +14,7 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, { useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useMutation, useQuery } from "react-query";
 import { useRecoilState } from "recoil";
 import defaultImg from '../../../images/logotitle.png';
@@ -163,8 +163,7 @@ const address = [
 
 const ModifyForm = () => {
     const [ authState, setAuthState ] = useRecoilState(authenticationState);
-    const [ imgFiles, setImgFiles ] = useState([]);
-    const fileId = useRef(1);
+    const [ imgFiles, setImgFiles ] = useState(null);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -267,16 +266,17 @@ const ModifyForm = () => {
             formData.append("name", modifyData.name)
             formData.append("phone", modifyData.phone)
             formData.append("address", modifyData.address)
-
-            imgFiles.forEach(imgFile => {
-                formData.append("imgFiles", imgFile.file)
-            })
+            formData.append("profileImg", imgFiles)
+            console.log(imgFiles);
+            console.log(formData.get("profileImg"));
 
             const option = {
                 headers: {
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
             }
+
             const response = await axios.put(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, formData, option);
 
             setErrorMessages({
@@ -289,14 +289,14 @@ const ModifyForm = () => {
             return response
         }catch (error) {
 
-            setErrorMessages(error.response.data)
+
         }
     }, {
         onSuccess: (response) => {
-            if (response.status === 200) {
-                alert("정보 수정 완료");
-                window.location.replace('/');
-            }
+            // if (response.status === 200) {
+            //     alert("정보 수정 완료");
+            //     window.location.replace('/');
+            // }
 
         }
     })
@@ -319,25 +319,16 @@ const ModifyForm = () => {
         }));
     };
 
-    const addFileHandle = (e) =>{
-        const newImgFiles = [];
-        for(const file of e.target.files) {
-            const fileData = {
-                id: fileId.current,
-                file
-            }
-            fileId.current += 1;
-            newImgFiles.push(fileData);
-        }
+    const saveImgFileHandle = (e) => {
 
-        setImgFiles([...imgFiles, ...newImgFiles]);
-        e.target.value = null;
+        setImgFiles(e.target.files[0]);
+
     }
 
-    const removeFileHandle = (e) => {
-        const idToRemove = parseInt(e.target.value);
-        setImgFiles(prevImgFiles => prevImgFiles.filter(imgFile => imgFile.id !== idToRemove));
-    }
+    // const removeFileHandle = (e) => {
+    //     const idToRemove = parseInt(e.target.value);
+    //     setImgFiles(prevImgFiles => prevImgFiles.filter(imgFile => imgFile.id !== idToRemove));
+    // }
 
     if(authState) {
         if (principal.isLoading) {
@@ -354,13 +345,9 @@ const ModifyForm = () => {
                     </Typography>
 
                     <div css={profileImgContainer}>
-                        <input type="file" multiple={true} accept={".jpg, .png, .jpeg"}  onChange={addFileHandle}/>
+                        <input type="file" multiple={false} accept={".jpg, .png, .jpeg"}  onChange={saveImgFileHandle}/>
                         <label>
-                            {imgFiles && imgFiles.map(imgFile =>
-                                <li key={imgFile.id}>
-                                    {imgFile.file.name}
-                                    <button value={imgFile.id} onClick={removeFileHandle}>삭제</button>
-                                </li>)}
+
                         </label>
                     </div>
 

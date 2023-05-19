@@ -39,6 +39,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const [markers, setMarkers] = useState([]);
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
+  
 
   useEffect(() => { //지도의 시작 좌표,확대 단계 조절
     const mapOption = {
@@ -50,9 +51,13 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
 
     geocoder.addressSearch(destinationTitle, function(result, status) {     //geocoder 사용으로 주소로 장소표시
       if (status === kakao.maps.services.Status.OK) {
+        const latitude = result[0].y;
+        const longitude = result[0].x;
         const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
         // 검색결과위치로 맵을 이동
         map.setCenter(coords);
+        localStorage.setItem('firstLatitude', latitude);
+        localStorage.setItem('firstLongitude', longitude);        
       }
     });
   
@@ -62,6 +67,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
           if (status === kakao.maps.services.Status.OK) {
             const address = result[0].address.address_name;
             setAddress(addr => [...addr, address]);
+            
           }
         });
         const marker = new kakao.maps.Marker({ position }); //마커 객체 생성
@@ -127,7 +133,7 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button> 
             <button css={guideButton} onClick={handleSavePath}>경로 수정</button> 
       </div>
-      <MapSearch></MapSearch>
+     <MapSearch  map={map} />
     </div>
   );
   

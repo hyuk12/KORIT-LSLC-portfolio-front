@@ -46,10 +46,15 @@ const profileImgContainer = css`
     border-radius: 50%;
     width: 150px;
     height: 150px;
-    background-image: url(${defaultImg});
     background-size: cover;
     background-position: center;
     overflow: hidden;
+`;
+
+const imgStyle = css`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 `;
 
 const hiddenInput = css`
@@ -177,6 +182,7 @@ const address = [
 const ModifyForm = () => {
     const [ authState, setAuthState ] = useRecoilState(authenticationState);
     const [ imgFiles, setImgFiles ] = useState(null);
+    const [ preview, setPreview ] = useState('');
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -308,11 +314,8 @@ const ModifyForm = () => {
         }
     }, {
         onSuccess: (response) => {
-            // if (response.status === 200) {
-            //     alert("정보 수정 완료");
-            //     window.location.replace('/');
-            // }
-
+            alert('회원정보 수정 완료');
+            window.location.replace('/');
         }
     })
 
@@ -338,6 +341,11 @@ const ModifyForm = () => {
 
         setImgFiles(e.target.files[0]);
 
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(e.target.files[0]);
+        fileReader.onload = (e) => {
+            setPreview(e.target.result);
+        };
     }
 
     const imgClickHandle = (e) => {
@@ -364,7 +372,7 @@ const ModifyForm = () => {
                     </Typography>
 
                     <div css={profileImgContainer} onClick={imgClickHandle}>
-                        <img src={updateUser.profileImg} alt=""/>
+                        <img css={imgStyle} src={preview ? preview : updateUser.profileImg} alt=""/>
                         <input css={hiddenInput} type="file" multiple={false} accept={".jpg, .png, .jpeg"}  onChange={saveImgFileHandle}/>
                         <label>
 

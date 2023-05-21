@@ -33,10 +33,15 @@ const imgContainer = css`
   width: 100px;
   height: 100px;
   background-color: rgba(0,0,0,0.8);
-  background-image: url(${defaultImg});
-  background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  overflow: hidden;
+`;
+
+const imgStyle = css`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 `;
 
 const modifyButtons = css`
@@ -76,29 +81,42 @@ const myPlanAndReview = css`
   margin: 20px;
   border: 1px solid #dbdbdb;
   width: 40%;
-  height: 100px
+  height: 100px;
+  cursor: pointer;
 `;
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [authState, setAuthState] = useRecoilState(authenticationState);
+  const [userInfo, setUserInfo] = useState({
+    email: '',
+    userId: '',
+    profileImg: ''
+  })
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
     return response;
   }, {
-    enabled: authState
+    onSuccess : (response) => {
+      setUserInfo({
+        email: response.data.email,
+        userId: response.data.userId,
+        profileImg: response.data.postsImgUrl
+      })
+    }
   });
 
   if (principal.isLoading) {
     return (<div>is Loading...</div>)
   }
 
+
   return (
     <div css={container}>
       <main css={main}>
         <div css={imgContainer}>
-
+          <img css={imgStyle} src={userInfo.profileImg} alt=""/>
         </div>
         <div>{principal?.data?.data?.email || '이메일 로딩 중...'}</div>
         <div css={modifyButtons}>

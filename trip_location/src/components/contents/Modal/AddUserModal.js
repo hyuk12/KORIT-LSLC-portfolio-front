@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import logoTitle from '../../../images/logotitle.png';
 
@@ -243,17 +243,40 @@ const listUser= css`
   height: 100%;
 `;
 
-
 const user = css`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   padding: 5px 0px;
 `;
+const userProfileImg =css`
+  
+  margin-right: 10px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  
+  width: 10%;
 
+`; 
+
+const userName= css`
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 20px;
+`;
 
 const AddUserModal = ({ isOpen, onClose, destination }) => {
+  const partyId =useRef(1);
   const [searchType, setSearchType] = useState('email');
   const [searchValue, setSearchValue] = useState('');
-  
-  const [partyData, setPartyData] = useState([
+  const [myInfo, setMyInfo] = useState({
+    userId: '',
+    email: '',
+    name: '',
+    phone: '',
+    profileImg: '',
+  }); 
+  const [partyUsers, setPartyUsers] = useState([
     {
       userId: '',
       email: '',
@@ -262,8 +285,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
       profileImg: '',
     },
   ]);
-
-  const [selectUser, setSelectUser] = useState({
+  const [searchInfo, setSearchInfo] = useState({
     userId: '',
     email: '',
     name: '',
@@ -290,48 +312,54 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     }
     try {
       const response = await axios.get('http://localhost:8080/api/v1/user/search', option);
-      console.log(response);
-      setSelectUser({
-        userId: response.data.userId,
-        email: response.data.email,
-        name: response.data.name,
-        phone: response.data.phone,
-        profileImg: response.data.postsImgUrl,
-      })
       return response;
-      
     } catch (error) {
       return error;  
     }
   },{
     onSuccess: (response) => {
         console.log("Successfully search");
+        if (response?.data?.data) {
+          setSearchInfo({
+            userId: response.data.data.userId,
+            email: response.data.data.email,
+            name: response.data.data.name,
+            phone: response.data.data.phone,
+            profileImg: response.data.data.postsImgUrl,
+          });
+        }
      }    
   });
+
 
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
     return response;
   }, {
+    keepPreviousData: true,
     onSuccess: (response)=>{
         console.log("Successfully principal");
-        setPartyData({
+        setMyInfo({
           userId: response.data.userId,
           email: response.data.email,
           name: response.data.name,
           phone: response.data.phone,
           profileImg: response.data.postsImgUrl,
         })
-    }
+        setPartyUsers([myInfo]);
+      }
   });
-  console.log(selectUser);
-  console.log(partyData);
-
+  console.log(searchInfo);
+  console.log(myInfo);
+  console.log(partyUsers);
+  
   const submitSearchHandler = (e) => {
     e.preventDefault();
     const inputValue = e.target.elements.searchMember.value;
-    setSearchValue(inputValue);
+    if(myInfo.email !== inputValue){
+      setSearchValue(inputValue);
+    }
     e.target.reset();
   };
   
@@ -344,12 +372,43 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
   }
 
   const addPartyHandler = () => {
-    setPartyData([...partyData, selectUser])
-  }
-  const removePartyHandler = (e)=>{
-    setPartyData(e.target.value);
-  }
+    const isAlreadyAdded = partyUsers.some((party) => party.userId === searchInfo.userId);
+    console.log(isAlreadyAdded);
+    const updatedPartyData = !isAlreadyAdded ? [...partyUsers, searchInfo] : partyUsers;
+    setPartyUsers(updatedPartyData);
+  };
+  
+  const removePartyHandler = (index) => {
+    setPartyUsers((prevPartyData) => {
+      const updatedPartyData = [...prevPartyData];
+      updatedPartyData.splice(index, 1);
+      return updatedPartyData;
+    });
+  };
+  
+  const savePartyHandler =()=> {
+    const partyData = partyUsers.map((party)=>{
+      const partyUser =[
+        {
+          userId: party.userId,
+          name: party.name,
+          email: party.email,
+          phone: party.phone,
+          profileImg : party.profileImg
+        },
+      ];
+      
+      return {
+        id : partyId.current,
+        partyData: partyUser,
+      };
 
+    });
+
+    localStorage.setItem('partyData',JSON.stringify(partyData));
+    onClose();
+  }
+  console.log(localStorage.getItem('partyData'));
   return (
       <div css={modalStyle} onClick={onClose}>
           <div css={modalContent} onClick={(e) => e.stopPropagation()}>
@@ -375,17 +434,20 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
                       </div>
                     </div>
                     <div css={searchMain}>
-                        {selectUser ? (
+                      {searchInfo ? (
                           <div css={searchedUser}>
                             <div css={searchUserInfo}>
-                              <img css={profileImg} src={selectUser.profileImg} alt={selectUser.profileImg}/>
-                              <span css={userText}>
-                                {selectUser.name} {/*({searchUser.data.data.data.email})*/}
-                              </span>
+                              <img css={profileImg} src={searchInfo.profileImg} alt={searchInfo.profileImg} />
+                              <span css={userText}>{searchInfo.name}</span>
                             </div>
-                            <button css={addPartyButton} onClick={addPartyHandler}>추가</button>
+                            <button css={addPartyButton} onClick={addPartyHandler}>
+                              추가
+                            </button>
                           </div>
-                        ): (<p>검색 결과가 없습니다.</p>)}
+                        ) : (
+                          <p>검색 결과가 없습니다.</p>
+                        )
+                      }
                     </div>
                   <div css={listContainer}>
                     <span css={withList}>
@@ -393,19 +455,25 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
                     </span>
                     <div css={listUserContainer}>
                       <ul css={listUser}>
-                        {principal.data && principal.data.data ? (
-                          <li css={user}>본인: {principal.data.data.name}  </li>
-                        ):(<p>로그인을 확인하세요</p>)}
-                        {partyData ?  (
-                          <li css={user}>
-                          {/* <img src="" alt=""/> user의 프로필 이미지를 가져올 것 */}
-                          {partyData.name}
-                          {partyData.userId !== principal.data.data.userId ? (<button onClick={removePartyHandler}>x</button>):(<></>)}
-                        </li>
-                        ):(<li>없어~~</li>)}
+                        {partyUsers.length > 0 ? (
+                          partyUsers.map((partyMember, index) => (
+                            <li css={user} key={index}>
+                              <img css={userProfileImg} src={partyMember.profileImg} alt={partyMember.profileImg}/>
+                              <span css={userName}>
+                                {partyMember.name}
+                              </span>
+                              {partyMember.userId !== myInfo.userId ? (
+                                <button onClick={() => removePartyHandler(index)}>x</button>
+                              ):(<button onClick={() => removePartyHandler(index)} style={{ display: 'none' }}>x</button>)}
+                            </li>
+                          ))
+                        ) : (
+                          <li>추가된 인원이 없습니다.</li>
+                        )}
                       </ul>
                     </div>
                   </div>
+                  <button onClick={savePartyHandler}>저장</button>
                 </div>
               </div>
           </div>

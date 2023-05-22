@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 /** @jsxImportSource @emotion/react */
+import React, { useState } from 'react';
 import { css } from '@emotion/react';
 
 const { kakao } = window;
@@ -13,18 +13,30 @@ const rightSidebar = css`
   width: 300px;
   height: 100%;
   z-index: 3;
+  overflow-y: auto;
 `;
-const MapSearch = (map) => {
+
+const pagination = css`
+  margin: 10px auto;
+  text-align: center;
+`;
+
+const MapSearch = ({ map }) => {
     const [keyword, setKeyword] = useState('');
-    let   [markers, setMarkers] = useState([]);
+    const [destinationTitle, setDestinationTitle] = useState('');
 
     function searchPlaces() {
         const ps = new kakao.maps.services.Places({
-            // Set your Kakao API key as the `apikey` parameter
             apikey: 'ab3439121662f71fcd5c47373cfa8cf0',
           });
+           
+        const latitude = localStorage.getItem('firstLatitude');
+        const longitude = localStorage.getItem('firstLongitude');
+        const options = {
+          location: new kakao.maps.LatLng(parseFloat(latitude), parseFloat(longitude)),
+          radius: 10000,
+        }
           
-          // Now you can use the `ps` object and make API calls
           
         if (!keyword.replace(/^\s+|\s+$/g, '')) {
             alert('키워드를 입력해주세요!');
@@ -32,7 +44,7 @@ const MapSearch = (map) => {
         }
       
         // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-        ps.keywordSearch( keyword, placesSearchCB); 
+        ps.keywordSearch( keyword, placesSearchCB, options); 
       }
 
       function placesSearchCB(data, status, pagination) {
@@ -41,7 +53,6 @@ const MapSearch = (map) => {
             // 정상적으로 검색이 완료됐으면
             // 검색 목록과 마커를 표출합니다
             displayPlaces(data);
-    
             // 페이지 번호를 표출합니다
             displayPagination(pagination);
     
@@ -62,59 +73,34 @@ const MapSearch = (map) => {
       const listEl = document.getElementById('placesList');
       const menuEl = document.getElementById('menu_wrap');
       const fragment = document.createDocumentFragment();
-      const bounds = new kakao.maps.LatLngBounds();
-      const infowindow = new kakao.maps.InfoWindow({ zIndex: 5 });
-      let listStr = '';
     
       // Remove items added to the search results list
       removeAllChildNodes(listEl);
     
-      // Remove the marker being displayed on the map
-      removeMarker();
-    
       for (let i = 0; i < places.length; i++) {
-        const placePosition = new kakao.maps.LatLng(places[i].y, places[i].x);
-        const marker = addMarker(placePosition, i);
         const itemEl = getListItem(i, places[i]);
-    
-        bounds.extend(placePosition);
-    
-        (function (marker, title) {
-          kakao.maps.event.addListener(marker, 'mouseover', function () {
-            displayInfowindow(marker, title);
-          });
-    
-          kakao.maps.event.addListener(marker, 'mouseout', function () {
-            infowindow.close();
-          });
-    
-          itemEl.onmouseover = function () {
-           // displayInfowindow(marker, title);
-          };
-    
-          itemEl.onmouseout = function () {
-            infowindow.close();
-          };
-        })(marker, places[i].place_name);
-    
         fragment.appendChild(itemEl);
+       //createMarker(places[i]);
       }
     
       listEl.appendChild(fragment);
       menuEl.scrollTop = 0;
-    
     }
-    
+
     function getListItem(index, places) {
       const el = document.createElement('li');
       let itemStr =
-        '<span class="markerbg marker_' +
+        '<span class= markerbg marker_ '  +
         (index + 1) +
         '"></span>' +
         '<div class="info">' +
         ' <h5>' +
         places.place_name +
         '</h5>';
+
+        if (places.image_url) {
+          itemStr += `<img src="${places.image_url}" alt="Place Image" />`;
+        }
     
       if (places.road_address_name) {
         itemStr +=
@@ -133,38 +119,17 @@ const MapSearch = (map) => {
     
       el.innerHTML = itemStr;
       el.className = 'item';
-    
-      return el;
+
+      const placeNameEl = el.querySelector('.place-name');
+      // placeNameEl.addEventListener('click', function() {
+      //   // Handle the onclick event here for the place name
+      //   // You can access the "places" data and perform the desired action
+      //   console.log('Place name clicked:', places.place_name);
+      // });
+      console.log( places.place_name)
+      return el;  
     }
-    
-    function addMarker(position, idx, title) {
-      const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png'; // Write marker image URL and sprite image
-      const imageSize = new kakao.maps.Size(36, 37); // Size of marker image
-      const imgOptions = {
-          spriteSize: new kakao.maps.Size(36, 691), // Size of sprite image
-          spriteOrigin: new kakao.maps.Point(0, (idx * 46) + 10), // Coordinates of the upper left corner of the sprite image to be used
-          offset: new kakao.maps.Point(13, 37) // Coordinates within the image to match the marker coordinates
-      };
-      const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions);
-      const marker = new kakao.maps.Marker({
-          position: position, // Position of the marker
-          image: markerImage
-      });
-    
-      //marker.setMap(map); // Display the marker on the map
-      markers.push(marker); // Add the created markers to the array
-    
-      return marker;
-    }
-    
-    function removeMarker() {
-      
-      for (let i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
-      }
-      markers = [];
-    }
-    
+     
     function displayPagination(pagination) {
       var paginationEl = document.getElementById('pagination'),
           fragment = document.createDocumentFragment(),
@@ -189,20 +154,11 @@ const MapSearch = (map) => {
                   }
               })(i);
           }
-    
           fragment.appendChild(el);
       }
       paginationEl.appendChild(fragment);
     }
-    
-    function displayInfowindow(marker, title) {
-      const content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
-      const infowindow = new kakao.maps.InfoWindow({ zIndex: 5 });
-    
-      infowindow.setContent(content);
-      //infowindow.open(marker);
-    }
-    
+
     function removeAllChildNodes(el) {
       while (el.hasChildNodes()) {
         el.removeChild(el.lastChild);
@@ -210,15 +166,21 @@ const MapSearch = (map) => {
     }
 
     function handleSubmit(event) {
-        event.preventDefault(); // Prevent the default form submission
+      event.preventDefault(); // Prevent the default form submission
     
-        if (!keyword.trim()) {
-          alert('Please enter a keyword!');
-          return;
-        }
-    
-        searchPlaces(); // Call the searchPlaces() function
+      if (!keyword.trim()) {
+        alert('키워드를 입력해주세요!');
+        return;
       }
+    
+      if (map) {
+        // Call the searchPlaces function with the keyword
+        searchPlaces();
+      } else {
+        alert('Map is not available!');
+        console.log('실패')
+      }
+    }
   
     return (
         <div>
@@ -227,14 +189,14 @@ const MapSearch = (map) => {
                 <div class="option">
                   <div>
                   <form onSubmit={handleSubmit}>
-                      키워드 검색: <input type="text" value={keyword} id="keyword" size="15" onChange={(e) => setKeyword(e.target.value)} />
+                      키워드: <input type="text" value={keyword} id="keyword" size="15" onChange={(e) => setKeyword(e.target.value)} />
                       <button type="submit">검색하기</button> 
                   </form>
                   </div>
                 </div>
                 <hr />
                 <ul id="placesList"></ul>
-                <div id="pagination"></div>
+                <div id="pagination" css={pagination}></div>
               </div>
         </div>
         </div>

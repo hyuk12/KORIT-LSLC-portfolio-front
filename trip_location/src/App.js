@@ -19,6 +19,7 @@ import OAuth2Register from "./pages/SignUp/OAuth2/OAuth2Register";
 import SignUp from './pages/SignUp/SignUp';
 import ModifyPassword from "./pages/NewPassword/ModifyPassword";
 import RegionRegister from "./components/contents/ModifyForm/RegionRegister";
+import CheckMyTrip from "./pages/CheckItinerary/CheckMyTrip";
 
 
 const mainStyles = css`
@@ -44,6 +45,7 @@ function App() {
         <Route path={"/user/modify/:id"} element={<AuthRouter path={'/user/modify/:id'} element={<ModifyForm />} />} />
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
+        <Route path={"/user/trip/:id/"} element={<AuthRouter path={'/user/trip/:id/'} element={<CheckMyTrip />} />} />
       </Routes>
 
     </>

@@ -6,7 +6,6 @@ import { useSearchParams } from 'react-router-dom';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
 import AddUserModal from '../../components/contents/Modal/AddUserModal';
-import MapSearch from '../../components/contents/Map/MapSearch';
 import { useRecoilState } from 'recoil';
 import { authenticationState } from '../../store/atoms/AuthAtoms';
 import { useQuery } from 'react-query';
@@ -24,7 +23,7 @@ const sidebar=css`
   z-index: 3;
   background-color: white;
   box-shadow: 0 4px 8px 0;
-  width: 30%;
+  width: 35%;
   height: 100%;
 `;
 
@@ -35,16 +34,6 @@ const calendar = css`
 
 const main = css`
   position: relative;
-`;
-
-const rightsidebar = css`
-  position: absolute;
-  top: 0;
-  right: 0;
-  box-shadow: 0 4px 8px 0;
-  background-color: white;
-  height: 100%;
-  z-index: 3;
 `;
 
 
@@ -71,12 +60,7 @@ const resetButton= css`
 
 `;
 
-const submitPlanButton =css`
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+
 
 
 const Contents = ({ map }) => {

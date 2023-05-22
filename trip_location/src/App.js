@@ -18,6 +18,7 @@ import OAuth2Merge from "./pages/SignUp/OAuth2/OAuth2Merge";
 import OAuth2Register from "./pages/SignUp/OAuth2/OAuth2Register";
 import SignUp from './pages/SignUp/SignUp';
 import ModifyPassword from "./pages/NewPassword/ModifyPassword";
+import RegionRegister from "./components/contents/ModifyForm/RegionRegister";
 
 
 const mainStyles = css`
@@ -38,6 +39,7 @@ function App() {
         <Route path={"/auth/password/verify"} element={<AuthRouter path={'/auth/password/verify'} element={<CheckEmail />} />} />
         <Route path={"/auth/password/reset"} element={<AuthRouter path={'/auth/password/reset'} element={<PasswordReset />} />} />
         <Route path={"/auth/oauth2/merge"} element={<AuthRouter path={'/auth/oauth2/merge'} element={<OAuth2Merge />} />} />
+        <Route path={"/auth/post/register"} element={<AuthRouter path={'/auth/post/register'} element={<RegionRegister />} />} />
         <Route path={"/user/:id"} element={<AuthRouter path={'/user/:id'} element={<MyPage />} />} />
         <Route path={"/user/modify/:id"} element={<AuthRouter path={'/user/modify/:id'} element={<ModifyForm />} />} />
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />

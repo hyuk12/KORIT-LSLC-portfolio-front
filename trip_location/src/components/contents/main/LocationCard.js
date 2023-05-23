@@ -1,86 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, TextField, Typography} from '@mui/material';
-import Modal from "../Modal/Modal";
-import React, {useState} from "react";
-import jeju from "../../../images/forest-jeju.jpg";
-import busan from "../../../images/haeundae.jpg";
-import yeosu from "../../../images/yeosu.jpg";
-import gyeongju from "../../../images/gyeongju.jpg";
-import gangneung from "../../../images/gangneung.jpg";
-import seoul from "../../../images/seoul.jpg";
-import yongin from "../../../images/yongin.jpg";
-import seosan from "../../../images/seosan.jpg";
-import jeonju from "../../../images/jeonju.jpg";
-import ulsan from "../../../images/ulsan.jpg";
-import mokpo from "../../../images/mokpo.jpg";
-import suncheon from "../../../images/suncheon.jpg";
-import {css} from "@emotion/react";
-import SearchIcon from "@mui/icons-material/Search";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-
-const cardData = [
-    {
-        image: jeju,
-        title: '제주도',
-        description: 'Jeju',
-    },
-    {
-        image: busan,
-        title: '부산',
-        description: 'Busan',
-    },
-    {
-        image: yeosu,
-        title: '여수',
-        description: 'Yeosu',
-    },
-    {
-        image: gyeongju,
-        title: '경주',
-        description: 'Gyeongju',
-    },
-    {
-        image: gangneung,
-        title: '강릉',
-        description: 'Gangneung',
-    },
-    {
-        image: seoul,
-        title: '서울',
-        description: 'Seoul',
-    },
-    {
-        image: yongin,
-        title: '용인',
-        description: 'Yongin',
-    },
-    {
-        image: seosan,
-        title: '서산',
-        description: 'Seosan',
-    },
-    {
-        image: jeonju,
-        title: '전주',
-        description: 'Jeonju',
-    },
-    {
-        image: ulsan,
-        title: '울산',
-        description: 'Ulsan',
-    },
-    {
-        image: mokpo,
-        title: '목포',
-        description: 'Mokpo',
-    },
-    {
-        image: suncheon,
-        title: '순천',
-        description: 'Suncheon',
-    },
-    // ... 추가 카드 데이터
-];
+import SearchIcon from "@mui/icons-material/Search";
+import { Card, CardActionArea, CardContent, CardMedia, Container, Grid, TextField, Typography } from '@mui/material';
+import axios from 'axios';
+import React, { useState } from "react";
+import { useQuery } from 'react-query';
+import Modal from "../Modal/Modal";
 
 const contents = css`
   display: flex;
@@ -110,12 +36,13 @@ const searchField = css`
   padding: 5px;
 `;
 
-const LocationCard = () => {
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedLocation, setSelectedLocation] = useState(null);
-    const [searchKeyword, setSearchKeyword] = useState('');
+const LocationCard = ({ destination }) => {
+    const [ modalOpen, setModalOpen ] = useState(false);
+    const [ selectedLocation, setSelectedLocation ] = useState(null);
+    const [ searchKeyword, setSearchKeyword ] = useState('');
 
-    const filterData = cardData.filter((data) => data.title.includes(searchKeyword) || data.description.toLowerCase().includes(searchKeyword));
+    const filterData = destination.filter((data) => data.regionName.includes(searchKeyword) ||
+                                                        data.regionEngName.toLowerCase().includes(searchKeyword));
 
     const handleCardClick = (location) => {
         setSelectedLocation(location);
@@ -142,7 +69,6 @@ const LocationCard = () => {
                 </Grid>
             </div>
             <Grid container spacing={4} css={contents}>
-                {/* {cardData.map((data, index) => ( */}
                 {filterData.map((data, index) => (
                     <Grid key={index} item xs={12} sm={6} md={3}>
                         <Card onClick={() => handleCardClick(data)}>
@@ -150,17 +76,17 @@ const LocationCard = () => {
                             <CardActionArea >
                                 <CardMedia
                                     component="img"
-                                    alt={data.title}
+                                    alt={data.regionName}
                                     height="140"
-                                    image={data.image}
-                                    title={data.title}
+                                    image={data.regionImgUrl}
+                                    title={data.regionName}
                                 />
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="h2">
-                                        {data.title}
+                                        {data.regionName}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" component="p">
-                                        {data.description}
+                                        {data.regionEngName}
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>

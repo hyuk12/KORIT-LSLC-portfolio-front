@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import logoTitle from '../../../images/logotitle.png';
 
@@ -386,28 +386,21 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     });
   };
   
-  const savePartyHandler =()=> {
-    const partyData = partyUsers.map((party)=>{
-      const partyUser =[
-        {
+  const savePartyHandler = () => {
+    const partyData = {
+      partyData: partyUsers.map((party) => {
+        return {
           userId: party.userId,
           name: party.name,
-          email: party.email,
-          phone: party.phone,
-          profileImg : party.profileImg
-        },
-      ];
-      
-      return {
-        id : partyId.current,
-        partyData: partyUser,
-      };
-
-    });
-
-    localStorage.setItem('partyData',JSON.stringify(partyData));
+        };
+      }),
+    };
+  
+    localStorage.setItem('partyData', JSON.stringify(partyData));
     onClose();
-  }
+  };
+  
+  
   console.log(localStorage.getItem('partyData'));
   return (
       <div css={modalStyle} onClick={onClose}>

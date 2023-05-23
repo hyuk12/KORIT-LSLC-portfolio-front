@@ -1,12 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useQuery} from "react-query";
 import axios from "axios";
 
-const myTravelContainer = css`
-    margin-top: 64px;
-`;
 const cardContainer =css`
     display: flex;
     flex-direction: column;
@@ -43,7 +40,10 @@ const travelText=css`
 `;
 
 const TravelList = () => {
-    const [userInfo, setUserInfo] = useState({userId: ''});
+    const [userInfo, setUserInfo] = useState({
+        userId:'',
+        name:'',
+    });
     const [regionInfo, setRegionInfo] = useState([
         {
             regionName:'',
@@ -55,37 +55,25 @@ const TravelList = () => {
             scheduleDate: ''
         }
     ]);
-    
-    // const regionImg = useQuery(['regionImg'], async()=>{
-    //     const params = {
-    //         travelName: TravelList.locations
-    //     }
-    //     const option = {
-    //         headers:{
-    //             Authorzation : `${localStorage.getItem('accessToken')}`
-    //         }
-    //     }
-    //     const response = await axios.get('http://localhost:8080/api/v1/travel/plan/region', option);
-    //     return response;
-    // })
-
 
     const principal = useQuery(['principal'], async () => {
         const accessToken = localStorage.getItem('accessToken');
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: accessToken});
-        return response
+        return response;
     }, {
         onSuccess: (response) => {
             setUserInfo({
                 userId: response.data.userId,
-                name: response.data.name
-            })
+                name: response.data.name,
+            });
         }
     })
 
+    console.log(userInfo);
+
     const travelList = useQuery(['travelList'], async () => {
         const params = {
-            userId: userInfo.userId
+            userId: userInfo.userId,
         }
         const option = {
             params,
@@ -95,6 +83,7 @@ const TravelList = () => {
         }
         try {
             const response = await axios.get('http://localhost:8080/api/v1/travel/plan/list',option)
+            console.log(response);
             return response;
         }catch (error) {
             alert('여행 일정이 없습니다.')
@@ -102,11 +91,32 @@ const TravelList = () => {
     }, {
         onSuccess: (response) => {
            setRegionInfo({
-            regionName: response.data.locations
+            // regionName: response.data.locations
            })
         //    console.log(regionInfo);
         }
     })
+    const regionImg = useQuery(['regionImg'], async()=>{
+        const params = {
+            travelName: TravelList.locations
+        }
+        const option = {
+            headers:{
+                Authorzation : `${localStorage.getItem('accessToken')}`
+            }
+        }
+        const response = await axios.get('http://localhost:8080/api/v1/travel/plan/region', option);
+        return response;
+    })
+
+    useEffect(()=>{
+        setUserInfo(userInfo);
+    },[userInfo])
+
+
+  
+
+  
     return (
         <div css={cardContainer}>
             <div css={cardImgContainer}>이미지

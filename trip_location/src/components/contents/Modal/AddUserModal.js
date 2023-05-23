@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from 'axios';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import logoTitle from '../../../images/logotitle.png';
 
@@ -183,6 +183,7 @@ const profileImg =css`
   width: 10%;
   box-sizing: border-box;
   border-radius: 50%;
+  overflow: hidden;
 `;  
 
 const userText =css`
@@ -331,7 +332,10 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
      }    
   });
 
-
+  useEffect(() => {
+    setPartyUsers([myInfo]);
+  }, [myInfo]);
+  
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
@@ -347,12 +351,11 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
           phone: response.data.phone,
           profileImg: response.data.postsImgUrl,
         })
-        setPartyUsers([myInfo]);
       }
   });
-  console.log(searchInfo);
+  // console.log(searchInfo);
   console.log(myInfo);
-  console.log(partyUsers);
+  // console.log(partyUsers);
   
   const submitSearchHandler = (e) => {
     e.preventDefault();
@@ -373,7 +376,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
 
   const addPartyHandler = () => {
     const isAlreadyAdded = partyUsers.some((party) => party.userId === searchInfo.userId);
-    console.log(isAlreadyAdded);
+    // console.log(isAlreadyAdded);
     const updatedPartyData = !isAlreadyAdded ? [...partyUsers, searchInfo] : partyUsers;
     setPartyUsers(updatedPartyData);
   };
@@ -399,6 +402,8 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     localStorage.setItem('partyData', JSON.stringify(partyData));
     onClose();
   };
+
+  
   
   
   console.log(localStorage.getItem('partyData'));

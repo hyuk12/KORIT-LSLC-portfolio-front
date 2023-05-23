@@ -114,8 +114,9 @@ export default function Calendar(props) {
         partyData: partyData,
       };
     });
-    // console.log(updatedScheduleData);
-    requestData.mutate(updatedScheduleData);
+    console.log(updatedScheduleData);
+    // requestData.mutate(updatedScheduleData);
+    localStorage.removeItem("partyData");
   };
   
   return (

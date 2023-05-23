@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
 
 const { kakao } = window;
@@ -7,8 +7,8 @@ const { kakao } = window;
 const viewContainer = css`
   display: flex;
   margin-top: 64px;
-  width: 2560px;
-  height: 1600px;
+  width: 1920px;
+  height: 1080px;
 
 `;
 
@@ -34,7 +34,6 @@ const buttonStyle = css`
   width: 150px;
   height: 50px;
 `;
-
 
 const mainStyle = css`
   display: flex;
@@ -76,9 +75,14 @@ const footerButtonContainer = css`
   width: 100%;
 `;
 
-
-
 const CheckMyTrip = () => {
+    const [ positions, setPositions ] = useState([
+        {
+            address: '',
+            latlng: ''
+        },
+    ]);
+    let map = null;
     useEffect(() => {
         const container = document.getElementById('map');
         const options = {
@@ -86,8 +90,21 @@ const CheckMyTrip = () => {
             zoom: 12,
             level: 3
         }
-        const map = new kakao.maps.Map(container, options);
+        map = new kakao.maps.Map(container, options);
     },[])
+
+    let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+    positions.map(position => {
+        let imgSize = new kakao.maps.Size(24,35);
+        let markerImage = new kakao.maps.MarkerImage(imageSrc, imgSize);
+
+        let marker = new kakao.maps.Marker({
+            map: map,
+            position: position.latlng,
+            address: position.address,
+            image: markerImage
+        })
+    })
 
     return (
         <div css={viewContainer}>
@@ -115,8 +132,6 @@ const CheckMyTrip = () => {
                     </div>
                 </div>
             </main>
-
-
         </div>
 
     );

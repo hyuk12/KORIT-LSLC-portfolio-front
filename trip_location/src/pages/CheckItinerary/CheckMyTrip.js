@@ -120,7 +120,7 @@ const CheckMyTrip = () => {
     useEffect(() => {
         const container = document.getElementById('map');
         const options = {
-            center: new kakao.maps.LatLng(37.5522, 126.570667),
+            center: new kakao.maps.LatLng(35.1798200522868, 129.075087492149),
             zoom: 12,
             level: 3
         }

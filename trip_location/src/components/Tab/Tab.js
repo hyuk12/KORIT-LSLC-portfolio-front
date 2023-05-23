@@ -155,7 +155,6 @@ export default function VerticalTabs({ scheduleData }) {
       {scheduleData.map((day, index) => (
         <TabPanel value={value} index={index} key={day.date} scheduleData={scheduleData} />
       ))}
-      {/* <button onClick={pathSaveClickHandle}>확인DB에 저장하는것.</button> */}
     </Box>
   );
 }

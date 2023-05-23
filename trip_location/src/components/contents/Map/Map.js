@@ -32,7 +32,6 @@ const guideButton = css`
 const { kakao } = window;
 
 const Map = ({ destinationTitle, paths, setPaths }) => {
-  const linePath = [];
   const markerId = useRef(1);
   const mapRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
@@ -40,13 +39,12 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
   
-
   useEffect(() => { //지도의 시작 좌표,확대 단계 조절
     const mapOption = {
       center: new kakao.maps.LatLng(35.152380, 129.059647),
       level: 9,
     };
-    const map = new kakao.maps.Map(mapRef.current, mapOption);
+    const map = new window.kakao.maps.Map(mapRef.current, mapOption);
     const geocoder = new kakao.maps.services.Geocoder();
 
     geocoder.addressSearch(destinationTitle, function(result, status) {     //geocoder 사용으로 주소로 장소표시
@@ -56,8 +54,8 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
         // 검색결과위치로 맵을 이동
         map.setCenter(coords);
-        localStorage.setItem('firstLatitude', latitude);
-        localStorage.setItem('firstLongitude', longitude);        
+        localStorage.setItem('titleLatitude', latitude);
+        localStorage.setItem('titleLongitude', longitude);        
       }
     });
   
@@ -67,10 +65,10 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
           if (status === kakao.maps.services.Status.OK) {
             const address = result[0].address.address_name;
             setAddress(addr => [...addr, address]);
-            
           }
         });
         const marker = new kakao.maps.Marker({ position }); //마커 객체 생성
+        console.log(position)
         marker.setMap(map); //마커 지도에 보여줌
         setMarkers(prevMarkers => [...prevMarkers, marker]);  //새로 생성된 마커 저장
         setMarkerPositions(prevPositions => [...prevPositions, position]);  //마커와 연결된 좌표 저장
@@ -133,7 +131,7 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button> 
             <button css={guideButton} onClick={handleSavePath}>경로 수정</button> 
       </div>
-     <MapSearch  map={map} />
+     <MapSearch map={mapRef.current} />
     </div>
   );
   

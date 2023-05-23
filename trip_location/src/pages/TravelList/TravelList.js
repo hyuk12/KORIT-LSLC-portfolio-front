@@ -7,7 +7,7 @@ const TravelList = () => {
     const [userInfo, setUserInfo] = useState({userId: ''});
     const [regionInfo, setRegionInfo] = useState([
         {
-            region
+
         }
     ])
     const [myTravelList, setMyTravelList] = useState([

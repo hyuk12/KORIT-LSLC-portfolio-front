@@ -127,7 +127,6 @@ const Contents = ({ map }) => {
                 onEndDayChange={endDayHandle}
                 markerData={paths}
               />
-               {/* <MapSearch map={map} /> */}
           </div>
         </div>
       </div>

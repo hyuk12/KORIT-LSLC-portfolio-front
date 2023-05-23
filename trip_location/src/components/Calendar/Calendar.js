@@ -105,9 +105,19 @@ export default function Calendar(props) {
   })
 
   const submitPlanHandler = () => {
-    requestData.mutate(localStorage.getItem("scheduleData"));
-  }
-
+    const partyData = JSON.parse(localStorage.getItem("partyData"));
+    const scheduleData = JSON.parse(localStorage.getItem("scheduleData"));
+  
+    const updatedScheduleData = scheduleData.map((schedule) => {
+      return {
+        ...schedule,
+        partyData: partyData,
+      };
+    });
+    // console.log(updatedScheduleData);
+    requestData.mutate(updatedScheduleData);
+  };
+  
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div id='calendar'>
@@ -131,11 +141,7 @@ export default function Calendar(props) {
               maxDate={startDay.add(1, 'month')}
               />
           </DemoContainer>
-          <VerticalTabs 
-            // scheduleDays={Array.from({ length: totalDate }, (_, i) => startDay.add(i, 'day'))}
-            // coordinates={paths}
-            scheduleData={scheduleData}
-            />
+          <VerticalTabs scheduleData={scheduleData}/>
           <button onClick={submitPlanHandler}>일정 확정하기 </button>
         </div>
       </div>

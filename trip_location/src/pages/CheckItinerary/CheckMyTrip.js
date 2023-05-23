@@ -59,7 +59,7 @@ const tripLocationList = css`
 
 const tripLocationItem = css`
   width: 70%;
-  height: 250px;
+  height: auto;
   border: 1px solid black;
 `;
 
@@ -80,7 +80,7 @@ const footerButtonContainer = css`
 
 const CheckMyTrip = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [userId, setUserId] = useState(0);
+    const [selectedDate, setSelectedDate] = useState(0);
     const [ schedules, setSchedules ] = useState([]);
 
     const principal = useQuery(['principal'], async () => {
@@ -88,63 +88,67 @@ const CheckMyTrip = () => {
         const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: accessToken});
         return response;
     }, {
-        onSuccess: (response) => {
-            setUserId(response.data.userId);
-        }
+        // onSuccess: (response) => {
+        // }
     });
 
     const myTravelInfo = useQuery(['info'], async () => {
-        const params = {
-            travelId: searchParams.get('id'),
-        }
-
-        const option = {
-            params,
-            headers: {
-                Authorization: `${localStorage.getItem('accessToken')}`
-            }
-        }
-
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', option)
+            const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
+                params: {
+                    travelId: searchParams.get('id'),
+                },
+                headers: {
+                    Authorization: `${localStorage.getItem('accessToken')}`
+                }
+            })
             return response;
         }catch (error) {
 
         }
     }, {
         onSuccess: (response) => {
-            setSchedules(response.data.schedules)
+            setSchedules([ ...response.data.schedules ]);
         }
     })
     let map = null;
+
     useEffect(() => {
-        const container = document.getElementById('map');
-        const options = {
-            center: new kakao.maps.LatLng(37.5522, 126.570667),
-            zoom: 12,
-            level: 3
+        if(!!schedules) {
+            const container = document.getElementById('map');
+            const options = {
+                center: new kakao.maps.LatLng(37.5522, 126.570667),
+                level: 9
+            }
+            map = new kakao.maps.Map(container, options);
+
+            // If the myTravelInfo query is successful
+            if (!!schedules && schedules.length > 0 && schedules[selectedDate].locations.length > 0) {
+                const { lat, lng } = schedules[selectedDate].locations[0];
+
+                // Create a new LatLng object using the lat and lng
+                const position = new kakao.maps.LatLng(lat, lng);
+
+                // Update the center of the map
+                map.setCenter(position);
+
+                // Loop over all locations to create markers
+                schedules[selectedDate].locations.forEach(location => {
+                    const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
+
+                    // Create a marker and add it to the map
+                    const marker = new kakao.maps.Marker({
+                        position: markerPosition,
+                        map: map,
+                    });
+                });
+            }
         }
-        map = new kakao.maps.Map(container, options);
-    },[])
+    }, [myTravelInfo, schedules])
 
-    let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-    schedules.map(position => {
-        let imgSize = new kakao.maps.Size(24,35);
-        let markerImage = new kakao.maps.MarkerImage(imageSrc, imgSize);
-        console.log(position.scheduleDate);
-        position.locations.map(location => {
-            console.log(location.lat);
-            console.log(location.lng);
-            console.log(location.addr);
-
-        })
-        // let marker = new kakao.maps.Marker({
-        //     map: map,
-        //     position: position.lo,
-        //     address: position.address,
-        //     image: markerImage
-        // })
-    })
+    const clickDateHandler = (date) => {
+        setSelectedDate(date);
+    }
 
     return (
         <div css={viewContainer}>
@@ -154,16 +158,22 @@ const CheckMyTrip = () => {
                     height: "60%"
                 }} />
                 <div css={buttonContainer}>
-                    <button css={buttonStyle} disabled>1일차</button>
-                    <button css={buttonStyle} disabled>2일차</button>
-                    <button css={buttonStyle} disabled>3일차</button>
+                    {schedules.map((_, index) => (
+                            <button
+                                css={buttonStyle}
+                                key={index}
+                                onClick={() => clickDateHandler(index)}
+                            >
+                                {index + 1}일차
+                            </button>
+                    ))}
                 </div>
             </div>
             <main css={mainStyle}>
                 <div css={tripLocationList}>
-                    <div css={tripLocationItem}>1</div>
-                    <div css={tripLocationItem}>2</div>
-                    <div css={tripLocationItem}>3</div>
+                    {myTravelInfo.isLoading ? "" : schedules[selectedDate].locations.map((location, index) => (
+                        <div key={index} css={tripLocationItem}>{location.addr}</div>
+                    ))}
                 </div>
                 <div css={footerStyle}>
                     <div css={footerButtonContainer}>

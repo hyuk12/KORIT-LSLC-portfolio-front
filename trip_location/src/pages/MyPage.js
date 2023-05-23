@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react';
-import { css } from "@emotion/react";
-import defaultImg from '../images/logotitle.png';
-import { Button } from "@mui/material";
+import React, {useState} from 'react';
+import {css} from "@emotion/react";
+import {Button} from "@mui/material";
 import styled from "@emotion/styled";
-import { useQuery } from "react-query";
+import {useQuery} from "react-query";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { authenticationState } from "../store/atoms/AuthAtoms";
+import {useNavigate} from "react-router-dom";
 
 const container = css`
   display: flex;
@@ -87,12 +84,12 @@ const myPlanAndReview = css`
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const [authState, setAuthState] = useRecoilState(authenticationState);
   const [userInfo, setUserInfo] = useState({
     email: '',
     userId: '',
     profileImg: ''
   })
+
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
@@ -107,10 +104,9 @@ const MyPage = () => {
     }
   });
 
-  if (principal.isLoading) {
-    return (<div>is Loading...</div>)
+  const myPlanClickHandler = () => {
+    navigate(`/user/${userInfo.userId}/travelList`)
   }
-
 
   return (
     <div css={container}>
@@ -124,7 +120,7 @@ const MyPage = () => {
           <ModifyButton onClick={() => navigate(`/user/modify/password/${principal?.data?.data?.userId || ''}`)}>비밀번호 변경</ModifyButton>
         </div>
         <div css={mainContents}>
-          <div css={myPlanAndReview}>
+          <div css={myPlanAndReview} onClick={myPlanClickHandler}>
             <span>나의 일정</span>
             <span>0</span>
           </div>

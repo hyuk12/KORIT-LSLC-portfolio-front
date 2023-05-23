@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import {css} from '@emotion/react';
 import styled from '@emotion/styled';
 import {
     Box,
@@ -14,11 +14,10 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, {useEffect, useRef, useState} from 'react';
-import { useMutation, useQuery } from "react-query";
-import { useRecoilState } from "recoil";
-import defaultImg from '../../../images/logotitle.png';
-import { authenticationState } from "../../../store/atoms/AuthAtoms";
+import React, {useState} from 'react';
+import {useMutation, useQuery} from "react-query";
+import {useRecoilState} from "recoil";
+import {authenticationState} from "../../../store/atoms/AuthAtoms";
 
 //다시돌아옴
 
@@ -200,8 +199,6 @@ const ModifyForm = () => {
             })
         }
     });
-
-    console.log(principal)
 
     const [inputDisabled, setInputDisabled] = useState({
         name: true,

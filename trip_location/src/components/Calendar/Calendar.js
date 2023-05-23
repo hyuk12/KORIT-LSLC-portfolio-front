@@ -7,7 +7,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
-import {useMutation} from "react-query";
+import {useMutation, useQuery} from "react-query";
 import axios from "axios";
 
 const calendarContainer = css`
@@ -26,6 +26,25 @@ const Total=css`
 export default function Calendar(props) {
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, markerData } = props;
   const [scheduleData, setScheduleData] = useState([]);
+  const [userInfo, setUserInfo] = useState({
+    userId: '',
+    email:'',
+    profileImg:''
+  })
+  const principal = useQuery(["principal"], async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
+    return response;
+  }, {
+
+    onSuccess: (response) => {
+      setUserInfo({
+        userId: response.data.userId,
+        email: response.data.email,
+        profileImg: response.data.postsImgUrl
+      })
+    }
+  });
 
   const resetDay = () => {
     onStartDayChange(startDay);
@@ -55,6 +74,7 @@ export default function Calendar(props) {
         id: id,
         date: date,
         location: location,
+        userId: userInfo.userId
       };
     });
 
@@ -80,6 +100,8 @@ export default function Calendar(props) {
   }, [markerData]);
   localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 
+
+
   const requestData = useMutation(async (scheduleData) => {
 
     const option = {
@@ -90,9 +112,8 @@ export default function Calendar(props) {
     }
     try {
       const response = await axios.post("http://localhost:8080/api/v1/travel/plan", scheduleData, option)
-      console.log(response.status);
 
-      window.location.replace("/")
+      window.location.replace(`/user/${userInfo.userId}`)
       return response;
     }catch (error) {
 

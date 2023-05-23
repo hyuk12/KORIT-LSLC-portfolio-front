@@ -14,71 +14,70 @@ import Modal from "../Modal/Modal";
 import Carousel from 'react-material-ui-carousel';
 import { Paper, Button } from '@mui/material';
 
-const destinations = [
-    {
-        id: 1,
-        image: jeju,
-        alt: "제주도",
-        title: "제주도",
-        englishing: "Jeju",
-    },
-    {
-        id: 2,
-        image: yeosu,
-        alt: "여수",
-        title: "여수",
-        englishing: "Yeosu",
-    },
-    {
-        id: 3,
-        image: busan,
-        alt: "부산",
-        title: "부산",
-        englishing: "Busan",
-    },
-    {
-        id: 4,
-        image: gyeongju,
-        alt: "경주",
-        title: "경주",
-        englishing: "Gyeongju",
-    },
-    {
-        id: 5,
-        image: seoul,
-        alt: "서울",
-        title: "서울",
-        englishing: "Seoul",
-    },
-    {
-        id: 6,
-        image: gangneung,
-        alt: "강릉",
-        title: "강릉",
-        englishing: "Gangneung",
-    },
-    {
-        id: 7,
-        image: ulleungdo,
-        alt: "울릉",
-        title: "울릉",
-        englishing: "Ulleungdo",
-    },
-    {
-        id: 8,
-        image: geojedo,
-        alt: "거제도",
-        title: "거제도",
-        englishing: "Geojedo",
-    },
-    {
-        id: 9,
-        image: incheon,
-        alt: "인천",
-        title: "인천",
-        englishing: "Incheon",
-    },
-];
+// {
+    //     id: 1,
+    //     image: jeju,
+    //     alt: "제주도",
+    //     title: "제주도",
+    //     englishing: "Jeju",
+    // },
+    // {
+    //     id: 2,
+    //     image: yeosu,
+    //     alt: "여수",
+    //     title: "여수",
+    //     englishing: "Yeosu",
+    // },
+    // {
+    //     id: 3,
+    //     image: busan,
+    //     alt: "부산",
+    //     title: "부산",
+    //     englishing: "Busan",
+    // },
+    // {
+    //     id: 4,
+    //     image: gyeongju,
+    //     alt: "경주",
+    //     title: "경주",
+    //     englishing: "Gyeongju",
+    // },
+    // {
+    //     id: 5,
+    //     image: seoul,
+    //     alt: "서울",
+    //     title: "서울",
+    //     englishing: "Seoul",
+    // },
+    // {
+    //     id: 6,
+    //     image: gangneung,
+    //     alt: "강릉",
+    //     title: "강릉",
+    //     englishing: "Gangneung",
+    // },
+    // {
+    //     id: 7,
+    //     image: ulleungdo,
+    //     alt: "울릉",
+    //     title: "울릉",
+    //     englishing: "Ulleungdo",
+    // },
+    // {
+    //     id: 8,
+    //     image: geojedo,
+    //     alt: "거제도",
+    //     title: "거제도",
+    //     englishing: "Geojedo",
+    // },
+    // {
+    //     id: 9,
+    //     image: incheon,
+    //     alt: "인천",
+    //     title: "인천",
+    //     englishing: "Incheon",
+    // },
+
 
 const carouselStyle = css`
   width: 100%;
@@ -122,15 +121,19 @@ const smallText = css`
 `;
 
 
-const PopularDestinations = () => {
+const PopularDestinations = ({ destination }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const popularRegions = ['제주', '여수', '부산', '경주', '서울', '강릉', '울릉', '거제', '인천'];
     const itemPerSlide = 3;
     const destinationChunks = [];
 
-    for (let i = 0; i < destinations.length; i += itemPerSlide) {
-        destinationChunks.push(destinations.slice(i, i + itemPerSlide));
+    for (let i = 0; i < popularRegions.length; i += itemPerSlide) {
+        // destinationChunks.push(popularRegions.slice(i, i + itemPerSlide));
+        const chunk = popularRegions.slice(i, i + itemPerSlide);
+        const filterData = destination.filter((data) => chunk.includes(data.regionName));
+        destinationChunks.push(filterData);
     }
 
     const handleImageClick = (destination) => {
@@ -179,13 +182,13 @@ const PopularDestinations = () => {
                                 onClick={() => handleImageClick(destination)}
                                 css={paperStyle}
                             >
-                                <img css={popularImg} src={destination.image} alt={destination.alt}/>
+                                <img css={popularImg} src={destination.regionImgUrl} alt={destination.regionName}/>
                                 <div css={textOverlay}>
                                     <div css={largeText}>
-                                        {destination.title}
+                                        {destination.regionName}
                                     </div>
                                     <div css={smallText}>
-                                        {destination.englishing}
+                                        {destination.regionEngName}
                                     </div>
                                 </div>
                             </Paper>

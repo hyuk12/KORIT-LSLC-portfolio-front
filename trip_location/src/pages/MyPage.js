@@ -6,6 +6,8 @@ import styled from "@emotion/styled";
 import {useQuery} from "react-query";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import TravelList from '../components/TravelList/TravelList';
+import MyReviewList from '../components/ReviewList/MyReviewList';
 
 const container = css`
   display: flex;
@@ -82,8 +84,17 @@ const myPlanAndReview = css`
   cursor: pointer;
 `;
 
+const planAndReviewContainer =css`
+  display: flex;
+  align-content:flex-start; 
+  flex-direction:column; 
+  flex-wrap:wrap; 
+  overflow:auto;
+`;
+
 const MyPage = () => {
   const navigate = useNavigate();
+  const [checkType,setCheckType] = useState("myplan");
   const [userInfo, setUserInfo] = useState({
     email: '',
     userId: '',
@@ -104,8 +115,8 @@ const MyPage = () => {
     }
   });
 
-  const myPlanClickHandler = () => {
-    navigate(`/user/${userInfo.userId}/travelList`)
+  const myPlanChangeHandler = (type) => {
+    setCheckType(type);
   }
 
   return (
@@ -120,17 +131,17 @@ const MyPage = () => {
           <ModifyButton onClick={() => navigate(`/user/modify/password/${principal?.data?.data?.userId || ''}`)}>비밀번호 변경</ModifyButton>
         </div>
         <div css={mainContents}>
-          <div css={myPlanAndReview} onClick={myPlanClickHandler}>
+          <div css={myPlanAndReview} onClick={() => myPlanChangeHandler('myPlan')}>
             <span>나의 일정</span>
             <span>0</span>
           </div>
-          <div css={myPlanAndReview}>
+          <div css={myPlanAndReview} onClick={() => myPlanChangeHandler('myReview')}>
             <span>나의 리뷰</span>
             <span>0</span>
           </div>
         </div>
-        <div>
-          <h2>나의 일정</h2>
+        <div css={planAndReviewContainer}>
+          {checkType === 'myPlan'?(<TravelList/>):(<MyReviewList/>)}
         </div>
       </main>
     </div>

@@ -102,7 +102,7 @@ export default function Calendar(props) {
 
 
 
-  const requestData = useMutation(async (scheduleData) => {
+  const requestData = useMutation(async (updatedScheduleData) => {
 
     const option = {
       headers: {
@@ -111,7 +111,7 @@ export default function Calendar(props) {
       }
     }
     try {
-      const response = await axios.post("http://localhost:8080/api/v1/travel/plan", scheduleData, option)
+      const response = await axios.post("http://localhost:8080/api/v1/travel/plan", updatedScheduleData, option)
 
       window.location.replace(`/user/${userInfo.userId}`)
       return response;
@@ -132,7 +132,7 @@ export default function Calendar(props) {
     const updatedScheduleData = scheduleData.map((schedule) => {
       return {
         ...schedule,
-        partyData: partyData,
+        partyData: partyData.partyData,
       };
     });
     // console.log(updatedScheduleData);

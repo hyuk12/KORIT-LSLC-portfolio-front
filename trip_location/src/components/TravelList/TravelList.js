@@ -1,13 +1,21 @@
+/** @jsxImportSource @emotion/react */
+import {css} from "@emotion/react";
 import React, {useState} from 'react';
 import {useQuery} from "react-query";
 import axios from "axios";
 
+const myTravelContainer = css`
+    margin-top: 64px;
+`;
+const travelContainer =css`
+
+`;
 
 const TravelList = () => {
     const [userInfo, setUserInfo] = useState({userId: ''});
     const [regionInfo, setRegionInfo] = useState([
         {
-            region
+            
         }
     ])
     const [myTravelList, setMyTravelList] = useState([
@@ -49,8 +57,8 @@ const TravelList = () => {
         }
     })
     return (
-        <div>
-
+        <div css={myTravelContainer}>
+            <div css={travelContainer}>adasdasdsa</div>
         </div>
     );
 };

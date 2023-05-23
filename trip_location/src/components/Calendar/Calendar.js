@@ -100,8 +100,6 @@ export default function Calendar(props) {
   }, [markerData]);
   localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 
-
-
   const requestData = useMutation(async (updatedScheduleData) => {
 
     const option = {
@@ -111,7 +109,7 @@ export default function Calendar(props) {
       }
     }
     try {
-      const response = await axios.post("http://localhost:8080/api/v1/travel/plan", updatedScheduleData, option)
+      const response = await axios.post("http://localhost:8080/api/v1/travel/plan/save", updatedScheduleData, option)
 
       window.location.replace(`/user/${userInfo.userId}`)
       return response;

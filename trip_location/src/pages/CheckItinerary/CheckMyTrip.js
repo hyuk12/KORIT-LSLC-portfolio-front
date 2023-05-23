@@ -1,14 +1,17 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
+import {useQuery} from "react-query";
+import axios from "axios";
+import {useSearchParams} from "react-router-dom";
 
 const { kakao } = window;
 
 const viewContainer = css`
   display: flex;
   margin-top: 64px;
-  width: 2560px;
-  height: 1600px;
+  width: 1920px;
+  height: 1080px;
 
 `;
 
@@ -34,7 +37,6 @@ const buttonStyle = css`
   width: 150px;
   height: 50px;
 `;
-
 
 const mainStyle = css`
   display: flex;
@@ -76,9 +78,45 @@ const footerButtonContainer = css`
   width: 100%;
 `;
 
-
-
 const CheckMyTrip = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [userId, setUserId] = useState(0);
+    const [ schedules, setSchedules ] = useState([]);
+
+    const principal = useQuery(['principal'], async () => {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: accessToken});
+        return response;
+    }, {
+        onSuccess: (response) => {
+            setUserId(response.data.userId);
+        }
+    });
+
+    const myTravelInfo = useQuery(['info'], async () => {
+        const params = {
+            travelId: searchParams.get('id'),
+        }
+
+        const option = {
+            params,
+            headers: {
+                Authorization: `${localStorage.getItem('accessToken')}`
+            }
+        }
+
+        try {
+            const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', option)
+            return response;
+        }catch (error) {
+
+        }
+    }, {
+        onSuccess: (response) => {
+            setSchedules(response.data.schedules)
+        }
+    })
+    let map = null;
     useEffect(() => {
         const container = document.getElementById('map');
         const options = {
@@ -86,8 +124,27 @@ const CheckMyTrip = () => {
             zoom: 12,
             level: 3
         }
-        const map = new kakao.maps.Map(container, options);
+        map = new kakao.maps.Map(container, options);
     },[])
+
+    let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+    schedules.map(position => {
+        let imgSize = new kakao.maps.Size(24,35);
+        let markerImage = new kakao.maps.MarkerImage(imageSrc, imgSize);
+        console.log(position.scheduleDate);
+        position.locations.map(location => {
+            console.log(location.lat);
+            console.log(location.lng);
+            console.log(location.addr);
+
+        })
+        // let marker = new kakao.maps.Marker({
+        //     map: map,
+        //     position: position.lo,
+        //     address: position.address,
+        //     image: markerImage
+        // })
+    })
 
     return (
         <div css={viewContainer}>
@@ -115,8 +172,6 @@ const CheckMyTrip = () => {
                     </div>
                 </div>
             </main>
-
-
         </div>
 
     );

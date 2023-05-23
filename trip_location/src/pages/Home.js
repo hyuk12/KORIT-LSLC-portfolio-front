@@ -7,6 +7,8 @@ import building from '../images/building.jpg';
 import PopularDestinations from '../components/contents/main/PopularDestinations';
 import styled from "@emotion/styled";
 import LocationCard from "../components/contents/main/LocationCard";
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 
 const MainWrapper = styled.main`
@@ -77,6 +79,17 @@ const Home = () => {
         };
     }, [images]);
 
+    const regionData = useQuery('cardData', async () => {
+        const response = await axios.get('http://localhost:8080/post');
+        return response.data;
+    });
+
+    const { data: destination, isLoading } = regionData;
+
+    if (isLoading) {
+        return (<div>is Loading...</div>)
+    }
+
     return (
         <MainWrapper>
             <SectionWrapper>
@@ -90,7 +103,7 @@ const Home = () => {
                     <StyleSubTitleTypography variant="subtitle1" component="p">
                         POPULAR DESTINATIONS
                     </StyleSubTitleTypography>
-                    <PopularDestinations />
+                    <PopularDestinations destination={destination} />
                 </Container>
             </SectionWrapper>
             <SectionWrapper>
@@ -100,7 +113,7 @@ const Home = () => {
                 <StyleSubTitleTypography variant="subtitle1" component="p">
                     여행지를 검색하거나 목록에서 직접 선택해주세요.
                 </StyleSubTitleTypography>
-                <LocationCard/>
+                <LocationCard destination={destination}/>
                 <footer css={footerContainer} />
             </SectionWrapper>
 

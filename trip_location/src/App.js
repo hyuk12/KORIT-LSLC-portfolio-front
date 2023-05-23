@@ -46,8 +46,8 @@ function App() {
         <Route path={"/user/modify/:id"} element={<AuthRouter path={'/user/modify/:id'} element={<ModifyForm />} />} />
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
-        <Route path={"/user/trip/:id/"} element={<AuthRouter path={'/user/trip/:id/'} element={<CheckMyTrip />} />} />
-        <Route path={"/user/trip/12"} element={<AuthRouter path={'/user/trip/12/'} element={<MapSorting/>} />} />  
+        <Route path={"/user/:id/trip"} element={<AuthRouter path={'/user/:id/trip'} element={<CheckMyTrip />} />} />
+
       </Routes>
 
     </>

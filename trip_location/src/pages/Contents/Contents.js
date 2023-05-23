@@ -127,7 +127,6 @@ const Contents = () => {
                 onEndDayChange={endDayHandle}
                 markerData={paths}
               />
-
           </div>
         </div>
       </div>

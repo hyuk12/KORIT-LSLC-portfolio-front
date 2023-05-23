@@ -183,6 +183,7 @@ const profileImg =css`
   width: 10%;
   box-sizing: border-box;
   border-radius: 50%;
+  overflow: hidden;
 `;  
 
 const userText =css`
@@ -331,7 +332,10 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
      }    
   });
 
-
+  useEffect(() => {
+    setPartyUsers([myInfo]);
+  }, [myInfo]);
+  
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
@@ -347,12 +351,11 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
           phone: response.data.phone,
           profileImg: response.data.postsImgUrl,
         })
-        setPartyUsers([myInfo]);
       }
   });
-  console.log(searchInfo);
+  // console.log(searchInfo);
   console.log(myInfo);
-  console.log(partyUsers);
+  // console.log(partyUsers);
   
   const submitSearchHandler = (e) => {
     e.preventDefault();
@@ -373,7 +376,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
 
   const addPartyHandler = () => {
     const isAlreadyAdded = partyUsers.some((party) => party.userId === searchInfo.userId);
-    console.log(isAlreadyAdded);
+    // console.log(isAlreadyAdded);
     const updatedPartyData = !isAlreadyAdded ? [...partyUsers, searchInfo] : partyUsers;
     setPartyUsers(updatedPartyData);
   };
@@ -386,28 +389,23 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     });
   };
   
-  const savePartyHandler =()=> {
-    const partyData = partyUsers.map((party)=>{
-      const partyUser =[
-        {
+  const savePartyHandler = () => {
+    const partyData = {
+      partyData: partyUsers.map((party) => {
+        return {
           userId: party.userId,
           name: party.name,
-          email: party.email,
-          phone: party.phone,
-          profileImg : party.profileImg
-        },
-      ];
-      
-      return {
-        id : partyId.current,
-        partyData: partyUser,
-      };
-
-    });
-
-    localStorage.setItem('partyData',JSON.stringify(partyData));
+        };
+      }),
+    };
+  
+    localStorage.setItem('partyData', JSON.stringify(partyData));
     onClose();
-  }
+  };
+
+  
+  
+  
   console.log(localStorage.getItem('partyData'));
   return (
       <div css={modalStyle} onClick={onClose}>

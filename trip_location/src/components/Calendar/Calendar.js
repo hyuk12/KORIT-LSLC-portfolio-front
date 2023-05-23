@@ -136,7 +136,7 @@ export default function Calendar(props) {
       };
     });
     console.log(updatedScheduleData);
-    // requestData.mutate(updatedScheduleData);
+    requestData.mutate(updatedScheduleData);
     localStorage.removeItem("partyData");
   };
   

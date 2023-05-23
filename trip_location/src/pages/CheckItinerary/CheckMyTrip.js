@@ -1,6 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
+import {useQuery} from "react-query";
+import axios from "axios";
+import {useSearchParams} from "react-router-dom";
 
 const { kakao } = window;
 
@@ -76,12 +79,43 @@ const footerButtonContainer = css`
 `;
 
 const CheckMyTrip = () => {
-    const [ positions, setPositions ] = useState([
-        {
-            address: '',
-            latlng: ''
-        },
-    ]);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [userId, setUserId] = useState(0);
+    const [ schedules, setSchedules ] = useState([]);
+
+    const principal = useQuery(['principal'], async () => {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: accessToken});
+        return response;
+    }, {
+        onSuccess: (response) => {
+            setUserId(response.data.userId);
+        }
+    });
+
+    const myTravelInfo = useQuery(['info'], async () => {
+        const params = {
+            travelId: searchParams.get('id'),
+        }
+
+        const option = {
+            params,
+            headers: {
+                Authorization: `${localStorage.getItem('accessToken')}`
+            }
+        }
+
+        try {
+            const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', option)
+            return response;
+        }catch (error) {
+
+        }
+    }, {
+        onSuccess: (response) => {
+            setSchedules(response.data.schedules)
+        }
+    })
     let map = null;
     useEffect(() => {
         const container = document.getElementById('map');
@@ -94,16 +128,22 @@ const CheckMyTrip = () => {
     },[])
 
     let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-    positions.map(position => {
+    schedules.map(position => {
         let imgSize = new kakao.maps.Size(24,35);
         let markerImage = new kakao.maps.MarkerImage(imageSrc, imgSize);
+        console.log(position.scheduleDate);
+        position.locations.map(location => {
+            console.log(location.lat);
+            console.log(location.lng);
+            console.log(location.addr);
 
-        let marker = new kakao.maps.Marker({
-            map: map,
-            position: position.latlng,
-            address: position.address,
-            image: markerImage
         })
+        // let marker = new kakao.maps.Marker({
+        //     map: map,
+        //     position: position.lo,
+        //     address: position.address,
+        //     image: markerImage
+        // })
     })
 
     return (

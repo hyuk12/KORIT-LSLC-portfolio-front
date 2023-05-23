@@ -63,7 +63,7 @@ const resetButton= css`
 
 
 
-const Contents = ({ map }) => {
+const Contents = () => {
   const [serchParams, setSearchParams] = useSearchParams();
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
@@ -110,7 +110,7 @@ const Contents = ({ map }) => {
     <>
       <div css={container}>
         <div css={main}>
-          <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths} map={map}/>
+          <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
           <div css={sidebar}>
               <div css={Title}>{serchParams.get("destinationTitle")}</div>
               <div css={avatarBox}>
@@ -127,7 +127,7 @@ const Contents = ({ map }) => {
                 onEndDayChange={endDayHandle}
                 markerData={paths}
               />
-               {/* <MapSearch map={map} /> */}
+
           </div>
         </div>
       </div>

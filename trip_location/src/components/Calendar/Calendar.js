@@ -100,8 +100,6 @@ export default function Calendar(props) {
   }, [markerData]);
   localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
 
-
-
   const requestData = useMutation(async (updatedScheduleData) => {
 
     const option = {

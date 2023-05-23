@@ -30,8 +30,8 @@ const MapSearch = ({ map }) => {
             apikey: 'ab3439121662f71fcd5c47373cfa8cf0',
           });
            
-        const latitude = localStorage.getItem('firstLatitude');
-        const longitude = localStorage.getItem('firstLongitude');
+        const latitude = localStorage.getItem('titleLatitude');
+        const longitude = localStorage.getItem('titleLongitude');
         const options = {
           location: new kakao.maps.LatLng(parseFloat(latitude), parseFloat(longitude)),
           radius: 10000,

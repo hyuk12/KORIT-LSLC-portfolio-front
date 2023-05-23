@@ -114,6 +114,7 @@ const CheckMyTrip = () => {
     let map = null;
 
     useEffect(() => {
+
         if(!!schedules) {
             const container = document.getElementById('map');
             const options = {
@@ -143,6 +144,7 @@ const CheckMyTrip = () => {
                     });
                 });
             }
+
         }
     }, [myTravelInfo, schedules])
 

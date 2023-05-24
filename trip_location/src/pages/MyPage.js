@@ -110,6 +110,7 @@ const MyPage = () => {
       setUserInfo({
         email: response.data.email,
         userId: response.data.userId,
+        name: response.data.name,
         profileImg: response.data.postsImgUrl
       })
     }
@@ -125,7 +126,7 @@ const MyPage = () => {
         <div css={imgContainer}>
           <img css={imgStyle} src={userInfo.profileImg} alt=""/>
         </div>
-        <div>{principal?.data?.data?.email || '이메일 로딩 중...'}</div>
+        <div>{userInfo.email || '이메일 로딩 중...'}</div>
         <div css={modifyButtons}>
           <ModifyButton onClick={() => navigate(`/user/modify/${principal?.data?.data?.userId || ''}`)}>수정하기</ModifyButton>
           <ModifyButton onClick={() => navigate(`/user/modify/password/${principal?.data?.data?.userId || ''}`)}>비밀번호 변경</ModifyButton>

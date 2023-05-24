@@ -3,6 +3,7 @@ import {css} from "@emotion/react";
 import React, {useEffect, useState} from 'react';
 import {useQuery} from "react-query";
 import axios from "axios";
+import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 
 const cardContainer =css`
     display: flex;
@@ -39,26 +40,27 @@ const travelText=css`
     flex-direction: column;
 `;
 
-const TravelList = () => {
+const TravelList = ({}) => {
     const [userInfo, setUserInfo] = useState({
         userId:'',
         name:'',
     });
-    const [regionInfo, setRegionInfo] = useState([
-        {
-            regionName:'',
-        }
-    ])
     const [myTravelList, setMyTravelList] = useState([
         {
             travelId: '',
-            scheduleDate: ''
-        }
+            scheduleDate: [],
+        },
     ]);
+
+    const [regionInfo, setRegionInfo] = useState({
+            regionName:'',
+    });
+    const [schedules, setSchedules] = useState([]);
+    const [allTravelList, setAllTravelList] = useState([]);
 
     const principal = useQuery(['principal'], async () => {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: accessToken});
+        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
         onSuccess: (response) => {
@@ -69,38 +71,38 @@ const TravelList = () => {
         }
     })
 
-    console.log(userInfo);
+    // console.log(userInfo);
 
     const travelList = useQuery(['travelList'], async () => {
         const params = {
-            userId: userInfo.userId,
-        }
+            userId: userInfo.userId !== '' ? parseInt(userInfo.userId) : 0
+          }          
         const option = {
-            params,
+            params: params,
             headers: {
                 Authorization: `${localStorage.getItem('accessToken')}`
             }
         }
         try {
             const response = await axios.get('http://localhost:8080/api/v1/travel/plan/list',option)
-            console.log(response);
+            // console.log(response);
             return response;
         }catch (error) {
             alert('여행 일정이 없습니다.')
+            return error;
         }
     }, {
         onSuccess: (response) => {
-           setRegionInfo({
-            // regionName: response.data.locations
-           })
-        //    console.log(regionInfo);
+            setAllTravelList([...response.data]);
         }
     })
+
     const regionImg = useQuery(['regionImg'], async()=>{
         const params = {
-            travelName: TravelList.locations
+            travelname: regionInfo.regionName
         }
         const option = {
+            params: params,
             headers:{
                 Authorzation : `${localStorage.getItem('accessToken')}`
             }
@@ -108,15 +110,20 @@ const TravelList = () => {
         const response = await axios.get('http://localhost:8080/api/v1/travel/plan/region', option);
         return response;
     })
-
-    useEffect(()=>{
+    
+    useEffect(() => {
         setUserInfo(userInfo);
-    },[userInfo])
-
-
-  
-
-  
+        setAllTravelList(allTravelList);
+        const extractedSchedules = allTravelList.map((schedule) => schedule.schedules);
+        setSchedules(extractedSchedules);
+        // const scheduleLocation = schedules.map((location)=>location.locations.addr[0]);
+        
+    }, [userInfo,allTravelList, allTravelList]);
+          
+    
+    console.log(allTravelList);
+    console.log(regionInfo);
+    console.log(schedules);
     return (
         <div css={cardContainer}>
             <div css={cardImgContainer}>이미지
@@ -128,10 +135,36 @@ const TravelList = () => {
                 </div>
                 <div css={travelText}>
                     <div>{userInfo.name}</div>
-                    <div>2</div>
-                    <div>3</div>
+                    <div>ㅁㅁㅁ</div>
+                    <div>일정</div>
                 </div>
             </div>
+            {/* <Grid container spacing={4} css={contents}>
+                {filterData.map((data, index) => (
+                    <Grid key={index} item xs={12} sm={6} md={3}>
+                        <Card onClick={() => handleCardClick(data)}>
+
+                            <CardActionArea >
+                                <CardMedia
+                                    component="img"
+                                    alt={data.regionName}
+                                    height="140"
+                                    image={data.regionImgUrl}
+                                    title={data.regionName}
+                                />
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                        {data.regionName}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary" component="p">
+                                        {data.regionEngName}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid> */}
         </div>
     );
 };

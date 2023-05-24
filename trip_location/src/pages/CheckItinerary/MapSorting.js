@@ -20,7 +20,16 @@ const mapContainer = css`
     
 `;
 
+const title = css`
+  text-align: center;
+  font-size: 50px;
+`;
 
+const listContainer = css`
+  width: 500px;
+  height: 500px;
+  text-align: center;
+`;
 const buttonContainer = css`
   display: flex;
   justify-content: space-around;
@@ -79,42 +88,29 @@ const footerButtonContainer = css`
 
 const MapSorting = () => {
   useEffect(() => {
-    const containers = document.getElementsByClassName('map-container');
-    const loc1 = localStorage.getItem('loc');
+    const containers = document.getElementById('map');
     const options = {
       center: new kakao.maps.LatLng(35.1798200522868, 129.075087492149),
+      level:9,
       draggable: false,
       disableDoubleClick: true
     };
-
-  
-    Array.from(containers).forEach(container => {
-      const map = new kakao.maps.Map(container, options);
-
-      const marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(loc1),
-        map: map
-      });
-    });
+    const map = new kakao.maps.Map(containers, options);
   }, []);
 
-  const mapContainers = [];
 
-  for (let i = 0; i < localStorage.getItem('number') ; i++) {   //나중에 db에서 값을 받아와 해당 값만큼 지도 생성하기
-    mapContainers.push(
-      <div
-        key={`map-container-${i}`}
-        className="map-container"
-        style={{ width: "15%", height: "15%" }}
-      />
-    );
-  }
+
 
 
     return (
         <div css={viewContainer}>
             <div css={mapContainer}>
-                {mapContainers}
+              <div css={title}>제목</div>
+              <div id='map'  style={{
+                    width: "500px",
+                    height: "500px"
+                }} />
+                <div css={listContainer}>여행지 리스트 출력하는곳</div>
                 <div css={buttonContainer}>
                     <button css={buttonStyle} disabled>1일차</button>
                     <button css={buttonStyle} disabled>2일차</button>
@@ -123,7 +119,6 @@ const MapSorting = () => {
             </div>
             <main css={mainStyle}>
                 <div css={tripLocationList}>
-                  
                     <div css={tripLocationItem}>1</div>
                     <div css={tripLocationItem}>2</div>
                     <div css={tripLocationItem}>3</div>

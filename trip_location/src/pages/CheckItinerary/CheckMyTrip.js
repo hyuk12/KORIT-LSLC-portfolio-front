@@ -96,21 +96,24 @@ const footerButtonContainer = css`
 `;
 
 const CheckMyTrip = () => {
-    const navigate = useNavigate();
-    const [markers, setMarkers] = useState([]);
+    const [travelPlan, setTravelPlan] = useState({schedules: []});
+    const [userInfo , setUserInfo] = useState({userId: ''})
     const [isEditable, setIsEditable] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const [selectedDate, setSelectedDate] = useState(0);
     const [ schedules, setSchedules ] = useState([]);
-    // const usePrevious = (value) => {
-    //     const ref = useRef();
-    //     useEffect(() => {
-    //         ref.current = value;
-    //     });
-    //     return ref.current;
-    // }
+    const [ tempSchedules, setTempSchedules ] = useState([]);
 
-    // const prevIsEditable = usePrevious(isEditable);
+    const usePrevious = (value) => {
+        const ref = useRef();
+        useEffect(() => {
+            ref.current = value;
+        });
+        return ref.current;
+    }
+
+    const prevIsEditable = usePrevious(isEditable);
+
 
     const principal = useQuery(['principal'], async () => {
         const accessToken = localStorage.getItem('accessToken');
@@ -118,7 +121,11 @@ const CheckMyTrip = () => {
 
         return response;
     }, {
-
+        onSuccess: (response) => {
+            setUserInfo({
+                userId: response.data.userId,
+            })
+        }
     });
 
     const myTravelInfo = useQuery(['info'], async () => {
@@ -126,7 +133,7 @@ const CheckMyTrip = () => {
             if (!principal.isLoading){
                 const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
                     params: {
-                        userId: principal.data.data.userId,
+                        userId: userInfo.userId,
                         travelId: searchParams.get('id'),
                     },
                     headers: {
@@ -146,19 +153,8 @@ const CheckMyTrip = () => {
     })
     let map = null;
 
-    // const updateSchedules = useMutation(async () => {
-    //     const option = {
-    //         headers: {
-    //             Authorization: `${localStorage.getItem('accessToken')}`
-    //         }
-    //     }
-    //     try {
-    //         const response = await axios.put('http://localhost:8080/api/v1/travel/plan/update', schedules, option);
-    //         return response;
-    //     }catch (error) {
-    //         console.log(error);
-    //     }
-    // });
+
+
 
     useEffect(() => {
 
@@ -180,58 +176,103 @@ const CheckMyTrip = () => {
                 // Update the center of the map
                 map.setCenter(position);
 
-                // Loop over all locations to create markers
-                const createdMarkers = schedules[selectedDate].locations.map((location) => {
+
+                // 스케쥴의 해당 선택 일차의 경로를 반복을 돌려 마커를 찍는다.
+                schedules[selectedDate].locations.map((location) => {
                     const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
 
-                    // Create a marker and add it to the map
+                    // 마커를 맵위에 그린다.
                     const marker = new kakao.maps.Marker({
                         position: markerPosition,
                         map: map,
+                        draggable: isEditable
+
                     });
-                    return marker;
+
+                    const geometry = (lat, lng, updateLocation) => {
+                        let geocoder = new kakao.maps.services.Geocoder();
+                        let coord = new kakao.maps.LatLng(lat, lng);
+                        const callBack = (result, status) => {
+                            if(status === kakao.maps.services.Status.OK) {
+                                console.log(result[0].address.address_name);
+                                console.log(location.addr)
+                                updateLocation(result[0].address.address_name);
+                            }
+                        }
+                        geocoder.coord2Address(coord.getLng(), coord.getLat(), callBack);
+                    }
+                    let locationToUpdate = {};
+
+                    kakao.maps.event.addListener(marker, 'dragend', () => {
+                        let latlng = marker.getPosition();
+                        console.log(latlng.getLat());
+                        console.log(latlng.getLng());
+
+                        setSchedules(prevSchedules => {
+                            const newSchedules = [...prevSchedules];
+                            const scheduleToUpdate = schedules[selectedDate];
+                            if(!locationToUpdate || !scheduleToUpdate.locations) {
+                                console.error("오류났다")
+                                return newSchedules;
+                            }
+                            locationToUpdate = scheduleToUpdate.locations.find(location => location.lat === lat && location.lng === lng);
+
+                            if (!locationToUpdate) {
+                                console.error("Cannot find the location to update");
+                                return newSchedules;
+                            }
+                            locationToUpdate.lat = latlng.getLat();
+                            locationToUpdate.lng = latlng.getLng();
+
+                            return newSchedules;
+                        });
+
+                        const updateLocation = (newAddr) => {
+                            setSchedules(schedules => {
+                                if(!locationToUpdate) {
+                                    console.error("오류났다")
+                                    return schedules;
+                                }
+                                locationToUpdate.addr = newAddr;
+                                return schedules;
+                            })
+                        }
+
+                        geometry(latlng.getLat(), latlng.getLng(), updateLocation);
+                    });
                 });
-                setMarkers(createdMarkers);
             }
+        }
+    }, [myTravelInfo, schedules, isEditable])
+
+    const updateTravelInfo = useMutation(async (travelPlan) => {
+        const option = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `${localStorage.getItem('accessToken')}`
+            }
+        }
+        try {
+            const response = await axios.put(`http://localhost:8080/api/v1/travel/plan/update/${searchParams.get('id')}`, travelPlan, option);
+            return response;
+        }catch (error) {
 
         }
-    }, [myTravelInfo, schedules])
-
-
-
-    // useEffect(() => {
-    //     if (isEditable) {
-    //         markers.forEach((marker) => {
-    //             marker.setDraggable(true);
-    //             kakao.maps.event.addListener(marker, 'dragend', () => {
-    //                 const newPosition = marker.getPosition();
-    //                 const lat = newPosition.lat();
-    //                 const lng = newPosition.lng();
-    //                 setSchedules(schedules.map((schedule) => {
-    //                     schedule.locations = schedule.locations.map(location => {
-    //                         location.lat = lat;
-    //                         location.lng = lng;
-    //                     });
-    //                     return schedule;
-    //                 }))
-    //             })
-    //         })
-    //     } else if(!isEditable && prevIsEditable) {
-    //         markers.forEach((marker) => {
-    //             marker.setDraggable(false);
-    //             kakao.maps.event.removeListener(marker, 'dragend');
-    //         });
-    //         // updateSchedules.mutate();
-    //     }
-    // }, [isEditable]);
-
+    })
 
     const clickDateHandler = (date) => {
         setSelectedDate(date);
     }
 
+    const editHandler = () => {
+        setIsEditable(true);
+    }
+
     const saveHandler = () => {
         setIsEditable(false);
+        const updatedTravelPlan = {...travelPlan, schedules: schedules}
+        setTravelPlan(updatedTravelPlan);
+        updateTravelInfo.mutate(updatedTravelPlan);
     }
 
     return (
@@ -266,9 +307,9 @@ const CheckMyTrip = () => {
                 </div>
                 <div css={footerStyle}>
                     <div css={footerButtonContainer}>
-                        <button css={buttonStyle} onClick={() => setIsEditable(true)} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
+                        <button css={buttonStyle} onClick={editHandler} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
                         <button css={buttonStyle} onClick={saveHandler} style={{display: isEditable ? 'block' : 'none'}}>저장</button>
-                        <button css={buttonStyle} onClick={() => navigate(`/user/${principal.data.data.userId}`, {replace: true})}>취소</button>
+                        <button css={buttonStyle} onClick={() => window.location.replace(`/user/${principal.data.data.userId}`)}>취소</button>
                     </div>
                 </div>
             </main>

@@ -319,7 +319,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     }
   },{
     onSuccess: (response) => {
-        console.log("Successfully search");
+
         if (response?.data?.data) {
           setSearchInfo({
             userId: response.data.data.userId,
@@ -343,7 +343,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
   }, {
     keepPreviousData: true,
     onSuccess: (response)=>{
-        console.log("Successfully principal");
+
         setMyInfo({
           userId: response.data.userId,
           email: response.data.email,
@@ -353,9 +353,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
         })
       }
   });
-  // console.log(searchInfo);
-  console.log(myInfo);
-  // console.log(partyUsers);
+
   
   const submitSearchHandler = (e) => {
     e.preventDefault();
@@ -403,10 +401,6 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     onClose();
   };
 
-  
-  
-  
-  console.log(localStorage.getItem('partyData'));
   return (
       <div css={modalStyle} onClick={onClose}>
           <div css={modalContent} onClick={(e) => e.stopPropagation()}>

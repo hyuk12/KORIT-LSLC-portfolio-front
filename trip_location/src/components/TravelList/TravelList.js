@@ -5,6 +5,8 @@ import {useQuery} from "react-query";
 import axios from "axios";
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 const cardContainer =css`
     display: flex;
@@ -48,6 +50,7 @@ const travelText=css`
 
 const TravelList = () => {
     const navigate = useNavigate();
+    const authState = useRecoilValue(authenticationState);
     const [userInfo, setUserInfo] = useState({
         userId:'',
         name:'',
@@ -73,6 +76,7 @@ const TravelList = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
+        enabled: authState.isAuthenticated,
         onSuccess: (response) => {
             setUserInfo({
                 userId: response.data.userId,

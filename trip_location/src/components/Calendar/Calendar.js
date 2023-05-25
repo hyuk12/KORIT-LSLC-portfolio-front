@@ -9,6 +9,8 @@ import React, { useEffect, useState } from 'react';
 import VerticalTabs from '../Tab/Tab';
 import {useMutation, useQuery} from "react-query";
 import axios from "axios";
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 const calendarContainer = css`
   display:flex;
@@ -24,6 +26,7 @@ const Total=css`
 `;
 
 export default function Calendar(props) {
+  const authState = useRecoilValue(authenticationState);
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, markerData } = props;
   const [scheduleData, setScheduleData] = useState([]);
   const [userInfo, setUserInfo] = useState({
@@ -36,7 +39,7 @@ export default function Calendar(props) {
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
     return response;
   }, {
-
+    enabled: authState.isAuthenticated,
     onSuccess: (response) => {
       setUserInfo({
         userId: response.data.userId,

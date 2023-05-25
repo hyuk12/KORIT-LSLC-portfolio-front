@@ -94,7 +94,7 @@ const ModifyPassword = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
         return response;
     }, {
-
+        enabled: authState.isAuthenticated,
         onSuccess: (response) => {
             setUpdateUserPassword({
                 email: response.data.email

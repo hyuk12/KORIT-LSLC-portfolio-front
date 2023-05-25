@@ -108,7 +108,7 @@ const Modal = ({ isOpen, onClose, destination }) => {
           <h2>{title}</h2>
           <span>{englishing}</span>
           <p css={Pstyle}>{description}</p>
-          <button css={buttonStyle} onClick={() => navigate(`/contents?destinationTitle=${title}`)}>일정 만들기</button>
+          <button css={buttonStyle} onClick={() => navigate(`/contents?destinationTitle=${title}`, {replace: true})}>일정 만들기</button>
         </div>
       </div>
     </div>

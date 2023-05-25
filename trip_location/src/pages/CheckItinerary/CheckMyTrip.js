@@ -3,7 +3,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {css} from "@emotion/react";
 import {useMutation, useQuery} from "react-query";
 import axios from "axios";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 const { kakao } = window;
 
@@ -96,35 +98,28 @@ const footerButtonContainer = css`
 `;
 
 const CheckMyTrip = () => {
+    const authState = useRecoilValue(authenticationState);
     const [travelPlan, setTravelPlan] = useState({schedules: []});
     const [userInfo , setUserInfo] = useState({userId: ''})
     const [isEditable, setIsEditable] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const [selectedDate, setSelectedDate] = useState(0);
     const [ schedules, setSchedules ] = useState([]);
-    const [ tempSchedules, setTempSchedules ] = useState([]);
-
-    const usePrevious = (value) => {
-        const ref = useRef();
-        useEffect(() => {
-            ref.current = value;
-        });
-        return ref.current;
-    }
-
-    const prevIsEditable = usePrevious(isEditable);
-
 
     const principal = useQuery(['principal'], async () => {
         const accessToken = localStorage.getItem('accessToken');
         const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: {accessToken: accessToken}});
-
+        console.log(response)
         return response;
     }, {
+        enabled: authState.isAuthenticated,
         onSuccess: (response) => {
-            setUserInfo({
-                userId: response.data.userId,
-            })
+            if (response && response.data) {
+                setUserInfo({
+                    userId: response.data.userId,
+                })
+            }
+
         }
     });
 
@@ -140,6 +135,7 @@ const CheckMyTrip = () => {
                         Authorization: `${localStorage.getItem('accessToken')}`
                     }
                 })
+                console.log(response.data);
                 return response;
             }
         }catch (error) {
@@ -147,11 +143,14 @@ const CheckMyTrip = () => {
         }
     }, {
         onSuccess: (response) => {
-            setSchedules([ ...response.data.schedules ]);
+            if (response && response.data) {
+                setSchedules([ ...response.data.schedules ]);
+            }
+
         },
         enabled: !!principal.isSuccess,
     })
-    let map = null;
+
 
 
 
@@ -164,7 +163,7 @@ const CheckMyTrip = () => {
                 center: new kakao.maps.LatLng(37.5522, 126.570667),
                 level: 8
             }
-            map = new kakao.maps.Map(container, options);
+            const map = new kakao.maps.Map(container, options);
 
             // If the myTravelInfo query is successful
             if (!!schedules && schedules.length > 0 && schedules[selectedDate].locations.length > 0) {
@@ -178,7 +177,7 @@ const CheckMyTrip = () => {
 
 
                 // 스케쥴의 해당 선택 일차의 경로를 반복을 돌려 마커를 찍는다.
-                schedules[selectedDate].locations.map((location, index) => {
+                schedules[selectedDate].locations.forEach((location, index) => {
                     const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
 
                     location.id = index;

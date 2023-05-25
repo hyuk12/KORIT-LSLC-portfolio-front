@@ -20,7 +20,6 @@ import SignUp from './pages/SignUp/SignUp';
 import ModifyPassword from "./pages/NewPassword/ModifyPassword";
 import RegionRegister from "./components/contents/ModifyForm/RegionRegister";
 import CheckMyTrip from "./pages/CheckItinerary/CheckMyTrip";
-import MapSorting from "./pages/CheckItinerary/MapSorting";
 import Review from "./pages/review/Review";
 
 

@@ -8,6 +8,8 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import TravelList from '../components/TravelList/TravelList';
 import MyReviewList from '../components/ReviewList/MyReviewList';
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../store/atoms/AuthAtoms";
 
 const container = css`
   display: flex;
@@ -94,6 +96,7 @@ const planAndReviewContainer =css`
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const authState = useRecoilValue(authenticationState);
   const [checkType,setCheckType] = useState("myplan");
   const [userInfo, setUserInfo] = useState({
     email: '',
@@ -106,6 +109,7 @@ const MyPage = () => {
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
     return response;
   }, {
+    enabled: authState.isAuthenticated,
     onSuccess : (response) => {
       setUserInfo({
         email: response.data.email,

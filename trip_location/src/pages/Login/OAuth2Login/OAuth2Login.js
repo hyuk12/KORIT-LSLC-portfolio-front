@@ -11,7 +11,9 @@ const OAuth2Login = () => {
 
     if (!!accessToken) {
         localStorage.setItem("accessToken", accessToken);
-        setAuthState(true);
+        setAuthState({
+            isAuthenticated: true,
+        });
         navigate("/", {replace: true})
     }
     return (

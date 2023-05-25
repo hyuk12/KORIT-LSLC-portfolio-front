@@ -79,10 +79,10 @@ const Home = () => {
         };
     }, [images]);
 
-    const regionData = useQuery('cardData', async () => {
+    const regionData = useQuery(['cardData'], async () => {
         const response = await axios.get('http://localhost:8080/post');
         return response.data;
-    });
+    }, );
 
     const { data: destination, isLoading } = regionData;
 

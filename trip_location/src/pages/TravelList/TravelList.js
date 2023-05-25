@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import {useQuery} from "react-query";
 import axios from "axios";
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 
 const TravelList = () => {
+    const authState = useRecoilValue(authenticationState);
     const [userInfo, setUserInfo] = useState({userId: ''});
     const [regionInfo, setRegionInfo] = useState([
         {
@@ -22,6 +25,7 @@ const TravelList = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: accessToken});
         return response
     }, {
+        enabled: authState.isAuthenticated,
         onSuccess: (response) => {
             setUserInfo({
                 userId: response.data.userId

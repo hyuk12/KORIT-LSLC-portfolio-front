@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import Calendar from '../../components/Calendar/Calendar';
 import Map from '../../components/contents/Map/Map';
 import AddUserModal from '../../components/contents/Modal/AddUserModal';
-import { useRecoilState } from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import { authenticationState } from '../../store/atoms/AuthAtoms';
 import { useQuery } from 'react-query';
 import axios from 'axios';
@@ -69,15 +69,19 @@ const Contents = () => {
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
-  const [authState, setAuthState] = useRecoilState(authenticationState);
+  const authState = useRecoilValue(authenticationState);
   const [isModalOpen, setIsModalOpen] = useState(true);
 
+  console.log(authState.isAuthenticated);
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
+    if(!accessToken) {
+      return null;
+    }
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
     return response;
   }, {
-    enabled: authState,
+    enabled: authState.isAuthenticated,
   });
 
   const startDayHandle = (newValue) => {

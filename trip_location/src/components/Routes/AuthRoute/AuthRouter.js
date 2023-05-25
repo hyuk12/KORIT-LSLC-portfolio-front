@@ -36,7 +36,7 @@ const AuthRouter = ({ path, element }) => {
         if(authenticated.isSuccess) {
             const authenticatedPaths = ['/user', '/contents']
             const authPath = '/auth';
-            console.log(authState)
+
             if(authState && path.startsWith(authPath)) {
                 navigate("/");
             }

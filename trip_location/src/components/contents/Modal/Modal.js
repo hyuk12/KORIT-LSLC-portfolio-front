@@ -31,9 +31,20 @@ const modalContent = css`
 `;
 
 const imageWrapper = css`
-  flex-basis: 50%;
+ 
+  width: 60%;
+  
   padding-right: 20px;
   border-right: 1px solid #e1e1e1;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+`;
+
+const imgStyle = css`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
 const infoWrapper = css`
@@ -42,7 +53,6 @@ const infoWrapper = css`
 `;
 
 const buttonStyle = css`
-  margin-top: 40px;
   border: none;
   width: 144px;
   height: 44px;
@@ -92,15 +102,12 @@ const Modal = ({ isOpen, onClose, destination }) => {
     <div css={modalStyle} onClick={onClose}>
       <div css={modalContent} onClick={(e) => e.stopPropagation()}>
         <div css={imageWrapper}>
-          <img src={image} alt={title} style={{ width: "100%" }} />
+          <img css={imgStyle} src={image} alt={title} />
         </div>
         <div css={infoWrapper}>
           <h2>{title}</h2>
           <span>{englishing}</span>
           <p css={Pstyle}>{description}</p>
-          <div css={iconContainer}>
-            <UserIconStyle /> <FavoriteIcon />
-          </div>
           <button css={buttonStyle} onClick={() => navigate(`/contents?destinationTitle=${title}`)}>일정 만들기</button>
         </div>
       </div>

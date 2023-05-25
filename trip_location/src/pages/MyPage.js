@@ -99,7 +99,7 @@ const MyPage = () => {
     email: '',
     userId: '',
     profileImg: ''
-  })
+  });
 
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");

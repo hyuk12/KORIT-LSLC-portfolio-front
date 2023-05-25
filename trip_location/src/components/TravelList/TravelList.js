@@ -3,7 +3,8 @@ import {css} from "@emotion/react";
 import React, {useEffect, useState} from 'react';
 import {useQuery} from "react-query";
 import axios from "axios";
-import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from "@mui/material";
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Grid, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const cardContainer =css`
     display: flex;
@@ -20,6 +21,11 @@ const cardImgContainer =css`
     height: 200px;
     
     `;
+const regionImgCss = css`
+    
+    width: 100%;
+    height: 100%;
+`;
 const cardMain =css`
     display: flex;
     flex-wrap: wrap;
@@ -40,23 +46,27 @@ const travelText=css`
     flex-direction: column;
 `;
 
-const TravelList = ({}) => {
+const TravelList = () => {
+    const navigate = useNavigate();
     const [userInfo, setUserInfo] = useState({
         userId:'',
         name:'',
     });
+    const [regionInfo, setRegionInfo] = useState({
+        regionName:'',
+        regionImgURL:'',
+    })
     const [myTravelList, setMyTravelList] = useState([
         {
             travelId: '',
             scheduleDate: [],
+            travelName:'',
+            travleImgUrl:'',
         },
     ]);
-
-    const [regionInfo, setRegionInfo] = useState({
-            regionName:'',
-    });
     const [schedules, setSchedules] = useState([]);
     const [allTravelList, setAllTravelList] = useState([]);
+
 
     const principal = useQuery(['principal'], async () => {
         const accessToken = localStorage.getItem('accessToken');
@@ -71,14 +81,12 @@ const TravelList = ({}) => {
         }
     })
 
-    // console.log(userInfo);
-
     const travelList = useQuery(['travelList'], async () => {
         const params = {
             userId: userInfo.userId !== '' ? parseInt(userInfo.userId) : 0
           }          
         const option = {
-            params: params,
+            params,
             headers: {
                 Authorization: `${localStorage.getItem('accessToken')}`
             }
@@ -97,75 +105,114 @@ const TravelList = ({}) => {
         }
     })
 
-    const regionImg = useQuery(['regionImg'], async()=>{
-        const params = {
-            travelname: regionInfo.regionName
-        }
-        const option = {
-            params: params,
-            headers:{
-                Authorzation : `${localStorage.getItem('accessToken')}`
+
+    const selectTravelName = myTravelList.map((item)=>item.travelName);
+    console.log(selectTravelName);
+
+    const regionImg = useQuery(['region'], async () => {
+            const params = {
+            //   travelName: encodeURIComponent(travel.travelName)//encodeURIComponent(한글) 한글깨짐현상을
+              travelName: selectTravelName[0] //encodeURIComponent(한글) 한글깨짐현상을
+            };
+            const option = {
+              params,
+              headers: {
+                Authorization: `${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'multipart/form-data'
+              }
+            };
+            try {
+              const response = await axios.get('http://localhost:8080/api/v1/travel/plan/region', option);
+              return response;
+
+            } catch (error) {
+              return error;
             }
-        }
-        const response = await axios.get('http://localhost:8080/api/v1/travel/plan/region', option);
-        return response;
-    })
+
+        },{
+            onSuccess:(response)=>{
+                setRegionInfo({
+                    regionName: response.data.data.regionName,
+                    regionImgURL: response.data.data.regionImgUrl
+                });
+            }
+    });
+    
+      
     
     useEffect(() => {
         setUserInfo(userInfo);
         setAllTravelList(allTravelList);
-        const extractedSchedules = allTravelList.map((schedule) => schedule.schedules);
+      
+        const extractedMyTravelList = allTravelList.map((item) => {
+          const firstLocation = item.schedules[0].locations[0];
+          const travelName = firstLocation && firstLocation.addr ? firstLocation.addr : getNextAddress(item.schedules);
+          return {
+            travelId: item.travelId,
+            scheduleDate: item.schedules.map((schedule) => schedule.scheduleDate),
+            travelName: travelName,
+          };
+        });
+        setMyTravelList(extractedMyTravelList);
+      
+        const extractedSchedules = allTravelList.map((item) => item.schedules);
         setSchedules(extractedSchedules);
-        // const scheduleLocation = schedules.map((location)=>location.locations.addr[0]);
-        
-    }, [userInfo,allTravelList, allTravelList]);
-          
+      
+    }, [userInfo, allTravelList]);
+      
+    const getNextAddress = (schedules) => {
+        for (let i = 1; i < schedules.length; i++) {
+          const firstLocation = schedules[i].locations[0];
+          if (firstLocation && firstLocation.addr) {
+            return firstLocation.addr;
+          }
+        }
+        return ''; 
+    };
     
     console.log(allTravelList);
-    console.log(regionInfo);
     console.log(schedules);
-    return (
-        <div css={cardContainer}>
-            <div css={cardImgContainer}>이미지
-                {/* <img src={} alt={}> region에서 이미지 가져옴*/}
-            </div>
-            <div css={cardMain}>
-                <div css={travelTitle}>
-                    제주도
-                </div>
-                <div css={travelText}>
-                    <div>{userInfo.name}</div>
-                    <div>ㅁㅁㅁ</div>
-                    <div>일정</div>
-                </div>
-            </div>
-            {/* <Grid container spacing={4} css={contents}>
-                {filterData.map((data, index) => (
-                    <Grid key={index} item xs={12} sm={6} md={3}>
-                        <Card onClick={() => handleCardClick(data)}>
+    console.log(myTravelList);
+    console.log(regionInfo);
 
+    const myPlanClickHandler =()=>{
+        navigate(`/user/${userInfo.userId}/trip?id=${myTravelList[0].travelId}`)
+    }
+
+
+    return (
+        <Container>
+            <Grid container spacing={4} >
+                {myTravelList.map((data, index) => (
+                    <Grid key={index} item xs={12} sm={6} md={4}>
+                        <Card sx={{ minWidth: 250 , minHeight:250}}>
                             <CardActionArea >
                                 <CardMedia
                                     component="img"
-                                    alt={data.regionName}
+                                    alt={regionInfo.regionImgURL}
                                     height="140"
-                                    image={data.regionImgUrl}
-                                    title={data.regionName}
+                                    image={regionInfo.regionImgURL}
+                                    title={regionInfo.regionName}
                                 />
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="h2">
-                                        {data.regionName}
+                                        {regionInfo.regionName}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" component="p">
-                                        {data.regionEngName}
+                                        {`${data.scheduleDate[0]} ~ ${data.scheduleDate[data.scheduleDate.length - 1]}`}
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
+                            <CardActions>
+                                <Button size="small" color="primary">
+                                    Write
+                                </Button>
+                            </CardActions>
                         </Card>
                     </Grid>
                 ))}
-            </Grid> */}
-        </div>
+            </Grid>
+        </Container>
     );
 };
 

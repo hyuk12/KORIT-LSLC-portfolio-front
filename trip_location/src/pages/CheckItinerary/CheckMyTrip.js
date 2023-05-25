@@ -178,9 +178,10 @@ const CheckMyTrip = () => {
 
 
                 // 스케쥴의 해당 선택 일차의 경로를 반복을 돌려 마커를 찍는다.
-                schedules[selectedDate].locations.map((location) => {
+                schedules[selectedDate].locations.map((location, index) => {
                     const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
 
+                    location.id = index;
                     // 마커를 맵위에 그린다.
                     const marker = new kakao.maps.Marker({
                         position: markerPosition,
@@ -215,7 +216,7 @@ const CheckMyTrip = () => {
                                 console.error("오류났다")
                                 return newSchedules;
                             }
-                            locationToUpdate = scheduleToUpdate.locations.find(location => location.lat === lat && location.lng === lng);
+                            locationToUpdate = scheduleToUpdate.locations.find(location => location.id === index);
 
                             if (!locationToUpdate) {
                                 console.error("Cannot find the location to update");
@@ -254,11 +255,12 @@ const CheckMyTrip = () => {
         }
         try {
             const response = await axios.put(`http://localhost:8080/api/v1/travel/plan/update/${searchParams.get('id')}`, travelPlan, option);
+            window.location.replace(`/user/${userInfo.userId}`);
             return response;
         }catch (error) {
 
         }
-    })
+    },)
 
     const clickDateHandler = (date) => {
         setSelectedDate(date);

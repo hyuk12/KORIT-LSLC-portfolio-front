@@ -1,15 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, {useState} from 'react';
 import {css} from "@emotion/react";
+import Carousel from "react-material-ui-carousel";
+import {useQuery} from "react-query";
+import axios from "axios";
+import {useSearchParams} from "react-router-dom";
 
+const { kakao } = window;
 
 const reviewContainer = css`
   display: flex;
   justify-content: space-around;
   align-items: center;
   margin-top: 100px;
-  margin-left: 200px;
-  width: 80%;
+  width: 1920px;
   height: 862px;
   
 `;
@@ -57,10 +61,50 @@ const reviewArticle = css`
 `;
 
 const Review = () => {
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    const [activeIndex, setActiveIndex] = useState(0);
+    const reviewImg = [];
+    const itemPerSlide = 1;
+    const createIndicators = (length) => {
+        const indicators = [];
+        for (let i = 0; i < length; i++) {
+            indicators.push(
+                <button
+                    key={i}
+                    onClick={() => {
+                        // Carousel의 setActiveIndex를 사용하여 인디케이터 클릭 시 해당 슬라이드로 이동
+                        setActiveIndex(i);
+                    }}
+                    className={i === activeIndex ? "active" : ""}
+                ></button>
+            );
+        }
+        return indicators;
+    };
+
+    // for (let i = 0; i < popularRegions.length; i += itemPerSlide) {
+    //     const chunk = popularRegions.slice(i, i + itemPerSlide);
+    //     reviewImg.push(filterData);
+    // }
+
+    const reviewData = useQuery(['reviewData'], async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/review/${searchParams.get('reviewId')}`)
+            return response;
+        }catch (error) {
+
+        }
+    }, {
+
+    })
     return (
         <div css={reviewContainer}>
             <div css={mapContainer}>
-                <div>맵</div>
+                <button disabled>1일차</button>
+                <button disabled>2일차</button>
+                <div>
+                    맵
+                </div>
                 <div>location</div>
             </div>
             <div css={contentsContainer}>
@@ -69,7 +113,16 @@ const Review = () => {
                 </header>
                 <main css={mainContainer}>
                     <div css={imgContainer}>
-                        사진정보
+                        {/*<Carousel*/}
+                        {/*    autoPlay={false}*/}
+                        {/*    swipe={true}*/}
+                        {/*    indicators={createIndicators(destinationChunks.length)}*/}
+                        {/*    cycleNavigation={true}*/}
+                        {/*    animation={"slide"}*/}
+                        {/*    css={carouselStyle}*/}
+                        {/*    setActiveIndex={setActiveIndex}*/}
+                        {/*    activeIndex={activeIndex}*/}
+                        {/*></Carousel>*/}
                     </div>
                     <div css={reviewArticle}>
                         글쓴거

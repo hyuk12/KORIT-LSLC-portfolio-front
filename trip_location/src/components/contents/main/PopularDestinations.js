@@ -1,83 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
-import { css } from "@emotion/react";
-import busan from '../../../images/haeundae.jpg';
-import jeju from '../../../images/forest-jeju.jpg';
-import yeosu from '../../../images/yeosu.jpg';
-import gyeongju from '../../../images/gyeongju.jpg';
-import seoul from '../../../images/seoul.jpg';
-import gangneung from '../../../images/gangneung.jpg';
-import ulleungdo from '../../../images/ulleungdo.jpg';
-import geojedo from '../../../images/geojedo.jpg';
-import incheon from '../../../images/incheon.jpg'
+import React, {useState} from 'react';
+import {css} from "@emotion/react";
 import Modal from "../Modal/Modal";
 import Carousel from 'react-material-ui-carousel';
-import { Paper, Button } from '@mui/material';
-
-// {
-    //     id: 1,
-    //     image: jeju,
-    //     alt: "제주도",
-    //     title: "제주도",
-    //     englishing: "Jeju",
-    // },
-    // {
-    //     id: 2,
-    //     image: yeosu,
-    //     alt: "여수",
-    //     title: "여수",
-    //     englishing: "Yeosu",
-    // },
-    // {
-    //     id: 3,
-    //     image: busan,
-    //     alt: "부산",
-    //     title: "부산",
-    //     englishing: "Busan",
-    // },
-    // {
-    //     id: 4,
-    //     image: gyeongju,
-    //     alt: "경주",
-    //     title: "경주",
-    //     englishing: "Gyeongju",
-    // },
-    // {
-    //     id: 5,
-    //     image: seoul,
-    //     alt: "서울",
-    //     title: "서울",
-    //     englishing: "Seoul",
-    // },
-    // {
-    //     id: 6,
-    //     image: gangneung,
-    //     alt: "강릉",
-    //     title: "강릉",
-    //     englishing: "Gangneung",
-    // },
-    // {
-    //     id: 7,
-    //     image: ulleungdo,
-    //     alt: "울릉",
-    //     title: "울릉",
-    //     englishing: "Ulleungdo",
-    // },
-    // {
-    //     id: 8,
-    //     image: geojedo,
-    //     alt: "거제도",
-    //     title: "거제도",
-    //     englishing: "Geojedo",
-    // },
-    // {
-    //     id: 9,
-    //     image: incheon,
-    //     alt: "인천",
-    //     title: "인천",
-    //     englishing: "Incheon",
-    // },
-
+import {Paper} from '@mui/material';
 
 const carouselStyle = css`
   width: 100%;

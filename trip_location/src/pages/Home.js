@@ -65,6 +65,12 @@ const footerContainer = css`
 const Home = () => {
 
     const images = useMemo(() => [cityNight, building], []);
+    const [ regions, setRegions ] = useState([
+        {
+            destination : ''
+        }
+    ]);
+
     const [currentImage, setCurrentImage] = useState(images[0]);
 
     useEffect(() => {
@@ -79,12 +85,13 @@ const Home = () => {
         };
     }, [images]);
 
-    const regionData = useQuery(['cardData'], async () => {
+    const cardData = useQuery(['cardData'], async () => {
         const response = await axios.get('http://localhost:8080/post');
+        console.log(response)
         return response.data;
     }, );
 
-    const { data: destination, isLoading } = regionData;
+    const { data: destination, isLoading } = cardData;
 
     if (isLoading) {
         return (<div>is Loading...</div>)

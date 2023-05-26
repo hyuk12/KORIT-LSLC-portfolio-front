@@ -96,6 +96,7 @@ const planAndReviewContainer =css`
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const authState = useRecoilValue(authenticationState);
   const [count, setCount] = useState(0);
   const [checkType,setCheckType] = useState(true);
   const [userInfo, setUserInfo] = useState({

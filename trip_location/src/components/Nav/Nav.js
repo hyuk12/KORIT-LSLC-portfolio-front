@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Button, Toolbar, Typography} from "@mui/material";
 import {css} from "@emotion/react";
 import logoTitle from '../../images/logotitle.png';
@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {useQuery} from "react-query";
 import axios from "axios";
 
-import {useRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 const navStyles = css`
@@ -55,7 +55,7 @@ const Nav = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-       enabled: authState,
+       enabled: authState.isAuthenticated,
 
     });
 
@@ -78,7 +78,9 @@ const Nav = () => {
     const handleLogOut = () => {
         if (window.confirm('로그아웃 하시겠습니까?')) {
             localStorage.removeItem('accessToken');
-            setAuthState(false);
+            setAuthState({
+                isAuthenticated: false,
+            });
             navigate("/auth/login")
         }
     }
@@ -98,7 +100,7 @@ const Nav = () => {
                     sx={{ flex: 1 }}>
                     {"Trip Location"}
                 </Typography>
-                {!authState ? (<div>
+                {!authState.isAuthenticated ? (<div>
                     <Button
                         css={buttonStyle}
                         size={"small"}

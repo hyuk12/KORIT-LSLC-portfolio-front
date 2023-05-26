@@ -12,7 +12,7 @@ import kakaoBtn from '../../images/kakaolink_btn.png';
 import naverBtn from '../../images/naver_btn.png';
 import {useRecoilState} from "recoil";
 import {authenticationState} from "../../store/atoms/AuthAtoms";
-import {useMutation} from "react-query";
+import {useMutation, useQuery} from "react-query";
 
 
 const submitButton = css`
@@ -129,6 +129,7 @@ const oauthImg = css`
 
 const Login = () => {
 
+
     const [ loginUser, setLoginUser ] = useState({
         email: '',
         password: ''
@@ -136,6 +137,7 @@ const Login = () => {
     const [ errorMessages, setErrorMessages ] = useState({email: '', password: ''});
     const [authState, setAuthState] = useRecoilState(authenticationState);
     const navigate = useNavigate();
+
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
@@ -171,7 +173,9 @@ const Login = () => {
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
-            setAuthState(true);
+            setAuthState({
+                isAuthenticated: true,
+            });
             navigate('/');
 
 

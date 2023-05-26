@@ -3,11 +3,12 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 
 const TravelList = ({ setCount, userInfo }) => {
     const navigate = useNavigate();
-    
     const [regionInfo, setRegionInfo] = useState([
         {   
             regionId: '',
@@ -15,6 +16,7 @@ const TravelList = ({ setCount, userInfo }) => {
             regionImgUrl:'',
         }
     ])
+
     const [myTravelList, setMyTravelList] = useState([
         {
             travelId: '',
@@ -24,8 +26,6 @@ const TravelList = ({ setCount, userInfo }) => {
     ]);
     const [schedules, setSchedules] = useState([]);
     const [allTravelList, setAllTravelList] = useState([]);
-
-    
 
     const travelList = useQuery(['travelList'], async () => {
         const params = {

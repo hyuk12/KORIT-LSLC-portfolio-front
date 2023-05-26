@@ -21,6 +21,7 @@ import ModifyPassword from "./pages/NewPassword/ModifyPassword";
 import RegionRegister from "./components/contents/ModifyForm/RegionRegister";
 import CheckMyTrip from "./pages/CheckItinerary/CheckMyTrip";
 import Review from "./pages/review/Review";
+import WriteReview from "./pages/CheckItinerary/WriteReview";
 
 
 const mainStyles = css`
@@ -48,6 +49,7 @@ function App() {
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
         <Route path={"/user/trip"} element={<AuthRouter path={'/user/trip'} element={<CheckMyTrip />} />} />
         <Route path={"/user/:id/review"} element={<AuthRouter path={'/user/:id/review'} element={<Review />} />} />
+        <Route path={"/user/:id/review/write"} element={<AuthRouter path={'/user/:id/review/write'} element={<WriteReview />} />} />
 
 
       </Routes>

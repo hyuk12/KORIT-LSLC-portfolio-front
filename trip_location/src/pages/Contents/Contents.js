@@ -69,15 +69,18 @@ const Contents = () => {
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(1);
   const [paths, setPaths] = useState([]);
-  
   const [isModalOpen, setIsModalOpen] = useState(true);
   const authState = useRecoilValue(authenticationState);
+
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
+    if(!accessToken) {
+      return null;
+    }
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
     return response;
   }, {
-    enabled: authState,
+    enabled: authState.isAuthenticated,
   });
 
   const startDayHandle = (newValue) => {

@@ -18,7 +18,7 @@ const { kakao } = window;
 
   const mapContainer = css`
     flex-direction: column;
-    border: 1px solid black;
+    border: 1px solid black;   
     padding-top: 64px;
     margin-left: 150px;
     margin-right: 20px;
@@ -101,66 +101,16 @@ const { kakao } = window;
   `;
 
   
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  };
-}
-  
 
 const WriteReview = () => {
 
-  const [value, setValue] = useState(0);
-
-const handleChange = (event, newValue) => {
-  setValue(newValue);
-};
-
-
     return (
       <div css={viewContainer}>
-      <Tabs
-        orientation="vertical"
-        variant="scrollable"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs example"
-        sx={{ borderRight: 1, borderColor: 'divider' }}
-      >
-        <Tab label="Tab One" {...a11yProps(0)} />
-        <Tab label="Tab Two" {...a11yProps(1)} />
-        <Tab label="Tab Three" {...a11yProps(2)} />
-      </Tabs>
         <div css={mapContainer}>
           <div css={mapMove}>
-            <div css={map}>지도</div>
+            <div css={map}>
+              지도
+            </div>
           </div>
           <div css={reviewMove}>
             <div css={locationList}>장소표시</div>

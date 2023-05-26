@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
 import {Button} from "@mui/material";
 import styled from "@emotion/styled";
@@ -94,7 +94,8 @@ const planAndReviewContainer =css`
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const [checkType,setCheckType] = useState("myplan");
+  const [count, setCount] = useState(0);
+  const [checkType,setCheckType] = useState(true);
   const [userInfo, setUserInfo] = useState({
     email: '',
     userId: '',
@@ -116,8 +117,8 @@ const MyPage = () => {
     }
   });
 
-  const myPlanChangeHandler = (type) => {
-    setCheckType(type);
+  const myPlanChangeHandler = (flag) => {
+    setCheckType(flag);
   }
 
   return (
@@ -132,17 +133,17 @@ const MyPage = () => {
           <ModifyButton onClick={() => navigate(`/user/modify/password/${principal?.data?.data?.userId || ''}`)}>비밀번호 변경</ModifyButton>
         </div>
         <div css={mainContents}>
-          <div css={myPlanAndReview} onClick={() => myPlanChangeHandler('myPlan')}>
+          <div css={myPlanAndReview} onClick={() => myPlanChangeHandler(true)}>
             <span>나의 일정</span>
-            <span>0</span>
+            <span>{count}</span>
           </div>
-          <div css={myPlanAndReview} onClick={() => myPlanChangeHandler('myReview')}>
+          <div css={myPlanAndReview} onClick={() => myPlanChangeHandler(false)}>
             <span>나의 리뷰</span>
             <span>0</span>
           </div>
         </div>
         <div css={planAndReviewContainer}>
-          {checkType === 'myPlan'?(<TravelList/>):(<MyReviewList/>)}
+          {checkType ?(<TravelList setCount={setCount} userInfo={userInfo} />):(<MyReviewList/>)}
         </div>
       </main>
     </div>

@@ -115,25 +115,24 @@ const CheckMyTrip = () => {
     const prevIsEditable = usePrevious(isEditable);
 
 
-    const principal = useQuery(['principal'], async () => {
-        const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: {accessToken: accessToken}});
+    // const principal = useQuery(['principal'], async () => {
+    //     const accessToken = localStorage.getItem('accessToken');
+    //     const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: {accessToken: accessToken}});
 
-        return response;
-    }, {
-        onSuccess: (response) => {
-            setUserInfo({
-                userId: response.data.userId,
-            })
-        }
-    });
+    //     return response;
+    // }, {
+    //     onSuccess: (response) => {
+    //         setUserInfo({
+    //             userId: response.data.userId,
+    //         })
+    //     }
+    // });
 
     const myTravelInfo = useQuery(['info'], async () => {
         try {
-            if (!principal.isLoading){
                 const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
                     params: {
-                        userId: userInfo.userId,
+                        userId: searchParams.get('userId'),
                         travelId: searchParams.get('id'),
                     },
                     headers: {
@@ -141,15 +140,13 @@ const CheckMyTrip = () => {
                     }
                 })
                 return response;
-            }
         }catch (error) {
 
         }
     }, {
         onSuccess: (response) => {
             setSchedules([ ...response.data.schedules ]);
-        },
-        enabled: !!principal.isSuccess,
+        }
     })
     let map = null;
 
@@ -311,7 +308,7 @@ const CheckMyTrip = () => {
                     <div css={footerButtonContainer}>
                         <button css={buttonStyle} onClick={editHandler} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
                         <button css={buttonStyle} onClick={saveHandler} style={{display: isEditable ? 'block' : 'none'}}>저장</button>
-                        <button css={buttonStyle} onClick={() => window.location.replace(`/user/${principal.data.data.userId}`)}>취소</button>
+                        <button css={buttonStyle} onClick={() => window.location.replace(`/user/${searchParams.get("userId")}`)}>취소</button>
                     </div>
                 </div>
             </main>

@@ -49,7 +49,8 @@ const TravelList = ({ setCount, userInfo }) => {
         onSuccess: (response) => {
             setAllTravelList([...response.data]);
             setCount(response.data.length);
-        }
+        },
+        enabled: userInfo.userId !== '',
     })
 
     useEffect(() => {

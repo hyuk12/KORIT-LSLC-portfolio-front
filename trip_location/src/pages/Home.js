@@ -9,6 +9,7 @@ import styled from "@emotion/styled";
 import LocationCard from "../components/contents/main/LocationCard";
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import PopularReviewList from "../components/contents/main/PopularReviewList";
 
 
 const MainWrapper = styled.main`
@@ -101,6 +102,17 @@ const Home = () => {
         <MainWrapper>
             <SectionWrapper>
                 <StyledPaper elevation={0} style={{ backgroundImage: `url(${currentImage})` }} />
+            </SectionWrapper>
+            <SectionWrapper>
+                <Container>
+                    <StyleTitleTypography  variant="h4" component="h2">
+                        인기 후기
+                    </StyleTitleTypography>
+                    <StyleSubTitleTypography variant="subtitle1" component="p">
+                        POPULAR REVIEW
+                    </StyleSubTitleTypography>
+                    <PopularReviewList destination={destination} />
+                </Container>
             </SectionWrapper>
             <SectionWrapper>
                 <Container>

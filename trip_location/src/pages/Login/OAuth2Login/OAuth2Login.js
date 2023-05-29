@@ -14,7 +14,7 @@ const OAuth2Login = () => {
         setAuthState({
             isAuthenticated: true,
         });
-        navigate("/", {replace: true})
+        navigate("/home", {replace: true})
     }
     return (
         <></>

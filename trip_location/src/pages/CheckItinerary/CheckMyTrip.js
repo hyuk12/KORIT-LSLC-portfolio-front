@@ -105,23 +105,6 @@ const CheckMyTrip = () => {
     const [selectedDate, setSelectedDate] = useState(0);
     const [ schedules, setSchedules ] = useState([]);
 
-    // const principal = useQuery(['principal'], async () => {
-    //     const accessToken = localStorage.getItem('accessToken');
-    //     const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: {accessToken: accessToken}});
-    //     console.log(response)
-    //     return response;
-    // }, {
-    //     enabled: authState.isAuthenticated,
-    //     onSuccess: (response) => {
-    //         if (response && response.data) {
-    //             setUserInfo({
-    //                 userId: response.data.userId,
-    //             })
-    //         }
-    //
-    //     }
-    // });
-
     const myTravelInfo = useQuery(['info'], async () => {
         try {
                 const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {

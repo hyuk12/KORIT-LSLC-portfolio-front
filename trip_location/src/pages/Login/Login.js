@@ -176,7 +176,7 @@ const Login = () => {
             setAuthState({
                 isAuthenticated: true,
             });
-            navigate('/');
+            navigate('/home');
 
 
         }catch (error) {

@@ -37,10 +37,10 @@ const AuthRouter = ({ path, element }) => {
 
         if(authenticated.isSuccess) {
             const authenticatedPaths = ['/user', '/contents']
-            const authPath = '/auth';
+            const authPaths = ['/auth', '/home'];
 
-            if(authState.isAuthenticated && path.startsWith(authPath)) {
-                navigate("/");
+            if(authState.isAuthenticated && authPaths.filter(authPath => path.startsWith(authPath)).length > 0) {
+                navigate("/home");
             }
 
             if(!authState.isAuthenticated && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {

@@ -34,7 +34,7 @@ function App() {
       <CssBaseline />
       <Nav />
       <Routes css={mainStyles}>
-        <Route path={"/"} element={<AuthRouter path={'/'} element={<Home />} />} />
+        <Route path={"/home"} element={<AuthRouter path={'/home'} element={<Home />} />} />
         <Route path={"/auth/login"} element={<AuthRouter path={'/auth/login'} element={<Login />} />} />
         <Route path={"/auth/oauth2/login"} element={<AuthRouter path={'/auth/oauth2/login'} element={<OAuth2Login />} />} />
         <Route path={"/auth/signup"} element={<AuthRouter path={'/auth/signup'} element={<SignUp />} />} />
@@ -50,8 +50,6 @@ function App() {
         <Route path={"/user/trip"} element={<AuthRouter path={'/user/trip'} element={<CheckMyTrip />} />} />
         <Route path={"/user/:id/review"} element={<AuthRouter path={'/user/:id/review'} element={<Review />} />} />
         <Route path={"/user/:id/review/write"} element={<AuthRouter path={'/user/:id/review/write'} element={<WriteReview />} />} />
-
-
       </Routes>
 
     </>

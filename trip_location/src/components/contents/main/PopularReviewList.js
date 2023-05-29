@@ -14,7 +14,7 @@ const carouselStyle = css`
 const paperStyle = css`
   position: relative;
   margin: 0 10px;
-  width: calc(100% / 3 - 20px);
+  width: calc(100% / 2 - 20px); // 변경 한줄에 2개가 보이도록 수정
   height: 350px;
   cursor: pointer;
   display: inline-block;
@@ -54,17 +54,13 @@ const PopularReviewList = () => {
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [ popularReview, setPopularReview ] = useState([]);
-    const itemPerSlide = 3;
+    const itemPerSlide = 1;
     const reviewListChunks = [];
 
     const reviewListByRating = useQuery(['list'], async () => {
         try {
-            const option = {
-                headers: {
-                    Authorization: `${localStorage.getItem('accessToken')}`
-                }
-            }
-            const response = await axios.get('http://localhost:8080/api/v1/review/list', option);
+
+            const response = await axios.get('http://localhost:8080/api/v1/review/list');
             console.log(response);
             return response
         }catch (error) {
@@ -81,6 +77,10 @@ const PopularReviewList = () => {
     for (let i = 0; i < popularReview.length; i += itemPerSlide) {
         // destinationChunks.push(popularRegions.slice(i, i + itemPerSlide));
         const chunk = popularReview.slice(i, i + itemPerSlide);
+        if (chunk.length < itemPerSlide && i + itemPerSlide >= popularReview.length) {
+            chunk.push(popularReview[0]); // 변경: 짝수로 떨어지지 않는 경우 첫 번째 요소를 추가
+        }
+        reviewListChunks.push(chunk);
     }
 
     const handleImageClick = (destination) => {
@@ -115,6 +115,7 @@ const PopularReviewList = () => {
                 autoPlay={false}
                 swipe={true}
                 indicators={createIndicators(reviewListChunks.length)}
+                navButtonsAlwaysVisible={true}
                 cycleNavigation={true}
                 animation={"slide"}
                 css={carouselStyle}

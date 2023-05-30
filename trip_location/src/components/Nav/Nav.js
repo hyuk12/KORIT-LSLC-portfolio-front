@@ -60,7 +60,7 @@ const Nav = () => {
     });
 
     const handleLogoClick = () => {
-        navigate("/");
+        navigate("/home");
     }
 
     const handleSignInClick = () => {

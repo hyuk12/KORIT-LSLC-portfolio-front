@@ -39,6 +39,10 @@ const AuthRouter = ({ path, element }) => {
             const authenticatedPaths = ['/user', '/contents']
             const authPaths = ['/auth', '/home'];
 
+            if(path === "/"){
+                navigate("/home");
+            }
+
             if(authState.isAuthenticated && authPaths.filter(authPath => path.startsWith(authPath)).length > 0) {
                 navigate("/home");
             }

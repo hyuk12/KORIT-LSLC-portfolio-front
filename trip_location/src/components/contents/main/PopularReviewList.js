@@ -61,14 +61,26 @@ const PopularReviewList = () => {
         try {
 
             const response = await axios.get('http://localhost:8080/api/v1/review/list');
-            console.log(response);
-            return response
-        }catch (error) {
 
+
+            return response.data
+        }catch (error) {
+            console.error('Failed to fetch reviews', error);
         }
     }, {
-        onSuccess: (response) => {
-            setPopularReview([...response.data])
+        onSuccess: (data) => {
+            const groupedReviews = [];
+            for (let i = 0; i < data.length; i += 2) {
+                groupedReviews.push(data.slice(i, i + 2));
+            }
+            setPopularReview([...groupedReviews, [
+                {
+                    reviewId: 'all',
+                    reviewImgUrl: 'default.png',
+                    regionName : '전체 리뷰 보러 가기',
+                    regionEngName: ''
+                }
+            ]]);
         }
     })
 
@@ -122,28 +134,48 @@ const PopularReviewList = () => {
                 setActiveIndex={setActiveIndex}
                 activeIndex={activeIndex}
             >
-                {reviewListByRating.isLoading ? '' : popularReview.map((review, index) => (
-                    <div key={index}>
+                {reviewListByRating.isLoading ? '' : popularReview.map((group, groupIndex) => (
 
-                        <Paper
-                            key={review.reviewId}
-                            onClick={() => handleImageClick(review)}
-                            css={paperStyle}
-                        >
-                            <img css={popularImg} src={review.reviewImgUrl} alt={review.reviewImgUrl}/>
-                            <div css={textOverlay}>
-                                <div css={largeText}>
-                                    {review.regionName}
+                    <div key={groupIndex}>
+                        {group.map((review, index) => (
+                            <Paper
+                                key={index}
+                                onClick={() => handleImageClick(review)}
+                                css={paperStyle}
+                            >
+                                {review.reviewImgUrl !== 'default.png' ?
+                                    <img
+                                        css={popularImg}
+                                        src={review.reviewImgUrl}
+                                        alt={review.reviewImgUrl}
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'block';
+                                        }}
+                                    />
+                                    :
+                                    <div css={textOverlay}>
+                                        <div css={largeText}>
+                                            {review.regionName}
+                                        </div>
+                                        <div css={smallText}>
+                                            {review.regionEngName}
+                                        </div>
+                                    </div>
+                                }
+                                <div css={textOverlay} style={{display: 'none'}}>
+                                    <div css={largeText}>
+                                        {review.regionName}
+                                    </div>
+                                    <div css={smallText}>
+                                        {review.regionEngName}
+                                    </div>
                                 </div>
-                                <div css={smallText}>
-                                    {review.regionEngName}
-                                </div>
-                            </div>
-                        </Paper>
-
+                            </Paper>
+                        ))}
                     </div>
                 ))}
-
             </Carousel>
             <Modal
                 isOpen={isModalOpen}

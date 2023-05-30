@@ -1,20 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Card, CardActionArea, CardContent, CardMedia, Grid, Rating, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import busan from '../../images/busan_night.jpg'
-import { useQuery } from "react-query";
+import { Card, CardActionArea, CardContent, CardMedia, Container, Grid, Rating, Typography } from '@mui/material';
 import axios from "axios";
+import React, { useState } from 'react';
+import { useQuery } from "react-query";
+import logotitle from "../../images/logotitle.png"
 
-
-
-const contents = css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 20px auto;
-  min-width: 80%;
-`;
 
 const cardTitleContainer = css`
     display: flex;
@@ -25,39 +16,19 @@ const ratingStyle = css`
     font-size: 14px;
 `;
 
-const MyReviewList = () => {
-    const [ userInfo, setUserInfo ] = useState({
-        userId: ''
-    });
-    const [ reviewData, setReviewData ] = useState({
-            reviewRating: '',
-            regionName: '',
-            startDate: '',
-            endDate: '',
-            reviewImgUrl: ''
-    })
+const MyReviewList = ({ setReviewCount, userInfo }) => {
 
-    const principal = useQuery(["principal"], async () => {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
-        return response;
-    }, {
-        onSuccess : (response) => {
-            setUserInfo({
-                userId: response.data.userId
-            })
-        }
-    });
+    const [ reviewDataList, setReviewDataList ] = useState([]);
 
     const review = useQuery(['review'], async () => {
         try {
-            const userId = parseInt(userInfo.userId);
+            const userId = userInfo.userId !== '' ? parseInt(userInfo.userId) : 0;
             const option = {
                 headers : {
                     'Authorization' : `${localStorage.getItem('accessToken')}`
                 }
             } 
-            const response = await axios.get(`http://localhost:8080/api/v1/user/${userId}/review`, option)
+            const response = await axios.get(`http://localhost:8080/api/v1/review/${userId}`, option)
             console.log(response.data.data)
             return response;
         } catch (error) {
@@ -65,46 +36,42 @@ const MyReviewList = () => {
         }
     }, {
         onSuccess : (response) => {
-            setReviewData({
-                reviewRating: response.data.data.reviewRating,
-                regionName: response.data.data.regionName,
-                startDate: response.data.data.startDate,
-                endDate: response.data.data.endDate,
-                reviewImgUrl: response.data.data.reviewImgUrl
-            })
-        }
+            setReviewDataList([...response.data.data]);
+            setReviewCount(response.data.data.length);
+        },
+        enabled: true,
     });
 
 
 
     return (
-        <div>
-            MyReviewList
-            <Grid container css={contents}>
-                <Grid>
-                    <Card>
-                        <CardActionArea>
-                            <CardMedia
-                                component='img'
-                                alt={busan}
-                                height='140'
-                                image={busan}
-                                title='부산'
-                            />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="h2" css={cardTitleContainer}>
-                                    부산
-                                    <Rating name="read-only" value='4' readOnly css={ratingStyle}/>
-                                </Typography>
-                                <Typography variant='body2' color='textSecondary' component='p'>
-                                    05.30 ~ 06.03 
-                                </Typography>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                </Grid>
+        <Container>
+            <Grid container spacing={4}>
+                {reviewDataList.map((data, index) => (
+                    <Grid key={index} item xs={12} sm={6} md={4} sx={{ minWidth: 300}}>
+                        <Card sx={{ minWidth: 250 , minHeight:250}}>
+                            <CardActionArea>
+                                <CardMedia
+                                    component='img'
+                                    alt={data.reviewImgUrl}
+                                    height='140'
+                                    image={data.reviewImgUrl.includes('null') ? logotitle: data.reviewImgUrl }
+                                />
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="h2" css={cardTitleContainer}>
+                                    {data.reviewTitle}
+                                    </Typography>
+                                    <Rating name="read-only" defaultValue={data.reviewRating} readOnly css={ratingStyle}/>
+                                    <Typography variant='body2' color='textSecondary' component='p'>
+                                        {data.startDate} ~ {data.endDate}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                ))}
             </Grid>
-        </div>
+        </Container>
     );
 };
 

@@ -3,11 +3,9 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import {useRecoilValue} from "recoil";
-import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 
-const TravelList = ({ setCount, userInfo }) => {
+const TravelList = ({ setTravelCount, userInfo }) => {
     const navigate = useNavigate();
     const [regionInfo, setRegionInfo] = useState([
         {   
@@ -48,7 +46,7 @@ const TravelList = ({ setCount, userInfo }) => {
     }, {
         onSuccess: (response) => {
             setAllTravelList([...response.data]);
-            setCount(response.data.length);
+            setTravelCount(response.data.length);
         },
         enabled: userInfo.userId !== '',
     })

@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect, useState} from 'react';
-import {css} from "@emotion/react";
-import {Button} from "@mui/material";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import {useQuery} from "react-query";
+import { Button } from "@mui/material";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import TravelList from '../components/TravelList/TravelList';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import MyReviewList from '../components/ReviewList/MyReviewList';
-import {useRecoilValue} from "recoil";
-import {authenticationState} from "../store/atoms/AuthAtoms";
+import TravelList from '../components/TravelList/TravelList';
+import { authenticationState } from "../store/atoms/AuthAtoms";
 
 const container = css`
   display: flex;
@@ -97,7 +97,8 @@ const planAndReviewContainer =css`
 const MyPage = () => {
   const navigate = useNavigate();
   const authState = useRecoilValue(authenticationState);
-  const [count, setCount] = useState(0);
+  const [travelCount, setTravelCount] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
   const [checkType,setCheckType] = useState(true);
   const [userInfo, setUserInfo] = useState({
     email: '',
@@ -118,6 +119,10 @@ const MyPage = () => {
         name: response.data.name,
         profileImg: response.data.postsImgUrl
       })
+      setCheckType(false);
+      setTimeout(() => {
+      setCheckType(true);
+      }, 100);
     }
   });
 
@@ -133,21 +138,21 @@ const MyPage = () => {
         </div>
         <div>{userInfo.email || '이메일 로딩 중...'}</div>
         <div css={modifyButtons}>
-          <ModifyButton onClick={() => navigate(`/user/modify/${principal?.data?.data?.userId || ''}`)}>수정하기</ModifyButton>
+          <ModifyButton onClick={() => navigate(`/user/modify/${principal?.data?.data?.userId || ''}`)}>회원정보 수정</ModifyButton>
           <ModifyButton onClick={() => navigate(`/user/modify/password/${principal?.data?.data?.userId || ''}`)}>비밀번호 변경</ModifyButton>
         </div>
         <div css={mainContents}>
           <div css={myPlanAndReview} onClick={() => myPlanChangeHandler(true)}>
             <span>나의 일정</span>
-            <span>{count}</span>
+            <span>{travelCount}</span>
           </div>
           <div css={myPlanAndReview} onClick={() => myPlanChangeHandler(false)}>
             <span>나의 리뷰</span>
-            <span>0</span>
+            <span>{reviewCount}</span>
           </div>
         </div>
         <div css={planAndReviewContainer}>
-          {checkType ?(<TravelList setCount={setCount} userInfo={userInfo} />):(<MyReviewList/>)}
+          {checkType ?(<TravelList setTravelCount={setTravelCount} userInfo={userInfo} />):(<MyReviewList setReviewCount={setReviewCount} userInfo={userInfo}/>)}
         </div>
       </main>
     </div>

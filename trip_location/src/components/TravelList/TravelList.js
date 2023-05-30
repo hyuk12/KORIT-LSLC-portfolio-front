@@ -9,17 +9,19 @@ import {
     Grid,
     Typography
 } from "@mui/material";
-import React from 'react';
 import {useNavigate} from "react-router-dom";
-
+//import dayjs from 'dayjs';
+import React, { useState } from 'react';
+import dayjs from "dayjs";
 
 const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
+    //const [endDay, setEndDay]= useState();
     const navigate = useNavigate();
-
+    
     const myPlanClickHandler =(travelId)=>{
         navigate(`/user/trip?userId=${userInfo.userId}&id=${travelId}`)
     }
-
+    
     return (
         <Container>
             <Grid container spacing={4} >
@@ -43,11 +45,19 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
-                            <CardActions>
-                                <Button size="small" color="primary" >
-                                    Write
-                                </Button>
-                            </CardActions>
+                            { dayjs().isAfter(data.scheduleDate[data.scheduleDate.length - 1]) ? (
+                                <CardActions>
+                                    <Button size="small" color="primary">
+                                        리뷰쓰기
+                                    </Button>
+                                </CardActions>
+                                ) : (
+                                    <CardActions>
+                                    <Button size="small" color="primary">
+                                        일정 진행중
+                                    </Button>
+                                </CardActions>
+                            )}
                         </Card>
                     </Grid>
                 ))}

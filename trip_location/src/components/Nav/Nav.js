@@ -3,6 +3,7 @@ import React from 'react';
 import {Button, Toolbar, Typography} from "@mui/material";
 import {css} from "@emotion/react";
 import logoTitle from '../../images/logotitle.png';
+import logoimg from '../../images/tt_logo.gif'
 import {useNavigate} from "react-router-dom";
 import {useQuery} from "react-query";
 import axios from "axios";
@@ -21,16 +22,23 @@ const navStyles = css`
 
 const toolbarStyle = css`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   margin: 0 auto;
   border-bottom: 1px solid #dbdbdb;
   width: 100%;
 `;
 
+const logoContainer = css`
+    width: 300px;
+    height: 90px;
+    margin-right: 35%;
+    overflow: hidden;
+`;
+
 const logoImage = css`
-  border-radius: 50%;
-  width: 50px;
-  
+  width: 300px;
+  transform: scale(0.8);
+
 `;
 
 const buttonStyle = css`
@@ -88,18 +96,9 @@ const Nav = () => {
     return (
         <React.Fragment>
             <Toolbar css={[toolbarStyle, navStyles]}>
-                <Button onClick={handleLogoClick}>
-                    <img css={logoImage} src={logoTitle} alt={logoTitle}/>
+                <Button onClick={handleLogoClick} css={logoContainer}>
+                    <img css={logoImage} src={logoimg} alt={logoimg}/>
                 </Button>
-                <Typography
-                    component = "h2"
-                    variant = "h5"
-                    color = "inherit"
-                    align="center"
-                    noWrap
-                    sx={{ flex: 1 }}>
-                    {"Trip Location"}
-                </Typography>
                 {!authState.isAuthenticated ? (<div>
                     <Button
                         css={buttonStyle}

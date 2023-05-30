@@ -11,6 +11,7 @@ import MyReviewList from '../components/ReviewList/MyReviewList';
 import TravelList from '../components/TravelList/TravelList';
 import { authenticationState } from "../store/atoms/AuthAtoms";
 
+
 const container = css`
   display: flex;
   margin-top: 64px;
@@ -97,6 +98,22 @@ const planAndReviewContainer =css`
 const MyPage = () => {
   const navigate = useNavigate();
   const authState = useRecoilValue(authenticationState);
+  const [regionInfo, setRegionInfo] = useState([
+    {
+      regionId: '',
+      regionName:'',
+      regionImgUrl:'',
+    }
+  ])
+
+  const [myTravelList, setMyTravelList] = useState([
+    {
+      travelId: '',
+      scheduleDate: [],
+      travelName:'',
+    },
+  ]);
+  const [ reviewDataList, setReviewDataList ] = useState([]);
   const [travelCount, setTravelCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [checkType,setCheckType] = useState(true);
@@ -105,6 +122,9 @@ const MyPage = () => {
     userId: '',
     profileImg: ''
   });
+
+  const [schedules, setSchedules] = useState([]);
+  const [allTravelList, setAllTravelList] = useState([]);
 
   const principal = useQuery(["principal"], async () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -119,12 +139,102 @@ const MyPage = () => {
         name: response.data.name,
         profileImg: response.data.postsImgUrl
       })
-      setCheckType(false);
-      setTimeout(() => {
-      setCheckType(true);
-      }, 100);
+
     }
   });
+
+  const travelList = useQuery(['travelList'], async () => {
+    const params = {
+      userId: userInfo.userId !== '' ? parseInt(userInfo.userId) : 0
+    }
+    const option = {
+      params,
+      headers: {
+        Authorization: `${localStorage.getItem('accessToken')}`
+      }
+    }
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/travel/plan/list',option)
+      // console.log(response);
+      return response;
+    }catch (error) {
+      alert('여행 일정이 없습니다.')
+      return error;
+    }
+  }, {
+    onSuccess: (response) => {
+      setAllTravelList([...response.data]);
+      setTravelCount(response.data.length);
+    },
+    enabled: userInfo.userId !== '',
+  })
+
+
+
+  const review = useQuery(['review'], async () => {
+    try {
+      const userId = userInfo.userId !== '' ? parseInt(userInfo.userId) : 0;
+      const option = {
+        headers : {
+          'Authorization' : `${localStorage.getItem('accessToken')}`
+        }
+      }
+      const response = await axios.get(`http://localhost:8080/api/v1/review/${userId}`, option)
+      console.log(response.data.data)
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }, {
+    onSuccess : (response) => {
+      setReviewDataList([...response.data.data]);
+      setReviewCount(response.data.data.length);
+    },
+    enabled: userInfo.userId !== '',
+  });
+
+
+  useEffect(() => {
+    setAllTravelList(allTravelList);
+
+    const extractedMyTravelList = allTravelList.map((item) => {
+      const firstLocation = item.schedules[0].locations[0];
+      const travelName = firstLocation && firstLocation.addr ? firstLocation.addr : getNextAddress(item.schedules);
+      return {
+        travelId: item.travelId,
+        scheduleDate: item.schedules.map((schedule) => schedule.scheduleDate),
+        travelName: travelName,
+      };
+    });
+    setMyTravelList(extractedMyTravelList);
+
+    const extractedSchedules = allTravelList.map((item) => item.schedules);
+    setSchedules(extractedSchedules);
+    console.log(allTravelList)
+
+    const regionInfoList = allTravelList.map((item) => {
+      const region = item.regions[0];
+      return {
+        regionId: region?.regionId,
+        regionName: region?.regionName,
+        regionImgUrl: region?.regionImgUrl
+      };
+
+    })
+    setRegionInfo(regionInfoList);
+    console.log(regionInfoList)
+
+  }, [setAllTravelList, allTravelList]);
+
+  const getNextAddress = (schedules) => {
+    for (let i = 1; i < schedules.length; i++) {
+      const firstLocation = schedules[i].locations[0];
+      if (firstLocation && firstLocation.addr) {
+        return firstLocation.addr;
+      }
+    }
+    return '';
+  };
 
   const myPlanChangeHandler = (flag) => {
     setCheckType(flag);
@@ -152,7 +262,7 @@ const MyPage = () => {
           </div>
         </div>
         <div css={planAndReviewContainer}>
-          {checkType ?(<TravelList setTravelCount={setTravelCount} userInfo={userInfo} />):(<MyReviewList setReviewCount={setReviewCount} userInfo={userInfo}/>)}
+          {checkType ?(<TravelList userInfo={userInfo} myTravelList={myTravelList} regionInfo={regionInfo}  />):(<MyReviewList reviewDataList={reviewDataList} userInfo={userInfo}/>)}
         </div>
       </main>
     </div>

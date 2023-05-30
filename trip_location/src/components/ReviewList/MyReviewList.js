@@ -16,33 +16,7 @@ const ratingStyle = css`
     font-size: 14px;
 `;
 
-const MyReviewList = ({ setReviewCount, userInfo }) => {
-
-    const [ reviewDataList, setReviewDataList ] = useState([]);
-
-    const review = useQuery(['review'], async () => {
-        try {
-            const userId = userInfo.userId !== '' ? parseInt(userInfo.userId) : 0;
-            const option = {
-                headers : {
-                    'Authorization' : `${localStorage.getItem('accessToken')}`
-                }
-            } 
-            const response = await axios.get(`http://localhost:8080/api/v1/review/${userId}`, option)
-            console.log(response.data.data)
-            return response;
-        } catch (error) {
-            return error;
-        }
-    }, {
-        onSuccess : (response) => {
-            setReviewDataList([...response.data.data]);
-            setReviewCount(response.data.data.length);
-        },
-        enabled: true,
-    });
-
-
+const MyReviewList = ({ reviewDataList, userInfo }) => {
 
     return (
         <Container>

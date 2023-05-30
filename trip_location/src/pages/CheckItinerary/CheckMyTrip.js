@@ -223,6 +223,7 @@ const CheckMyTrip = () => {
     }, [myTravelInfo, schedules, isEditable])
 
     const updateTravelInfo = useMutation(async (travelPlan) => {
+        const travelId = parseInt(searchParams.get('id'));
         const option = {
             headers: {
                 'Content-Type': 'application/json',
@@ -230,7 +231,7 @@ const CheckMyTrip = () => {
             }
         }
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/travel/plan/update/${searchParams.get('id')}`, travelPlan, option);
+            const response = await axios.put(`http://localhost:8080/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
             window.location.replace(`/user/${userInfo.userId}`);
             return response;
         }catch (error) {

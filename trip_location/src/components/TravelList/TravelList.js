@@ -69,15 +69,21 @@ const TravelList = ({ setCount, userInfo }) => {
       
         const extractedSchedules = allTravelList.map((item) => item.schedules);
         setSchedules(extractedSchedules);
+        console.log(allTravelList)
 
-        const regionInfoList = allTravelList.map((item) => ({
-            regionId: item.regions[0].regionId,
-            regionName: item.regions[0].regionName, 
-            regionImgUrl: item.regions[0].regionImgUrl, 
-        }));
+        const regionInfoList = allTravelList.map((item) => {
+            const region = item.regions[0];
+            return {
+                regionId: region?.regionId,
+                regionName: region?.regionName,
+                regionImgUrl: region?.regionImgUrl
+            };
+
+        })
         setRegionInfo(regionInfoList);
+        console.log(regionInfoList)
 
-    }, [allTravelList]);
+    }, [setAllTravelList, allTravelList]);
     
     const getNextAddress = (schedules) => {
         for (let i = 1; i < schedules.length; i++) {

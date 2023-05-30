@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
+import { format } from "date-fns";
 
 
 const { kakao } = window;
@@ -128,12 +129,13 @@ const WriteReview = () => {
   const [selectedDate, setSelectedDate] = useState(0);
   const [previewImages, setPreviewImages] = useState([]);
 
-  const [sendReviewData, setsendReviewData] = useState({
-    coordinates: [],
-    locations: [],
-    title: "",
-    images: [],
-    review: ""
+  const [sendReviewData, setSendReviewData] = useState({
+  date: format(new Date(), "yyyy-MM-dd"),  // string
+  imgFiles: previewImages,  // list
+  review: "", // string
+  title: "",  // string
+  travelId: "",  // string
+  userId: ""  // string
   });
 
   const travelInfo = useQuery(['info'], async () => {
@@ -146,48 +148,55 @@ const WriteReview = () => {
                 headers: {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
-            })
+            });
+            setSendReviewData((prevData) => ({
+              ...prevData,
+              userId: searchParams.get('userId'),
+              travelId: searchParams.get('id'),
+            }));
+        
 
             return response;
     }catch (error) {
 
     }
-}, {
+  }, {
     onSuccess: (response) => {
         setSchedules([ ...response.data.schedules ]);
-    }
-})
+      }
+  })
   
 useEffect(() => {
-  if(!!schedules) {
-      const container = document.getElementById('map');
-      const options = {
-          center: new kakao.maps.LatLng(37.5522, 126.570667),
-          level: 8,
-          draggable: false
-      }
-      const map = new kakao.maps.Map(container, options);
+  if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
+    const container = document.getElementById('map');
+    const options = {
+      center: new kakao.maps.LatLng(37.5522, 126.570667),
+      level: 8,
+      draggable: false
+    };
+    const map = new kakao.maps.Map(container, options);
+    const bounds = new kakao.maps.LatLngBounds();
 
-      // If the myTravelInfo query is successful
-      if (!!schedules && schedules.length > 0 && schedules[selectedDate].locations.length > 0) {
-          const bounds = new kakao.maps.LatLngBounds();
-          // 스케쥴의 해당 선택 일차의 경로를 반복을 돌려 마커를 찍는다.
-          schedules[selectedDate].locations.forEach((location, index) => {
-              const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
-              console.log(location.addr)  //뿌려야할 주소
-              location.id = index;
-              // 마커를 맵위에 그린다.
-              const marker = new kakao.maps.Marker({
-                  position: markerPosition,
-                  map: map
 
-              });
-              bounds.extend(markerPosition);
-          });
-          map.setBounds(bounds);
-      }
+    schedules[selectedDate].locations.forEach((location, index) => {
+      const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
+      const marker = new kakao.maps.Marker({
+        position: markerPosition,
+        map: map
+      });
+      bounds.extend(markerPosition);
+      console.log(schedules)
+    });
+
+    map.setBounds(bounds);
   }
-}, [travelInfo, schedules])   
+  const imageInput = document.querySelector('#imageInput');
+  if (imageInput) {
+    saveReview();
+  }
+}, [schedules, selectedDate]);
+
+
 
 const handleImageUpload = (event) => {
   const files = event.target.files;
@@ -196,6 +205,11 @@ const handleImageUpload = (event) => {
   const readImages = (fileIndex) => {
     if (fileIndex >= files.length) {
       setPreviewImages([...imageUrls]);
+      const reviewData = {
+        ...sendReviewData,
+        imgFiles: imageUrls,
+      };
+      setSendReviewData(reviewData);
       return;
     }
 
@@ -210,12 +224,49 @@ const handleImageUpload = (event) => {
   };
 
   readImages(0);
-};
+  };
 
+  const handleLocationUpdate = (locations) => {
+    setSendReviewData((prevData) => {
+      return {
+        ...prevData,
+        coordinates: locations.map((location) => ({
+          lat: location.lat,
+          lng: location.lng,
+        })),
+      };
+    });
+  };
 
-const clickDateHandler = (date) => {
-  setSelectedDate(date);
-}
+  const handleTitleChange = (event) => {    // 리뷰의 제목 저장
+    const updatedData = { ...sendReviewData, title: event.target.value };
+    setSendReviewData(updatedData);
+  };
+  
+  const handleReviewChange = (event) => {   // 리뷰의 내용 저장
+    const updatedData = { ...sendReviewData, review: event.target.value };
+    setSendReviewData(updatedData);
+  };
+
+  const clickDateHandler = (date) => {
+    setSelectedDate(date);
+  
+    if (!!schedules && schedules.length > 0 && schedules[date]?.locations?.length > 0) {
+      const locations = schedules[date].locations;
+      handleLocationUpdate(locations);
+    }
+  };
+
+  const saveReview = () => {
+    axios.post("http://localhost:8080/api/v1/review/save", sendReviewData, {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`,
+      },
+    })
+    console.log(sendReviewData)
+  };
+  
+
 
     return (
       <div css={viewContainer}>
@@ -250,18 +301,18 @@ const clickDateHandler = (date) => {
         </div>
         <div css={reviewContainer}>
           <div css={titleAndSaveContainer}>
-            <input css={reviewTitle} type="text" />
-            <button css={saveButton}>리뷰 저장하기</button>
+            <input css={reviewTitle} type="text" value={sendReviewData.title} onChange={handleTitleChange} />
+            <button css={saveButton} onClick={saveReview}>리뷰 저장하기</button>
           </div>
           <div css={photoContainer}>
-            <input type="file" multiple={true} onChange={handleImageUpload} accept={".jpg,.png"} />
+            <input  id="imageInput" type="file" multiple={true} onChange={handleImageUpload} accept={".jpg,.png"} />
             {previewImages.length > 0 &&
             previewImages.map((previewImage, index) => (
             <img key={index} css={photo} src={previewImage} alt={`Preview ${index}`} />
             ))} 
           </div>
           <div>
-            <textarea css={writeReviewContainer} name="" id="" cols="113" rows="16"></textarea>
+            <textarea css={writeReviewContainer} name="" id="" cols="113" rows="16" value={sendReviewData.review} onChange={handleReviewChange}></textarea>
          </div>
         </div>
       </div>

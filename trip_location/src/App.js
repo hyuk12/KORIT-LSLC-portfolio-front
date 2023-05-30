@@ -52,7 +52,7 @@ function App() {
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
         <Route path={"/user/trip"} element={<AuthRouter path={'/user/trip'} element={<CheckMyTrip />} />} />
         <Route path={"/user/:id/review"} element={<AuthRouter path={'/user/:id/review'} element={<Review />} />} />
-        <Route path={"/user/:id/review/write"} element={<AuthRouter path={'/user/:id/review/write'} element={<WriteReview />} />} />
+        <Route path={"/user/review/write"} element={<AuthRouter path={'/user/review/write'} element={<WriteReview />} />} />
       </Routes>
 
     </>

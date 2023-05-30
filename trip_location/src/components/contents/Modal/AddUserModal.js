@@ -4,6 +4,8 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import logoTitle from '../../../images/logotitle.png';
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../../../store/atoms/AuthAtoms";
 
 const modalStyle = css`
   display: flex;
@@ -267,7 +269,8 @@ const userName= css`
 `;
 
 const AddUserModal = ({ isOpen, onClose, destination }) => {
-  const partyId =useRef(1);
+  const authState = useRecoilValue(authenticationState);
+  const partyId = useRef(1);
   const [searchType, setSearchType] = useState('email');
   const [searchValue, setSearchValue] = useState('');
   const [myInfo, setMyInfo] = useState({
@@ -342,6 +345,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     return response;
   }, {
     keepPreviousData: true,
+    enabled: authState.isAuthenticated,
     onSuccess: (response)=>{
 
         setMyInfo({

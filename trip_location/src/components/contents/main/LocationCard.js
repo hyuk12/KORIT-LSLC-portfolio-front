@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import {css} from "@emotion/react";
 import styled from "@emotion/styled";
 import SearchIcon from "@mui/icons-material/Search";
-import { Card, CardActionArea, CardContent, CardMedia, Container, Grid, TextField, Typography } from '@mui/material';
-import axios from 'axios';
-import React, { useState } from "react";
-import { useQuery } from 'react-query';
+import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, TextField, Typography} from '@mui/material';
+import React, {useState} from "react";
 import Modal from "../Modal/Modal";
 
 const contents = css`

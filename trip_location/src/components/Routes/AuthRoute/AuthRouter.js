@@ -20,7 +20,9 @@ const AuthRouter = ({ path, element }) => {
         onSuccess: (response) => {
             if (response.status === 200) {
                 if(response.data) {
-                    setAuthState(true);
+                    setAuthState({
+                        isAuthenticated: true,
+                    });
                 }
             }
         },
@@ -35,18 +37,21 @@ const AuthRouter = ({ path, element }) => {
 
         if(authenticated.isSuccess) {
             const authenticatedPaths = ['/user', '/contents']
-            const authPath = '/auth';
+            const authPaths = ['/auth', '/home'];
 
-            if(authState && path.startsWith(authPath)) {
-                navigate("/");
+            if(authState.isAuthenticated && authPaths.filter(authPath => path.startsWith(authPath)).length > 0) {
+                navigate("/home");
             }
 
-            if(!authState && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {
+            if(!authState.isAuthenticated && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {
                 alert("로그인이 필요한 페이지입니다.")
-                navigate("/auth/login");
+                setAuthState({
+                    isAuthenticated: false,
+                })
+                navigate("/auth/login", {replace : true});
             }
         }
-    }, [authState, authenticated.isSuccess, path, navigate])
+    }, [authState.isAuthenticated, setAuthState, authenticated.isSuccess, path, navigate])
 
     if (authenticated.isLoading) {
         return <></>

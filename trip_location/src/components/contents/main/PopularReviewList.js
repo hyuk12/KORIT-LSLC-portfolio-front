@@ -4,6 +4,8 @@ import {css} from "@emotion/react";
 import Modal from "../Modal/Modal";
 import Carousel from 'react-material-ui-carousel';
 import {Paper} from '@mui/material';
+import {useQuery} from "react-query";
+import axios from "axios";
 
 const carouselStyle = css`
   width: 100%;
@@ -12,7 +14,7 @@ const carouselStyle = css`
 const paperStyle = css`
   position: relative;
   margin: 0 10px;
-  width: calc(100% / 3 - 20px);
+  width: calc(100% / 2 - 20px); // 변경 한줄에 2개가 보이도록 수정
   height: 350px;
   cursor: pointer;
   display: inline-block;
@@ -47,19 +49,38 @@ const smallText = css`
 `;
 
 
-const PopularDestinations = ({ destination }) => {
+const PopularReviewList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
-    const popularRegions = ['제주', '여수', '부산', '경주', '서울', '강릉', '울릉', '거제', '인천'];
-    const itemPerSlide = 3;
-    const destinationChunks = [];
+    const [ popularReview, setPopularReview ] = useState([]);
+    const itemPerSlide = 1;
+    const reviewListChunks = [];
 
-    for (let i = 0; i < popularRegions.length; i += itemPerSlide) {
+    const reviewListByRating = useQuery(['list'], async () => {
+        try {
+
+            const response = await axios.get('http://localhost:8080/api/v1/review/list');
+            console.log(response);
+            return response
+        }catch (error) {
+
+        }
+    }, {
+        onSuccess: (response) => {
+            setPopularReview([...response.data])
+        }
+    })
+
+
+
+    for (let i = 0; i < popularReview.length; i += itemPerSlide) {
         // destinationChunks.push(popularRegions.slice(i, i + itemPerSlide));
-        const chunk = popularRegions.slice(i, i + itemPerSlide);
-        const filterData = destination.filter((data) => chunk.includes(data.regionName));
-        destinationChunks.push(filterData);
+        const chunk = popularReview.slice(i, i + itemPerSlide);
+        if (chunk.length < itemPerSlide && i + itemPerSlide >= popularReview.length) {
+            chunk.push(popularReview[0]); // 변경: 짝수로 떨어지지 않는 경우 첫 번째 요소를 추가
+        }
+        reviewListChunks.push(chunk);
     }
 
     const handleImageClick = (destination) => {
@@ -93,34 +114,36 @@ const PopularDestinations = ({ destination }) => {
             <Carousel
                 autoPlay={false}
                 swipe={true}
-                indicators={createIndicators(destinationChunks.length)}
+                indicators={createIndicators(reviewListChunks.length)}
+                navButtonsAlwaysVisible={true}
                 cycleNavigation={true}
                 animation={"slide"}
                 css={carouselStyle}
                 setActiveIndex={setActiveIndex}
                 activeIndex={activeIndex}
             >
-                {destinationChunks.map((chunk, index) => (
+                {reviewListByRating.isLoading ? '' : popularReview.map((review, index) => (
                     <div key={index}>
-                        {chunk.map((destination) => (
-                            <Paper
-                                key={destination.id}
-                                onClick={() => handleImageClick(destination)}
-                                css={paperStyle}
-                            >
-                                <img css={popularImg} src={destination.regionImgUrl} alt={destination.regionName}/>
-                                <div css={textOverlay}>
-                                    <div css={largeText}>
-                                        {destination.regionName}
-                                    </div>
-                                    <div css={smallText}>
-                                        {destination.regionEngName}
-                                    </div>
+
+                        <Paper
+                            key={review.reviewId}
+                            onClick={() => handleImageClick(review)}
+                            css={paperStyle}
+                        >
+                            <img css={popularImg} src={review.reviewImgUrl} alt={review.reviewImgUrl}/>
+                            <div css={textOverlay}>
+                                <div css={largeText}>
+                                    {review.regionName}
                                 </div>
-                            </Paper>
-                        ))}
+                                <div css={smallText}>
+                                    {review.regionEngName}
+                                </div>
+                            </div>
+                        </Paper>
+
                     </div>
                 ))}
+
             </Carousel>
             <Modal
                 isOpen={isModalOpen}
@@ -131,4 +154,4 @@ const PopularDestinations = ({ destination }) => {
     );
 };
 
-export default PopularDestinations;
+export default PopularReviewList;

@@ -3,7 +3,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {css} from "@emotion/react";
 import {useMutation, useQuery} from "react-query";
 import axios from "axios";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
+import {useRecoilValue} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 const { kakao } = window;
 
@@ -102,54 +104,28 @@ const CheckMyTrip = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [selectedDate, setSelectedDate] = useState(0);
     const [ schedules, setSchedules ] = useState([]);
-    const [ tempSchedules, setTempSchedules ] = useState([]);
-
-    const usePrevious = (value) => {
-        const ref = useRef();
-        useEffect(() => {
-            ref.current = value;
-        });
-        return ref.current;
-    }
-
-    const prevIsEditable = usePrevious(isEditable);
-
-
-    const principal = useQuery(['principal'], async () => {
-        const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get('https://localhost:8080/api/v1/auth/principal', {params: {accessToken: accessToken}});
-
-        return response;
-    }, {
-        onSuccess: (response) => {
-            setUserInfo({
-                userId: response.data.userId,
-            })
-        }
-    });
 
     const myTravelInfo = useQuery(['info'], async () => {
         try {
-            if (!principal.isLoading){
                 const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
                     params: {
-                        userId: userInfo.userId,
+                        userId: searchParams.get('userId'),
                         travelId: searchParams.get('id'),
                     },
                     headers: {
                         Authorization: `${localStorage.getItem('accessToken')}`
                     }
                 })
+                console.log(response.data);
                 return response;
-            }
         }catch (error) {
 
         }
     }, {
         onSuccess: (response) => {
+
             setSchedules([ ...response.data.schedules ]);
-        },
-        enabled: !!principal.isSuccess,
+        }
     })
     let map = null;
 
@@ -164,7 +140,7 @@ const CheckMyTrip = () => {
                 center: new kakao.maps.LatLng(37.5522, 126.570667),
                 level: 8
             }
-            map = new kakao.maps.Map(container, options);
+            const map = new kakao.maps.Map(container, options);
 
             // If the myTravelInfo query is successful
             if (!!schedules && schedules.length > 0 && schedules[selectedDate].locations.length > 0) {
@@ -178,7 +154,7 @@ const CheckMyTrip = () => {
 
 
                 // 스케쥴의 해당 선택 일차의 경로를 반복을 돌려 마커를 찍는다.
-                schedules[selectedDate].locations.map((location, index) => {
+                schedules[selectedDate].locations.forEach((location, index) => {
                     const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
 
                     location.id = index;
@@ -311,7 +287,7 @@ const CheckMyTrip = () => {
                     <div css={footerButtonContainer}>
                         <button css={buttonStyle} onClick={editHandler} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
                         <button css={buttonStyle} onClick={saveHandler} style={{display: isEditable ? 'block' : 'none'}}>저장</button>
-                        <button css={buttonStyle} onClick={() => window.location.replace(`/user/${principal.data.data.userId}`)}>취소</button>
+                        <button css={buttonStyle} onClick={() => window.location.replace(`/user/${searchParams.get("userId")}`)}>취소</button>
                     </div>
                 </div>
             </main>

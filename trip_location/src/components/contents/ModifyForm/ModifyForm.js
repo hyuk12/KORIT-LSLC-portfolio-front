@@ -188,7 +188,7 @@ const ModifyForm = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-
+        enabled: authState.isAuthenticated,
         onSuccess: (response) => {
             setUpdateUser({
                 profileImg: response.data.postsImgUrl,

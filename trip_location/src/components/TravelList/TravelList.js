@@ -29,8 +29,8 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
         <Container>
             <Grid container spacing={4} >
                 {myTravelList.map((data, index) => (
-                    <Grid key={index} item xs={12} sm={6} md={4}>
-                        <Card sx={{ minWidth: 250}}>
+                    <Grid key={index} item xs={12} sm={6} md={4} sx={{ minWidth: 300}}>
+                        <Card sx={{ minWidth: 250, minHeight:250}}>
                             <CardActionArea sx={{ minheight: 250 }} onClick={()=> myPlanClickHandler(data.travelId)}>
                                 <CardMedia
                                     component="img"

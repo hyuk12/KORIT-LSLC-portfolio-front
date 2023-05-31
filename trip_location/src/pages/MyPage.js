@@ -6,10 +6,8 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 import MyReviewList from '../components/ReviewList/MyReviewList';
 import TravelList from '../components/TravelList/TravelList';
-import { authenticationState } from "../store/atoms/AuthAtoms";
 
 
 const container = css`
@@ -97,7 +95,7 @@ const planAndReviewContainer =css`
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const authState = useRecoilValue(authenticationState);
+  const [refresh, setRefresh] = useState(true);
   const [regionInfo, setRegionInfo] = useState([
     {
       regionId: '',
@@ -133,7 +131,7 @@ const MyPage = () => {
     const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
     return response;
   }, {
-    enabled: authState.isAuthenticated,
+    enabled: refresh,
     onSuccess : (response) => {
       setUserInfo({
         email: response.data.email,
@@ -141,7 +139,7 @@ const MyPage = () => {
         name: response.data.name,
         profileImg: response.data.postsImgUrl
       })
-
+      setRefresh(false);
     }
   });
 
@@ -157,7 +155,6 @@ const MyPage = () => {
     }
     try {
       const response = await axios.get('http://localhost:8080/api/v1/travel/plan/list',option)
-      // console.log(response);
       return response;
     }catch (error) {
       alert('여행 일정이 없습니다.')
@@ -182,7 +179,6 @@ const MyPage = () => {
         }
       }
       const response = await axios.get(`http://localhost:8080/api/v1/review/${userId}`, option)
-      console.log(response.data.data)
       return response;
     } catch (error) {
       return error;
@@ -212,7 +208,6 @@ const MyPage = () => {
 
     const extractedSchedules = allTravelList.map((item) => item.schedules);
     setSchedules(extractedSchedules);
-    console.log(allTravelList)
 
     const regionInfoList = allTravelList.map((item) => {
       const region = item.regions[0];
@@ -224,7 +219,6 @@ const MyPage = () => {
 
     })
     setRegionInfo(regionInfoList);
-    console.log(regionInfoList)
 
   }, [setAllTravelList, allTravelList]);
 

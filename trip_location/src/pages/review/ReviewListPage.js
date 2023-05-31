@@ -43,14 +43,14 @@ const ReviewListPage = () => {
             const response = await axios.get('http://localhost:8080/api/v1/review/list');
 
 
-            return response.data
+            return response
         }catch (error) {
             console.error('Failed to fetch reviews', error);
         }
     }, {
-        onSuccess: (data) => {
+        onSuccess: (response) => {
 
-            setReview([...data]);
+            setReview([...response.data]);
         }
     })
 

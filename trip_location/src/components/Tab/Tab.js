@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 const route=css`
   font-size: 16px;
   font-weight: 400;
+  padding-bottom: 5px;
 `;
 /*
   세로로 바꿔주는 함수
@@ -44,11 +45,10 @@ function TabPanel({ children, value, index, scheduleData, ...other }) {
       {value === index && (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography sx={{ px: 2, py: 1 }}>
-            {scheduleDay.date}
-            {scheduleDay.location.map((loc, locIndex) => (
-              <div css={route} key={locIndex}>
-                place {locIndex} : {loc.addr}
-              </div>
+            {scheduleDay && scheduleDay.location.map((loc, locIndex) => (
+              <span css={route} key={locIndex}>
+                place {locIndex} : {loc.addr} <br/>
+              </span>
             ))}
           </Typography>
           <Box sx={{ flexGrow: 1, px: 2 }}>{children}</Box>
@@ -68,9 +68,9 @@ TabPanel.propTypes = {
       date: PropTypes.string.isRequired,
       location: PropTypes.arrayOf(
         PropTypes.shape({
-          addr: PropTypes.string.isRequired,
-          lat: PropTypes.number.isRequired,
-          lng: PropTypes.number.isRequired,
+          addr: PropTypes.string,
+          lat: PropTypes.number,
+          lng: PropTypes.number,
         })
       ).isRequired,
     })
@@ -166,9 +166,9 @@ VerticalTabs.propTypes = {
       date: PropTypes.string.isRequired,
       location: PropTypes.arrayOf(
         PropTypes.shape({
-          addr: PropTypes.string.isRequired,
-          lat: PropTypes.number.isRequired,
-          lng: PropTypes.number.isRequired,
+          addr: PropTypes.string,
+          lat: PropTypes.number,
+          lng: PropTypes.number,
         })
       ).isRequired,
     })

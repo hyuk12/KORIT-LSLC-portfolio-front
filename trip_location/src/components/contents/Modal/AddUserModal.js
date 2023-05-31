@@ -258,7 +258,7 @@ const userProfileImg =css`
   box-sizing: border-box;
   border-radius: 50%;
   
-  width: 10%;
+  width: 8%;
 
 `; 
 
@@ -268,18 +268,16 @@ const userName= css`
   line-height: 20px;
 `;
 
-const AddUserModal = ({ isOpen, onClose, destination }) => {
-  const authState = useRecoilValue(authenticationState);
-  const partyId = useRef(1);
+const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
   const [searchType, setSearchType] = useState('email');
   const [searchValue, setSearchValue] = useState('');
-  const [myInfo, setMyInfo] = useState({
-    userId: '',
-    email: '',
-    name: '',
-    phone: '',
-    profileImg: '',
-  }); 
+  // const [myInfo, setMyInfo] = useState({
+  //   userId: '',
+  //   email: '',
+  //   name: '',
+  //   phone: '',
+  //   profileImg: '',
+  // }); 
   const [partyUsers, setPartyUsers] = useState([
     {
       userId: '',
@@ -316,13 +314,21 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     }
     try {
       const response = await axios.get('http://localhost:8080/api/v1/user/search', option);
+      // console.log(response);
       return response;
     } catch (error) {
       return error;  
     }
   },{
+    enabled: userInfo.userId !== '',
     onSuccess: (response) => {
-
+        setPartyUsers([{
+          userId: userInfo.userId,
+          name: userInfo.name,
+          email: userInfo.email,
+          phone: userInfo.phone,
+          profileImg: userInfo.profileImg,
+        },])
         if (response?.data?.data) {
           setSearchInfo({
             userId: response.data.data.userId,
@@ -335,34 +341,10 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
      }    
   });
 
-  useEffect(() => {
-    setPartyUsers([myInfo]);
-  }, [myInfo]);
-  
-  const principal = useQuery(["principal"], async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
-    return response;
-  }, {
-    keepPreviousData: true,
-    enabled: authState.isAuthenticated,
-    onSuccess: (response)=>{
-
-        setMyInfo({
-          userId: response.data.userId,
-          email: response.data.email,
-          name: response.data.name,
-          phone: response.data.phone,
-          profileImg: response.data.postsImgUrl,
-        })
-      }
-  });
-
-  
   const submitSearchHandler = (e) => {
     e.preventDefault();
     const inputValue = e.target.elements.searchMember.value;
-    if(myInfo.email !== inputValue){
+    if(userInfo.email !== inputValue){
       setSearchValue(inputValue);
     }
     e.target.reset();
@@ -378,9 +360,10 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
 
   const addPartyHandler = () => {
     const isAlreadyAdded = partyUsers.some((party) => party.userId === searchInfo.userId);
-    // console.log(isAlreadyAdded);
+    console.log(isAlreadyAdded);
     const updatedPartyData = !isAlreadyAdded ? [...partyUsers, searchInfo] : partyUsers;
     setPartyUsers(updatedPartyData);
+    console.log(partyUsers);
   };
   
   const removePartyHandler = (index) => {
@@ -402,6 +385,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
     };
   
     localStorage.setItem('partyData', JSON.stringify(partyData));
+    console.log("save요청");
     onClose();
   };
 
@@ -458,7 +442,7 @@ const AddUserModal = ({ isOpen, onClose, destination }) => {
                               <span css={userName}>
                                 {partyMember.name}
                               </span>
-                              {partyMember.userId !== myInfo.userId ? (
+                              {partyMember.userId !== userInfo.userId ? (
                                 <button onClick={() => removePartyHandler(index)}>x</button>
                               ):(<button onClick={() => removePartyHandler(index)} style={{ display: 'none' }}>x</button>)}
                             </li>

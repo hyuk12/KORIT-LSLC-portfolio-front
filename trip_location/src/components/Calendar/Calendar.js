@@ -4,13 +4,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import axios from "axios";
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
+import { useMutation } from "react-query";
 import VerticalTabs from '../Tab/Tab';
-import {useMutation, useQuery} from "react-query";
-import axios from "axios";
-import {useRecoilValue} from "recoil";
-import {authenticationState} from "../../store/atoms/AuthAtoms";
 
 const calendarContainer = css`
   display:flex;
@@ -26,33 +24,8 @@ const Total=css`
 `;
 
 export default function Calendar(props) {
-  const authState = useRecoilValue(authenticationState);
-  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, markerData } = props;
+  const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, markerData, userInfo } = props;
   const [scheduleData, setScheduleData] = useState([]);
-  const [userInfo, setUserInfo] = useState({
-    userId: '',
-    email:'',
-    profileImg:''
-  })
-  const principal = useQuery(["principal"], async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
-    return response;
-  }, {
-    enabled: authState.isAuthenticated,
-    onSuccess: (response) => {
-      setUserInfo({
-        userId: response.data.userId,
-        email: response.data.email,
-        profileImg: response.data.postsImgUrl
-      })
-    }
-  });
-
-  const resetDay = () => {
-    onStartDayChange(startDay);
-    onEndDayChange(endDay);
-  }
 
   const startDayHandle = (newValue) => {
     onStartDayChange(newValue);
@@ -150,7 +123,6 @@ export default function Calendar(props) {
             <DatePicker
               label="start"
               value={startDay}
-              onMonthChange={false}
               onChange={startDayHandle}
               minDate={dayjs()}
               maxDate={dayjs().add(3, 'month')}
@@ -158,7 +130,6 @@ export default function Calendar(props) {
             <DatePicker
               label="end"
               value={endDay}
-              onMonthChange={false}
               onChange={endDayHandle}
               minDate={startDay}
               maxDate={startDay.add(1, 'month')}

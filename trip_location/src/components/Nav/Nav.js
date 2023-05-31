@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import {Button, Toolbar, Typography} from "@mui/material";
 import {css} from "@emotion/react";
 import logoTitle from '../../images/logotitle.png';
@@ -57,13 +57,19 @@ const buttonStyle = css`
 
 const Nav = () => {
     const navigate = useNavigate();
+    const [refresh, setRefresh] = useState(true);
     const [authState, setAuthState] = useRecoilState(authenticationState);
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
         return response;
     }, {
-       enabled: authState.isAuthenticated,
+       enabled: refresh,
+       onSuccess: (response) =>{
+            if(response.status === 200){
+                setRefresh(false);
+            }
+       }
 
     });
 

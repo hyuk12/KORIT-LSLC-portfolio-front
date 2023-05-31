@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import React, {useState} from 'react';
 import {css} from "@emotion/react";
-import Modal from "../Modal/Modal";
 import Carousel from 'react-material-ui-carousel';
 import {Paper} from '@mui/material';
 import {useQuery} from "react-query";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import defaultImg from "../../../images/Trip_Together.gif";
 
 const carouselStyle = css`
   width: 100%;
@@ -59,10 +59,8 @@ const PopularReviewList = () => {
 
     const reviewListByRating = useQuery(['list'], async () => {
         try {
-
             const response = await axios.get('http://localhost:8080/api/v1/review/list');
-
-
+            console.log(response.data);
             return response.data
         }catch (error) {
             console.error('Failed to fetch reviews', error);
@@ -70,8 +68,10 @@ const PopularReviewList = () => {
     }, {
         onSuccess: (data) => {
             const groupedReviews = [];
-            for (let i = 0; i < data.length; i += 2) {
-                groupedReviews.push(data.slice(i, i + 2));
+            if (data) {
+                for (let i = 0; i < data.length; i += 2) {
+                    groupedReviews.push(data.slice(i, i + 2));
+                }
             }
             setPopularReview([...groupedReviews, [
                 {

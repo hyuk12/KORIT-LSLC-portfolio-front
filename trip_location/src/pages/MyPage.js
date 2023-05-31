@@ -185,8 +185,11 @@ const MyPage = () => {
     }
   }, {
     onSuccess : (response) => {
-      setReviewDataList([...response.data.data]);
-      setReviewCount(response.data.data.length);
+      if(response.status === 200){
+        setReviewDataList([...response.data.data]);
+        setReviewCount(response.data.data.length);
+      }
+
     },
     enabled: userInfo.userId !== '',
   });

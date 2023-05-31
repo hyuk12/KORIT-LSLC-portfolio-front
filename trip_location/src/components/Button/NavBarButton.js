@@ -39,12 +39,8 @@ const NavBarButton = ({ handleSignUpClick, handleSignInClick }) => {
         console.log("요청")
         return response;
     }, {
-        enabled: refresh,
-        onSuccess: (response) => {
-            if (response.status === 200) {
-                setRefresh(false);
-            }
-        }
+        enabled: !!authState.isAuthenticated,
+        refetchOnWindowFocus: false,
     });
 
     const handleMyPageClick = () => {

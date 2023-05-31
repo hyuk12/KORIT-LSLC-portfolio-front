@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
-import { format } from "date-fns";
+import { useEffect, useState, useRef } from "react";
+import { useMutation, useQuery } from "react-query";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 
 
 const { kakao } = window;
@@ -124,15 +124,16 @@ const writeReviewContainer = css`
 
 
 const WriteReview = () => {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [ schedules, setSchedules ] = useState([]);
   const [selectedDate, setSelectedDate] = useState(0);
   const [previewImages, setPreviewImages] = useState([]);
+  const [ imgFiles, setImgFiles ] = useState([]);
+  const fileId = useRef(1);
 
   const [sendReviewData, setSendReviewData] = useState({
-  date: format(new Date(), "yyyy-MM-dd"),  // string
-  imgFiles: previewImages,  // list
-  review: "", // string
+  review: "", // text
   title: "",  // string
   travelId: "",  // string
   userId: ""  // string
@@ -158,7 +159,7 @@ const WriteReview = () => {
 
             return response;
     }catch (error) {
-
+      console.error(error);
     }
   }, {
     onSuccess: (response) => {
@@ -190,10 +191,7 @@ useEffect(() => {
 
     map.setBounds(bounds);
   }
-  const imageInput = document.querySelector('#imageInput');
-  if (imageInput) {
-    saveReview();
-  }
+ 
 }, [schedules, selectedDate]);
 
 
@@ -226,6 +224,22 @@ const handleImageUpload = (event) => {
   readImages(0);
   };
 
+  const addFileHandle = (e) => {
+    const newImgFiles = [];
+
+    for(const file of e.target.files) {
+        const fileData = {
+            id: fileId.current,
+            file
+        }
+        fileId.current += 1;
+        newImgFiles.push(fileData);
+    }
+
+    setImgFiles([...imgFiles, ...newImgFiles]);
+    e.target.value = null;
+}
+
   const handleLocationUpdate = (locations) => {
     setSendReviewData((prevData) => {
       return {
@@ -257,16 +271,44 @@ const handleImageUpload = (event) => {
     }
   };
 
-  const saveReview = () => {
-    axios.post("http://localhost:8080/api/v1/review/save", sendReviewData, {
-      headers: {
-        'Authorization': `${localStorage.getItem('accessToken')}`,
-      },
-    })
-    console.log(sendReviewData)
-  };
-  
+  const saveReview = useMutation(async (reviewData) => {
+      try{
+        
+        console.log('출력')
+          const formData = new FormData();
+          formData.append('review', reviewData.review);
+          formData.append('title', reviewData.title);
+          formData.append('travelId', reviewData.travelId);
+          formData.append('userId', reviewData.userId);
 
+          imgFiles.forEach(imgFile => {
+            formData.append('imgFiles', imgFile.file);
+          })
+
+          const option = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `${localStorage.getItem('accessToken')}`
+            }
+          }
+          console.log(formData.get('imgFile'))
+          const response = await axios.post('http://localhost:8080/api/v1/review/save', formData, option);
+          return response
+      }catch(error) {
+
+      }
+  }, {
+    onSuccess: (response) => {
+      // if(response.status === 200) {
+      //   navigate('/home');
+      // }
+    
+    }
+  })
+
+  const saveClickHandler = () => {
+    saveReview.mutate(sendReviewData);
+  }
 
     return (
       <div css={viewContainer}>
@@ -302,10 +344,10 @@ const handleImageUpload = (event) => {
         <div css={reviewContainer}>
           <div css={titleAndSaveContainer}>
             <input css={reviewTitle} type="text" value={sendReviewData.title} onChange={handleTitleChange} />
-            <button css={saveButton} onClick={saveReview}>리뷰 저장하기</button>
+            <button css={saveButton} onClick={saveClickHandler}>리뷰 저장하기</button>
           </div>
           <div css={photoContainer}>
-            <input  id="imageInput" type="file" multiple={true} onChange={handleImageUpload} accept={".jpg,.png"} />
+            <input  id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
             {previewImages.length > 0 &&
             previewImages.map((previewImage, index) => (
             <img key={index} css={photo} src={previewImage} alt={`Preview ${index}`} />

@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import React from "react";
-import { Button, Toolbar, Typography } from "@mui/material";
-import { css } from "@emotion/react";
-import logoTitle from "../../images/logotitle.png";
+import React, {useState} from 'react';
+import {Button, Toolbar, Typography} from "@mui/material";
+import {css} from "@emotion/react";
+import logoTitle from '../../images/logotitle.png';
 import logoimg from "../../images/Trip_Together.gif";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "react-query";
+import {useNavigate} from "react-router-dom";
+import {useQuery} from "react-query";
 import axios from "axios";
 
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -73,20 +73,17 @@ const buttonStyle = css`
 const Nav = () => {
     const navigate = useNavigate();
     const [authState, setAuthState] = useRecoilState(authenticationState);
-    const principal = useQuery(
-        ["principal"],
-        async () => {
-            const accessToken = localStorage.getItem("accessToken");
-            const response = await axios.get(
-                "http://localhost:8080/api/v1/auth/principal",
-                { params: { accessToken } }
-            );
-            return response;
-        },
-        {
-            enabled: authState.isAuthenticated,
+    const [refresh, setRefresh] = useState(true);
+    const principal = useQuery(["principal"], async () => {
+        const accessToken = localStorage.getItem("accessToken");
+        const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
+        return response;
+    }, {
+        enabled: refresh,
+        onSuccess: (response) => {
+            setRefresh(false)
         }
-    );
+    });
 
     const handleLogoClick = () => {
         navigate("/home");

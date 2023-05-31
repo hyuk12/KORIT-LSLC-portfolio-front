@@ -17,7 +17,7 @@ import axios from 'axios';
 import React, {useState} from 'react';
 import {useMutation, useQuery} from "react-query";
 import {useRecoilState} from "recoil";
-import {authenticationState} from "../../../store/atoms/AuthAtoms";
+import {authenticationState, updateUserState} from "../../../store/atoms/AuthAtoms";
 
 //다시돌아옴
 
@@ -180,15 +180,18 @@ const address = [
 
 const ModifyForm = () => {
     const [ authState, setAuthState ] = useRecoilState(authenticationState);
+    const [ refresh, setRefresh ] = useState(true);
     const [ imgFiles, setImgFiles ] = useState(null);
     const [ preview, setPreview ] = useState('');
 
+    console.log(refresh)
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});
+        console.log("요청")
         return response;
     }, {
-        enabled: authState.isAuthenticated,
+        enabled: refresh,
         onSuccess: (response) => {
             setUpdateUser({
                 profileImg: response.data.postsImgUrl,
@@ -197,6 +200,7 @@ const ModifyForm = () => {
                 phone: response.data.phone,
                 address: response.data.address
             })
+            setRefresh(false)
         }
     });
 
@@ -213,14 +217,7 @@ const ModifyForm = () => {
     });
 
 
-    const [ updateUser, setUpdateUser ] = useState({
-        profileImg: '',
-        email: '',
-        name:  '',
-        phone: '',
-        address:  ''
-
-    });
+    const [ updateUser, setUpdateUser ] = useRecoilState(updateUserState);
 
     const [ errorMessages, setErrorMessages ] = useState({
         name: '',
@@ -265,7 +262,6 @@ const ModifyForm = () => {
               setIsPhone(true);
             }
         }
-
         setUpdateUser(
             {
                 ...updateUser,
@@ -273,6 +269,7 @@ const ModifyForm = () => {
             }
         )
 
+        console.log(updateUser);
     };
 
 
@@ -284,8 +281,11 @@ const ModifyForm = () => {
             formData.append("name", modifyData.name)
             formData.append("phone", modifyData.phone)
             formData.append("address", modifyData.address)
-            formData.append("profileImg", imgFiles)
-            console.log(imgFiles);
+
+            if(imgFiles) {
+                formData.append("profileImg", imgFiles)
+            }
+
             console.log(formData.get("profileImg"));
 
             const option = {
@@ -348,11 +348,6 @@ const ModifyForm = () => {
     const imgClickHandle = (e) => {
 
     }
-
-    // const removeFileHandle = (e) => {
-    //     const idToRemove = parseInt(e.target.value);
-    //     setImgFiles(prevImgFiles => prevImgFiles.filter(imgFile => imgFile.id !== idToRemove));
-    // }
 
     if(authState) {
         if (principal.isLoading) {

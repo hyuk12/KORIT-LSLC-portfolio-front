@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import Rating from '@mui/material/Rating';
 
 
 
@@ -75,6 +76,7 @@ const reviewContainer = css`
 `;
 
 const titleAndSaveContainer = css`
+    display: flex;
     margin-top: 64px;
     width: 100%;
     padding: 10px 10px 10px 0;
@@ -86,11 +88,19 @@ const reviewTitle = css`
     font-size: 30px;
 `;
 
+const rating = css`
+  position: relative;
+  top: 30px;
+  left: 250px;
+`;
+
 const saveButton = css`
     position: relative;
     align-items: center;
     top: 30px;
-    left: 450px;
+    left: 400px;
+    width: 100px;
+    height: 50px;
 `;
 
 const photoContainer = css`
@@ -131,6 +141,7 @@ const WriteReview = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [ imgFiles, setImgFiles ] = useState([]);
   const fileId = useRef(1);
+  const [ value, setValue ] = useState(0);
 
   const [sendReviewData, setSendReviewData] = useState({
   review: "", // text
@@ -237,8 +248,8 @@ const handleImageUpload = (event) => {
     }
 
     setImgFiles([...imgFiles, ...newImgFiles]);
-    e.target.value = null;
-}
+    e.target.value = null;  
+  }
 
   const handleLocationUpdate = (locations) => {
     setSendReviewData((prevData) => {
@@ -280,6 +291,7 @@ const handleImageUpload = (event) => {
           formData.append('title', reviewData.title);
           formData.append('travelId', reviewData.travelId);
           formData.append('userId', reviewData.userId);
+          formData.append('rating', value); 
 
           imgFiles.forEach(imgFile => {
             formData.append('imgFiles', imgFile.file);
@@ -344,6 +356,15 @@ const handleImageUpload = (event) => {
         <div css={reviewContainer}>
           <div css={titleAndSaveContainer}>
             <input css={reviewTitle} type="text" value={sendReviewData.title} onChange={handleTitleChange} />
+            <div css={rating}>
+            <Rating
+              name="rating"
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            />
+              </div>
             <button css={saveButton} onClick={saveClickHandler}>리뷰 저장하기</button>
           </div>
           <div css={photoContainer}>

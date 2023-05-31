@@ -134,8 +134,7 @@ const Login = () => {
         email: '',
         password: ''
     })
-    const [ errorMessages, setErrorMessages ] = useState({email: '', password: ''});
-    const [authState, setAuthState] = useRecoilState(authenticationState);
+    const [ authState, setAuthState ] = useRecoilState(authenticationState);
     const navigate = useNavigate();
 
 
@@ -169,7 +168,6 @@ const Login = () => {
                 }
             }
             const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, loginData, option);
-            setErrorMessages({email: '', password: ''});
 
             const accessToken = response.data.grantType + " " + response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
@@ -180,7 +178,7 @@ const Login = () => {
 
 
         }catch (error) {
-            setErrorMessages({email: '', password: '', ...error.response.data.errorData});
+            alert('아이디 또는 비밀번호를 잘못 입력했습니다.\n입력하신 내용을 다시 확인해주세요.');
         }
     })
 
@@ -245,7 +243,6 @@ const Login = () => {
                                 autoFocus
                                 onChange={onChangeHandler}
                             />
-                            <div css={errorMsg}>{errorMessages.email}</div>
 
                             <TextField
                                 margin="normal"
@@ -258,7 +255,6 @@ const Login = () => {
                                 autoComplete="current-password"
                                 onChange={onChangeHandler}
                             />
-                            <div css={errorMsg}>{errorMessages.password}</div>
 
                             <Grid container>
                                 <Grid item xs>

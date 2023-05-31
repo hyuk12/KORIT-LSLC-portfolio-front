@@ -117,7 +117,7 @@ export default function Calendar(props) {
       window.location.replace(`/user/${userInfo.userId}`)
       return response;
     }catch (error) {
-
+      return error;
     }
 
   }, {

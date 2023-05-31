@@ -14,7 +14,7 @@ import PopularReviewList from "../components/contents/main/PopularReviewList";
 
 const MainWrapper = styled.main`
   scroll-snap-type: y mandatory;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   height: 100vh;
 `;
 

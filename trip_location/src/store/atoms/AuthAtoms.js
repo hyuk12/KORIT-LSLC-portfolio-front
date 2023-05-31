@@ -7,3 +7,14 @@ export const authenticationState = atom({
     },
 
 });
+
+export const updateUserState = atom({
+    key: 'updateUserState', // unique ID (with respect to other atoms/selectors)
+    default: {
+        profileImg: '',
+        email: '',
+        name:  '',
+        phone: '',
+        address:  ''
+    }, // default value (aka initial value)
+});

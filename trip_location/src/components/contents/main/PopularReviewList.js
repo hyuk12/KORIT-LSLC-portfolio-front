@@ -6,6 +6,7 @@ import Carousel from 'react-material-ui-carousel';
 import {Paper} from '@mui/material';
 import {useQuery} from "react-query";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const carouselStyle = css`
   width: 100%;
@@ -50,8 +51,7 @@ const smallText = css`
 
 
 const PopularReviewList = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedDestination, setSelectedDestination] = useState(null);
+    const navigate = useNavigate();
     const [activeIndex, setActiveIndex] = useState(0);
     const [ popularReview, setPopularReview ] = useState([]);
     const itemPerSlide = 1;
@@ -84,8 +84,6 @@ const PopularReviewList = () => {
         }
     })
 
-
-
     for (let i = 0; i < popularReview.length; i += itemPerSlide) {
         // destinationChunks.push(popularRegions.slice(i, i + itemPerSlide));
         const chunk = popularReview.slice(i, i + itemPerSlide);
@@ -95,14 +93,11 @@ const PopularReviewList = () => {
         reviewListChunks.push(chunk);
     }
 
-    const handleImageClick = (destination) => {
-        setSelectedDestination(destination);
-        setIsModalOpen(true);
+    const handleImageClick = (review) => {
+        navigate('/review/list');
     };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+
 
     const createIndicators = (length) => {
         const indicators = [];
@@ -177,11 +172,6 @@ const PopularReviewList = () => {
                     </div>
                 ))}
             </Carousel>
-            <Modal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                destination={selectedDestination}
-            />
         </>
     );
 };

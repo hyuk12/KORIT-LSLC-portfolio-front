@@ -38,7 +38,6 @@ const AuthRouter = ({ path, element }) => {
         if(authenticated.isSuccess) {
             const authenticatedPaths = ['/user', '/contents']
             const authPaths = ['/auth', '/home'];
-
             if(path === "/"){
                 navigate("/home");
             }
@@ -46,6 +45,7 @@ const AuthRouter = ({ path, element }) => {
             if(authState.isAuthenticated && authPaths.filter(authPath => path.startsWith(authPath)).length > 0) {
                 navigate("/home");
             }
+
 
             if(!authState.isAuthenticated && authenticatedPaths.filter(authenticatedPath => path.startsWith(authenticatedPath)).length > 0) {
                 alert("로그인이 필요한 페이지입니다.")

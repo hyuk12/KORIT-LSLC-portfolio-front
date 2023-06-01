@@ -132,50 +132,62 @@ const writeReviewContainer = css`
 `;
 
 
-const WriteReview = () => {
+const ReviewDetail = () => {
   const navigate = useNavigate();
+  const [ reviewData, setReviewData ] = useState();
   const [searchParams, setSearchParams] = useSearchParams();
   const [ schedules, setSchedules ] = useState([]);
   const [selectedDate, setSelectedDate] = useState(0);
   const [ imgFiles, setImgFiles ] = useState([]);
   const fileId = useRef(1);
   const [ value, setValue ] = useState(0);
-
   const [sendReviewData, setSendReviewData] = useState({
-  review: "", // text
-  title: "",  // string
-  travelId: "",  // string
-  userId: ""  // string
+    review: "", // text
+    title: "",  // string
+    travelId: "",  // string
+    userId: ""  // string
   });
 
-  const travelInfo = useQuery(['info'], async () => {
+  const travelInfoReview = useQuery(['infoReview'], async () => {
     try {
-            const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
-                params: {
-                    userId: searchParams.get('userId'),
-                    travelId: searchParams.get('id'),
-                },
-                headers: {
-                    Authorization: `${localStorage.getItem('accessToken')}`
-                }
-            });
-            setSendReviewData((prevData) => ({
-              ...prevData,
-              userId: searchParams.get('userId'),
-              travelId: searchParams.get('id'),
-            }));
+      const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info/review', {
+        params: {
+          travelId: searchParams.get('id'),
+        }
+      });
+      setSendReviewData((prevData) => ({
+        ...prevData,
+        travelId: searchParams.get('id'),
+      }));
 
-
-            return response;
+      return response;
     }catch (error) {
       console.error(error);
     }
   }, {
     onSuccess: (response) => {
-        setSchedules([ ...response.data.schedules ]);
-      }
+      setSchedules([ ...response.data.schedules ]);
+    }
   })
 
+  const getReviewDetails = useQuery(['getReviewDetails'], async () => {
+    try {
+
+      const response = await axios.get(`http://localhost:8080/api/v1/review/list/${searchParams.get('reviewId')}`)
+      return response;
+    }catch (error) {
+
+    }
+  }, {
+
+    onSuccess: (response) => {
+      if(response.status === 200) {
+        setReviewData(response.data.data)
+      }
+    }
+  })
+
+  console.log(reviewData);
 useEffect(() => {
   if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
     const container = document.getElementById('map');
@@ -205,22 +217,22 @@ useEffect(() => {
 
 
 
-  const addFileHandle = (e) => {
-    const newImgFiles = [];
-
-    for(const file of e.target.files) {
-      const fileData = {
-        id: fileId.current,
-        file
-      }
-      fileId.current += 1;
-      newImgFiles.push(fileData);
-    }
-
-    setImgFiles([...imgFiles, ...newImgFiles]);
-
-    e.target.value = null;
-  }
+  // const addFileHandle = (e) => {
+  //   const newImgFiles = [];
+  //
+  //   for(const file of e.target.files) {
+  //     const fileData = {
+  //       id: fileId.current,
+  //       file
+  //     }
+  //     fileId.current += 1;
+  //     newImgFiles.push(fileData);
+  //   }
+  //
+  //   setImgFiles([...imgFiles, ...newImgFiles]);
+  //
+  //   e.target.value = null;
+  // }
 
   const handleLocationUpdate = (locations) => {
     setSendReviewData((prevData) => {
@@ -252,45 +264,8 @@ useEffect(() => {
       handleLocationUpdate(locations);
     }
   };
-
-  const saveReview = useMutation(async (reviewData) => {
-      try{
-
-        console.log('출력')
-          const formData = new FormData();
-          formData.append('review', reviewData.review);
-          formData.append('title', reviewData.title);
-          formData.append('travelId', reviewData.travelId);
-          formData.append('userId', reviewData.userId);
-          formData.append('rating', value);
-
-          imgFiles.forEach(imgFile => {
-            formData.append('imgFiles', imgFile.file);
-          })
-
-          const option = {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `${localStorage.getItem('accessToken')}`
-            }
-          }
-          console.log(formData.get('imgFile'))
-          const response = await axios.post('http://localhost:8080/api/v1/review/save', formData, option);
-          return response
-      }catch(error) {
-
-      }
-  }, {
-    onSuccess: (response) => {
-      // if(response.status === 200) {
-      //   navigate('/home');
-      // }
-
-    }
-  })
-
-  const saveClickHandler = () => {
-    saveReview.mutate(sendReviewData);
+  const reviewRePlanClickHandle = () => {
+    navigate(`/user/trip/replan?reviewId=${searchParams.get('reviewId')}&travelId=${searchParams.get('id')}`)
   }
 
     return (
@@ -326,32 +301,38 @@ useEffect(() => {
         </div>
         <div css={reviewContainer}>
           <div css={titleAndSaveContainer}>
-            <input css={reviewTitle} type="text" value={sendReviewData.title} onChange={handleTitleChange} />
+            <input disabled={true} css={reviewTitle} type="text" value={getReviewDetails.isLoading ? '' : reviewData.reviewTitle} onChange={handleTitleChange} />
             <div css={rating}>
             <Rating
+                disabled={true}
               name="rating"
-              value={value}
+              value={getReviewDetails.isLoading ? '' : reviewData.reviewRating}
               onChange={(event, newValue) => {
                 setValue(newValue);
               }}
             />
               </div>
-            <button css={saveButton} onClick={saveClickHandler}>리뷰 저장하기</button>
+            <button css={saveButton} onClick={reviewRePlanClickHandle}>경로 가져오기</button>
           </div>
           <div css={photoContainer}>
-            <input id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
-            {imgFiles.length > 0 &&
-                imgFiles.map((imgFile, index) => (
-                    <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
-                ))}
+            {/*<input id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />*/}
+            {/*{imgFiles.length > 0 &&*/}
+            {/*    imgFiles.map((imgFile, index) => (*/}
+            {/*        <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />*/}
+            {/*    ))}*/}
+            {!getReviewDetails.isLoading && reviewData.reviewImgUrls.map((data, index) => {
+              return <img key={index} css={photo} src={data} alt={`${index}`}/>
+            })}
+
+
           </div>
           <div>
-            <textarea css={writeReviewContainer} name="" id="" cols="113" rows="16" value={sendReviewData.review} onChange={handleReviewChange}></textarea>
+            <textarea disabled={true} css={writeReviewContainer} name="" id="" cols="113" rows="16" value={getReviewDetails.isLoading ? '' : reviewData.reviewContents} onChange={handleReviewChange}></textarea>
          </div>
         </div>
       </div>
     );
 };
 
-export default WriteReview;
+export default ReviewDetail;
 

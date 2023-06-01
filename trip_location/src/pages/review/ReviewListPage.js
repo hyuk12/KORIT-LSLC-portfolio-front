@@ -5,6 +5,7 @@ import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, TextField
 import React, {useState} from "react";
 import {useQuery} from "react-query";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const contents = css`
   display: flex;
@@ -35,14 +36,13 @@ const searchField = css`
 `;
 
 const ReviewListPage = () => {
+    const navigate = useNavigate();
     const [ review, setReview ] = useState([]);
 
     const reviewList = useQuery(['list'], async () => {
         try {
-
-            const response = await axios.get('http://localhost:8080/api/v1/review/list');
-
-
+            const response = await axios.get('http://localhost:8080/api/v1/review/list/all');
+            console.log(response.data);
             return response
         }catch (error) {
             console.error('Failed to fetch reviews', error);
@@ -56,12 +56,12 @@ const ReviewListPage = () => {
 
 
 
-    const handleCardClick = (location) => {
-
+    const handleCardClick = (reviewId, travelId) => {
+        navigate(`/review/list/detail?id=${travelId}&reviewId=${reviewId}`)
     };
 
     const handleCloseModal = () => {
-
+        
     };
 
     return (
@@ -78,7 +78,7 @@ const ReviewListPage = () => {
             <Grid container spacing={4} css={contents}>
                 {review.map((data, index) => (
                     <Grid key={index} item xs={12} sm={6} md={3}>
-                        <Card onClick={() => handleCardClick(data)}>
+                        <Card onClick={() => handleCardClick(data.reviewId,data.travelId)}>
 
                             <CardActionArea>
                                 {data.reviewImgUrl ? (

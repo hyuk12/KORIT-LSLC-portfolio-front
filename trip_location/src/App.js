@@ -24,6 +24,8 @@ import Review from "./pages/review/Review";
 import WriteReview from "./pages/CheckItinerary/WriteReview";
 import ReviewListPage from "./pages/review/ReviewListPage";
 import Withdrawal from "./pages/Withdrawal/Withdrawal";
+import CheckCopyTrip from "./pages/CheckItinerary/CheckCopyTrip";
+import ReviewDetail from "./pages/review/ReviewDetail";
 
 
 const mainStyles = css`
@@ -39,6 +41,7 @@ function App() {
         <Route path={"/"} element={<AuthRouter path={'/'} element={<></>} />} />
         <Route path={"/home"} element={<AuthRouter path={'/home'} element={<Home />} />} />
         <Route path={"/review/list"} element={<AuthRouter path={'/review/list'} element={<ReviewListPage />} />} />
+        <Route path={"/review/list/detail"} element={<AuthRouter path={'/review/list/detail'} element={<ReviewDetail />} />} />
         <Route path={"/auth/login"} element={<AuthRouter path={'/auth/login'} element={<Login />} />} />
         <Route path={"/auth/oauth2/login"} element={<AuthRouter path={'/auth/oauth2/login'} element={<OAuth2Login />} />} />
         <Route path={"/auth/signup"} element={<AuthRouter path={'/auth/signup'} element={<SignUp />} />} />
@@ -53,6 +56,7 @@ function App() {
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
         <Route path={"/user/trip"} element={<AuthRouter path={'/user/trip'} element={<CheckMyTrip />} />} />
+        <Route path={"/user/trip/replan"} element={<AuthRouter path={'/user/trip/replan'} element={<CheckCopyTrip />} />} />
         <Route path={"/user/:id/review"} element={<AuthRouter path={'/user/:id/review'} element={<Review />} />} />
         <Route path={"/user/review/write"} element={<AuthRouter path={'/user/review/write'} element={<WriteReview />} />} />
       </Routes>

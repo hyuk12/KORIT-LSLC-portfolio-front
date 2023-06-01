@@ -77,7 +77,7 @@ const addFriendButton = css`
 
 
 const Contents = () => {
-  const [serchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [refresh, setRefresh] = useState(true);
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
@@ -138,9 +138,9 @@ const Contents = () => {
     <>
       <div css={container}>
         <div css={main}>
-          <Map destinationTitle={serchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
+          <Map destinationTitle={searchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
           <div css={sidebar}>
-              <div css={Title}>{serchParams.get("destinationTitle")}</div>
+              <div css={Title}>{searchParams.get("destinationTitle")}</div>
               <div css={avatarBox}>
                 <button css={addFriendButton} onClick={openModal}>친구 추가</button>
               </div>
@@ -161,7 +161,7 @@ const Contents = () => {
       <AddUserModal
       isOpen={isModalOpen}
       onClose={closeModal}
-      destination={{ image: 'image-url', title: serchParams.get("destinationTitle"), englishing: 'Englishing' }}
+      destination={{ image: 'image-url', title: searchParams.get("destinationTitle"), englishing: 'Englishing' }}
       userInfo={userInfo}
       />
     </>

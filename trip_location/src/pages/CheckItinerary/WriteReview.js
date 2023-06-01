@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
-import { useMutation, useQuery } from "react-query";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {useEffect, useRef, useState} from "react";
+import {useMutation, useQuery} from "react-query";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import Rating from '@mui/material/Rating';
-
 
 
 const { kakao } = window;
@@ -24,7 +23,7 @@ const mapContainer = css`
   width: 600px;
   border: 1px solid black;
 `;
-  
+
 const mapMove = css`
   
 `;
@@ -115,7 +114,7 @@ const photoContainer = css`
     white-space: nowrap;
     border: 1px solid black;
 `;
-    
+
 const photo = css`
     justify-content: space-around;
     align-items: center;
@@ -138,7 +137,6 @@ const WriteReview = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [ schedules, setSchedules ] = useState([]);
   const [selectedDate, setSelectedDate] = useState(0);
-  const [previewImages, setPreviewImages] = useState([]);
   const [ imgFiles, setImgFiles ] = useState([]);
   const fileId = useRef(1);
   const [ value, setValue ] = useState(0);
@@ -166,7 +164,7 @@ const WriteReview = () => {
               userId: searchParams.get('userId'),
               travelId: searchParams.get('id'),
             }));
-        
+
 
             return response;
     }catch (error) {
@@ -177,7 +175,7 @@ const WriteReview = () => {
         setSchedules([ ...response.data.schedules ]);
       }
   })
-  
+
 useEffect(() => {
   if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
     const container = document.getElementById('map');
@@ -202,53 +200,26 @@ useEffect(() => {
 
     map.setBounds(bounds);
   }
- 
+
 }, [schedules, selectedDate]);
 
 
-
-const handleImageUpload = (event) => {
-  const files = event.target.files;
-  const imageUrls = [];
-
-  const readImages = (fileIndex) => {
-    if (fileIndex >= files.length) {
-      setPreviewImages([...imageUrls]);
-      const reviewData = {
-        ...sendReviewData,
-        imgFiles: imageUrls,
-      };
-      setSendReviewData(reviewData);
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      imageUrls.push(reader.result);
-      readImages(fileIndex + 1);
-    };
-
-    reader.readAsDataURL(files[fileIndex]);
-  };
-
-  readImages(0);
-  };
 
   const addFileHandle = (e) => {
     const newImgFiles = [];
 
     for(const file of e.target.files) {
-        const fileData = {
-            id: fileId.current,
-            file
-        }
-        fileId.current += 1;
-        newImgFiles.push(fileData);
+      const fileData = {
+        id: fileId.current,
+        file
+      }
+      fileId.current += 1;
+      newImgFiles.push(fileData);
     }
 
     setImgFiles([...imgFiles, ...newImgFiles]);
-    e.target.value = null;  
+
+    e.target.value = null;
   }
 
   const handleLocationUpdate = (locations) => {
@@ -267,7 +238,7 @@ const handleImageUpload = (event) => {
     const updatedData = { ...sendReviewData, title: event.target.value };
     setSendReviewData(updatedData);
   };
-  
+
   const handleReviewChange = (event) => {   // 리뷰의 내용 저장
     const updatedData = { ...sendReviewData, review: event.target.value };
     setSendReviewData(updatedData);
@@ -275,7 +246,7 @@ const handleImageUpload = (event) => {
 
   const clickDateHandler = (date) => {
     setSelectedDate(date);
-  
+
     if (!!schedules && schedules.length > 0 && schedules[date]?.locations?.length > 0) {
       const locations = schedules[date].locations;
       handleLocationUpdate(locations);
@@ -284,14 +255,14 @@ const handleImageUpload = (event) => {
 
   const saveReview = useMutation(async (reviewData) => {
       try{
-        
+
         console.log('출력')
           const formData = new FormData();
           formData.append('review', reviewData.review);
           formData.append('title', reviewData.title);
           formData.append('travelId', reviewData.travelId);
           formData.append('userId', reviewData.userId);
-          formData.append('rating', value); 
+          formData.append('rating', value);
 
           imgFiles.forEach(imgFile => {
             formData.append('imgFiles', imgFile.file);
@@ -314,7 +285,7 @@ const handleImageUpload = (event) => {
       // if(response.status === 200) {
       //   navigate('/home');
       // }
-    
+
     }
   })
 
@@ -368,11 +339,11 @@ const handleImageUpload = (event) => {
             <button css={saveButton} onClick={saveClickHandler}>리뷰 저장하기</button>
           </div>
           <div css={photoContainer}>
-            <input  id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
-            {previewImages.length > 0 &&
-            previewImages.map((previewImage, index) => (
-            <img key={index} css={photo} src={previewImage} alt={`Preview ${index}`} />
-            ))} 
+            <input id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
+            {imgFiles.length > 0 &&
+                imgFiles.map((imgFile, index) => (
+                    <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
+                ))}
           </div>
           <div>
             <textarea css={writeReviewContainer} name="" id="" cols="113" rows="16" value={sendReviewData.review} onChange={handleReviewChange}></textarea>

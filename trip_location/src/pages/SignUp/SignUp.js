@@ -119,11 +119,10 @@ const SignUp = () => {
     });
 
     const [isSignUp, setIsSignUp] = useState({
-        email: true,
-        password: true,
-        name: true,
-        phone: true,
-        address: true,
+        email: false,
+        password: false,
+        name: false,
+        phone: false,
     });
 
     
@@ -235,7 +234,7 @@ const SignUp = () => {
                 `http://localhost:8080/api/v1/auth/user`,
                 signupUser,
                 option
-            );
+            ); 
             setMessages({
                 profileImgPath: "",
                 email: "",
@@ -343,7 +342,7 @@ const SignUp = () => {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
-                        disabled={Object.values(isSignUp).includes(false)}
+                        disabled={!Object.values(isSignUp).every(value => value)}
                     >
                         Sign Up
                     </Button>

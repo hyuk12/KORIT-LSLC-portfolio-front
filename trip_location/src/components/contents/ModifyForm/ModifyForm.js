@@ -18,19 +18,19 @@ import React, {useState} from 'react';
 import {useMutation, useQuery} from "react-query";
 import {useRecoilState} from "recoil";
 import {authenticationState, updateUserState} from "../../../store/atoms/AuthAtoms";
+import { Link } from 'react-router-dom';
 
 //다시돌아옴
 
-const signupContainer = css`
+const modifyContainer = css`
     display: flex;
     align-items: center;
     justify-content: center;
     height: 800px;
     margin-top: 100px;
-`
-;
+`;
 
-const signupBox = css`
+const modifyBox = css`
     width: 500px;
     display: flex;
     align-items: center;
@@ -156,6 +156,11 @@ const submitButton = css`
     &:active {
         background-color: #40D6BD;
     }
+`;
+
+const withdrawalStyle = css`
+    font-size: 12px;
+    color: #888;
 `;
 
 const address = [
@@ -306,8 +311,7 @@ const ModifyForm = () => {
 
             return response
         }catch (error) {
-
-
+            alert('입력값을 확인해주세요');
         }
     }, {
         onSuccess: (response) => {
@@ -356,9 +360,9 @@ const ModifyForm = () => {
             </Box>)
         }
         return (
-            <Grid component="main" maxWidth="xs" css={signupContainer}>
+            <Grid component="main" maxWidth="xs" css={modifyContainer}>
 
-                <Box css={signupBox}>
+                <Box css={modifyBox}>
                     <Typography component="h1" variant="h5" css={signupText}>
                         Edit Member Information
                     </Typography>
@@ -456,6 +460,9 @@ const ModifyForm = () => {
                         >
                             Modify Member
                         </Button>
+                        <Link to={`/user/${principal.data.data.userId}/withdrawal`} css={withdrawalStyle}>
+                            회원탈퇴
+                        </Link>
 
                     </Box>
                 </Box>

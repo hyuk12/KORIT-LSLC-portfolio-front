@@ -23,6 +23,7 @@ import CheckMyTrip from "./pages/CheckItinerary/CheckMyTrip";
 import Review from "./pages/review/Review";
 import WriteReview from "./pages/CheckItinerary/WriteReview";
 import ReviewListPage from "./pages/review/ReviewListPage";
+import Withdrawal from "./pages/Withdrawal/Withdrawal";
 import CheckCopyTrip from "./pages/CheckItinerary/CheckCopyTrip";
 import ReviewDetail from "./pages/review/ReviewDetail";
 
@@ -50,6 +51,7 @@ function App() {
         <Route path={"/auth/oauth2/merge"} element={<AuthRouter path={'/auth/oauth2/merge'} element={<OAuth2Merge />} />} />
         <Route path={"/auth/post/register"} element={<AuthRouter path={'/auth/post/register'} element={<RegionRegister />} />} />
         <Route path={"/user/:id"} element={<AuthRouter path={'/user/:id'} element={<MyPage />} />} />
+        <Route path={"/user/:id/withdrawal"} element={<AuthRouter path={'/user/:id/withdrawal'} element={<Withdrawal />} />} />
         <Route path={"/user/modify/:id"} element={<AuthRouter path={'/user/modify/:id'} element={<ModifyForm />} />} />
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />

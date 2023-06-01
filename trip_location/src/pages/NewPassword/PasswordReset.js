@@ -6,14 +6,14 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const signupContainer = css`
+const pageContainer = css`
     display: flex;
     align-items: center;
     justify-content: center;
     height: 800px;
 `;
 
-const signupBox = css`
+const pageBoxStyle = css`
     width: 500px;
     display: flex;
     align-items: center;
@@ -22,7 +22,7 @@ const signupBox = css`
     margin-top: 8px;
 `;
 
-const signupText = css`
+const titleText = css`
     margin-top: 80px;
     margin-bottom: 30px;
 `;
@@ -116,7 +116,7 @@ const PasswordReset = () => {
     }
 
 
-    const signupHandleSubmit = async () => {
+    const resetHandleSubmit = async () => {
         const resetPasswordData = {
             email: email,
             password: resetUserPassword
@@ -140,10 +140,10 @@ const PasswordReset = () => {
     }
 
     return (
-        <Grid component="main" maxWidth="xs" css={signupContainer}>
+        <Grid component="main" maxWidth="xs" css={pageContainer}>
 
-            <Box css={signupBox}>
-                <Typography component="h1" variant="h5" css={signupText}>
+            <Box css={pageBoxStyle}>
+                <Typography component="h1" variant="h5" css={titleText}>
                     Password Reset
                 </Typography>
 
@@ -177,7 +177,7 @@ const PasswordReset = () => {
 
                     <Button css={submitButton}
                         type='button'
-                        onClick={signupHandleSubmit}
+                        onClick={resetHandleSubmit}
                         fullWidth
                         variant="contained"
                     >

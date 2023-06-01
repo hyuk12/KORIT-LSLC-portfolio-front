@@ -32,7 +32,6 @@ const buttonStyle = css`
 const NavBarButton = ({ handleSignUpClick, handleSignInClick }) => {
     const navigate = useNavigate();
     const [authState, setAuthState] = useRecoilState(authenticationState);
-    const [refresh, setRefresh] = useState(true);
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', {params: {accessToken}});

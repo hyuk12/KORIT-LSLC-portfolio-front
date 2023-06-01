@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {css} from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import {
     Box,
@@ -14,11 +14,11 @@ import {
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, {useState} from 'react';
-import {useMutation, useQuery} from "react-query";
-import {useRecoilState} from "recoil";
-import {authenticationState, updateUserState} from "../../../store/atoms/AuthAtoms";
+import React, { useState } from 'react';
+import { useMutation, useQuery } from "react-query";
 import { Link } from 'react-router-dom';
+import { useRecoilState } from "recoil";
+import { authenticationState, updateUserState } from "../../../store/atoms/AuthAtoms";
 
 //다시돌아옴
 
@@ -463,10 +463,9 @@ const ModifyForm = () => {
                         <Link to={`/user/${principal.data.data.userId}/withdrawal`} css={withdrawalStyle}>
                             회원탈퇴
                         </Link>
-
+                        
                     </Box>
                 </Box>
-
             </Grid>
         );
     }

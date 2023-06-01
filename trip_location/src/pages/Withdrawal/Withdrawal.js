@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField, Typography } from "@mui/material";
-import Slide from '@mui/material/Slide';
 import axios from "axios";
-import React, { forwardRef, useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -23,6 +22,15 @@ const pageBoxStyle = css`
     justify-content: center;
     flex-direction: column;
     margin-top: 8px;
+`;
+const contentContainer = css`
+    width: 500px;
+`;
+
+const listStyle = css`
+    list-style-type: none;
+    list-style: none;
+    color: #777;
 `;
 
 const titleText = css`
@@ -52,7 +60,8 @@ const submitButton = css`
 const Withdrawal = () => {
     const navigate = useNavigate();
     const [ open, setOpen ] = useState(true);
-    const [refresh, setRefresh] = useState(true);
+    const [ authState, setAuthState ] = useRecoilState(authenticationState);
+    const [ refresh, setRefresh ] = useState(true);
     const [ userCheck, setUserCheck ] = useState({
         email: "",
         password: "",
@@ -63,18 +72,12 @@ const Withdrawal = () => {
         const response = await axios.get('http://localhost:8080/api/v1/auth/principal', { params: { accessToken } });
         return response;
     }, {
-        enabled: refresh,
-        onSuccess: (response) => {
-            setRefresh(false);
-        }
+        enabled: authState.isAuthenticated
+        // onSuccess: (response) => {
+        //     setRefresh(false);
+        // }
     });
     
-    const Transition = forwardRef(function Transition(
-        props,
-        ref,
-      ) {
-        return <Slide direction="up" ref={ref} {...props} />;
-      });
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
@@ -92,16 +95,12 @@ const Withdrawal = () => {
                 password: userCheck.password,
             };
 
-            const option = {
+            const response = await axios.delete(`http://localhost:8080/api/v1/user/${principal.data.data.userId}`, {
                 headers: {
                     Authorization: `${localStorage.getItem("accessToken")}`,
                 },
-            };
-
-            const response = await axios.delete( `http://localhost:8080/api/v1/user/${principal.data.data.userId}`,
-                userData,
-                option
-            );
+                data: userData,
+            });
             
             return response;
         } catch (error) {
@@ -111,7 +110,11 @@ const Withdrawal = () => {
         onSuccess: (response) => {
             if(response.status === 200) {
                 alert('지금까지 Trip Together를 이용해주셔서 감사합니다.');
-                window.location.replace('/auth/login');
+                localStorage.removeItem("accessToken");
+                setAuthState({
+                    isAuthenticated: false,
+                });
+                navigate("/auth/login");;
             }
         }
     });
@@ -128,20 +131,25 @@ const Withdrawal = () => {
         <Grid component="main" maxWidth="xs" css={pageContainer}>
             <Dialog
                 open={open}
-                TransitionComponent={Transition}
                 keepMounted
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle>{"회원탈퇴 안내"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
+                <DialogContent css={contentContainer}>
+                    <div>
                         탈퇴시 삭제/유지되는 정보를 확인하세요!
+                    </div>
+                    <div>
                         한번 삭제된 정보는 복구가 불가능합니다.
-                        
-                        계정 및 프로필 정보 삭제
-                        내 여행 장소 및 저장 정보 삭제
-                        공유 일정 및 리뷰, 사진 유지
+                    </div>
+                    <p></p>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        <ul css={listStyle}>
+                            <li>계정 및 프로필 정보 삭제</li>
+                            <li>내 여행 장소 및 저장 정보 삭제</li>
+                            <li>공유 일정 및 리뷰, 사진 유지</li>
+                        </ul>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

@@ -40,9 +40,8 @@ const ReviewListPage = () => {
     const reviewList = useQuery(['list'], async () => {
         try {
 
-            const response = await axios.get('http://localhost:8080/api/v1/review/list');
-
-
+            const response = await axios.get('http://localhost:8080/api/v1/review/list/all');
+            console.log(response.data);
             return response
         }catch (error) {
             console.error('Failed to fetch reviews', error);

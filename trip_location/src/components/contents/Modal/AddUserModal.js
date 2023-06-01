@@ -385,7 +385,6 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
     };
   
     localStorage.setItem('partyData', JSON.stringify(partyData));
-    console.log("save요청");
     onClose();
   };
 

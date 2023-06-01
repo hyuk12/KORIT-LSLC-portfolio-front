@@ -23,6 +23,7 @@ import CheckMyTrip from "./pages/CheckItinerary/CheckMyTrip";
 import Review from "./pages/review/Review";
 import WriteReview from "./pages/CheckItinerary/WriteReview";
 import ReviewListPage from "./pages/review/ReviewListPage";
+import CheckCopyTrip from "./pages/CheckItinerary/CheckCopyTrip";
 
 
 const mainStyles = css`
@@ -51,6 +52,7 @@ function App() {
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
         <Route path={"/user/trip"} element={<AuthRouter path={'/user/trip'} element={<CheckMyTrip />} />} />
+        <Route path={"/user/trip/replan"} element={<AuthRouter path={'/user/trip/replan'} element={<CheckCopyTrip />} />} />
         <Route path={"/user/:id/review"} element={<AuthRouter path={'/user/:id/review'} element={<Review />} />} />
         <Route path={"/user/review/write"} element={<AuthRouter path={'/user/review/write'} element={<WriteReview />} />} />
       </Routes>

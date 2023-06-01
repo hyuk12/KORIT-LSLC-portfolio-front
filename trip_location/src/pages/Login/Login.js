@@ -12,7 +12,7 @@ import kakaoBtn from '../../images/kakaolink_btn.png';
 import naverBtn from '../../images/naver_btn.png';
 import {useRecoilState} from "recoil";
 import {authenticationState} from "../../store/atoms/AuthAtoms";
-import {useMutation, useQuery} from "react-query";
+import {useMutation} from "react-query";
 
 
 const submitButton = css`

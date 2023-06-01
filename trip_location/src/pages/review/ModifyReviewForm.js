@@ -113,6 +113,7 @@ const photoContainer = css`
     overflow-x: auto;
     white-space: nowrap;
     border: 1px solid black;
+    cursor: pointer;
 `;
 
 const photo = css`

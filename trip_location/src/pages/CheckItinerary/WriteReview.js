@@ -5,6 +5,7 @@ import {useEffect, useRef, useState} from "react";
 import {useMutation, useQuery} from "react-query";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Rating from '@mui/material/Rating';
+import {Preview} from "@mui/icons-material";
 
 
 const { kakao } = window;
@@ -113,6 +114,7 @@ const photoContainer = css`
     overflow-x: auto;
     white-space: nowrap;
     border: 1px solid black;
+    cursor: pointer;
 `;
 
 const photo = css`
@@ -283,9 +285,9 @@ useEffect(() => {
       }
   }, {
     onSuccess: (response) => {
-      // if(response.status === 200) {
-      //   navigate('/home');
-      // }
+      if(response.status === 200) {
+        navigate(`/user/${searchParams.get('userId')}`);
+      }
 
     }
   })
@@ -339,8 +341,8 @@ useEffect(() => {
               </div>
             <button css={saveButton} onClick={saveClickHandler}>리뷰 저장하기</button>
           </div>
-          <div css={photoContainer}>
-            <input id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
+          <div css={photoContainer} onClick={() => document.getElementById("imageInput").click()}>
+            <input hidden={true} id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
             {imgFiles.length > 0 &&
                 imgFiles.map((imgFile, index) => (
                     <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />

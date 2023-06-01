@@ -174,14 +174,16 @@ const ReviewDetail = () => {
     try {
 
       const response = await axios.get(`http://localhost:8080/api/v1/review/list/${searchParams.get('reviewId')}`)
-      console.log(response);
       return response;
     }catch (error) {
 
     }
   }, {
+
     onSuccess: (response) => {
-      setReviewData(response.data.data)
+      if(response.status === 200) {
+        setReviewData(response.data.data)
+      }
     }
   })
 

@@ -256,7 +256,8 @@ useEffect(() => {
   const saveReview = useMutation(async (reviewData) => {
       try{
 
-        console.log('출력')
+          console.log(reviewData.review);
+          console.log(reviewData.title);
           const formData = new FormData();
           formData.append('review', reviewData.review);
           formData.append('title', reviewData.title);

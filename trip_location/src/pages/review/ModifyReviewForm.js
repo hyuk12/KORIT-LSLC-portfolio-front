@@ -139,6 +139,7 @@ const ModifyReviewForm = () => {
     const [ schedules, setSchedules ] = useState([]);
     const [selectedDate, setSelectedDate] = useState(0);
     const [ imgFiles, setImgFiles ] = useState([]);
+    const [isImageSelected, setIsImageSelected] = useState(false);
     const fileId = useRef(1);
     const [ value, setValue ] = useState(0);
     const [sendReviewData, setSendReviewData] = useState({
@@ -183,23 +184,24 @@ const ModifyReviewForm = () => {
                 }
             }
             const response = await axios.get(`http://localhost:8080/api/v1/review/list/${searchParams.get('reviewId')}`, option)
-            console.log("Travel ID from searchParams: ", searchParams.get('id'));
-            console.log("User ID from response: ", response.data.data.userId);
             return response;
         }catch (error) {
 
         }
     }, {
         onSuccess: (response) => {
-            setSendReviewData({
-                review: response.data.data.reviewContents,
-                title: response.data.data.reviewTitle,
-                rating: response.data.data.reviewRating,
-                userId: response.data.data.userId,
-                travelId: parseInt(searchParams.get('id')),
-            })
-            setReviewData(response.data.data);
-        }
+            if(response.status === 200) {
+                setSendReviewData({
+                    review: response.data.data.reviewContents,
+                    title: response.data.data.reviewTitle,
+                    rating: parseInt(response.data.data.reviewRating),
+                    userId: parseInt(response.data.data.userId),
+                    travelId: parseInt(searchParams.get('id')),
+                })
+                setReviewData(response.data.data);
+            }
+        },
+        enabled: !reviewData
     })
 
     const reviewUpdate = useMutation(async (updateData) => {
@@ -210,11 +212,12 @@ const ModifyReviewForm = () => {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
             }
+            console.log(parseInt(updateData.rating));
             const formData = new FormData();
             formData.append('title', updateData.title);
             formData.append('travelId', parseInt(updateData.travelId));
             formData.append('userId', parseInt(updateData.userId));
-            formData.append('rating', updateData.rating);
+            formData.append('rating', parseInt(updateData.rating));
             formData.append('review', updateData.review);
 
             imgFiles.forEach(imgFile => {
@@ -233,10 +236,6 @@ const ModifyReviewForm = () => {
             }
         }
     })
-
-
-
-
 
     useEffect(() => {
         if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
@@ -279,6 +278,10 @@ const ModifyReviewForm = () => {
         newImgFiles.push(fileData);
       }
 
+      if (newImgFiles.length > 0) {
+            setIsImageSelected(true);
+      }
+
       setImgFiles([...imgFiles, ...newImgFiles]);
 
       e.target.value = null;
@@ -300,6 +303,12 @@ const ModifyReviewForm = () => {
         const updatedData = { ...sendReviewData, title: event.target.value };
         setSendReviewData(updatedData);
     };
+
+    const handleRatingChange = (event, newValue) => {    // 리뷰의 별점 저장
+        const updatedData = { ...sendReviewData, rating: newValue };
+        setSendReviewData(updatedData);
+    };
+
 
     const handleReviewChange = (event) => {   // 리뷰의 내용 저장
         const updatedData = { ...sendReviewData, review: event.target.value };
@@ -355,26 +364,26 @@ const ModifyReviewForm = () => {
                     <div css={rating}>
                         <Rating
                             name="rating"
-                            value={getReviewDetails.isLoading ? '' : sendReviewData.rating}
-                            onChange={(event, newValue) => {
-                                setValue(newValue);
-                            }}
+                            value={getReviewDetails.isLoading ? 0 : parseInt(sendReviewData.rating)}
+                            onChange={handleRatingChange}
                         />
+
                     </div>
                     <button css={saveButton} onClick={reviewRePlanClickHandle}>리뷰 수정하기</button>
                 </div>
-                <div css={photoContainer}>
-                    <input id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
-                    {imgFiles.length > 0 &&
-                        imgFiles.map((imgFile, index) => (
-                            <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
-                        ))}
-                    {!getReviewDetails.isLoading && reviewData.reviewImgUrls.map((data, index) => {
-                        return <img key={index} css={photo} src={data} alt={`${index}`}/>
-                    })}
-
-
+                <div css={photoContainer} onClick={() => document.getElementById("imageInput").click()}>
+                    <input hidden={true} id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
+                    <div>
+                        {isImageSelected && imgFiles.length > 0 &&
+                            imgFiles.map((imgFile, index) => (
+                                <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
+                            ))}
+                        {!isImageSelected && !getReviewDetails.isLoading && reviewData && reviewData.reviewImgUrls && reviewData.reviewImgUrls.map((data, index) => {
+                            return <img key={index} css={photo} src={data} alt={`${index}`}/>
+                        })}
+                    </div>
                 </div>
+
                 <div>
                     <textarea css={writeReviewContainer} name="" id="" cols="113" rows="16" value={getReviewDetails.isLoading ? '' : sendReviewData.review} onChange={handleReviewChange}></textarea>
                 </div>

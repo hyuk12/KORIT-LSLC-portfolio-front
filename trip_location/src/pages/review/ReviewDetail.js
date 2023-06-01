@@ -2,7 +2,7 @@
 import {css} from "@emotion/react";
 import axios from "axios";
 import {useEffect, useRef, useState} from "react";
-import {useMutation, useQuery} from "react-query";
+import {useQuery} from "react-query";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Rating from '@mui/material/Rating';
 
@@ -138,14 +138,13 @@ const ReviewDetail = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [ schedules, setSchedules ] = useState([]);
   const [selectedDate, setSelectedDate] = useState(0);
-  const [ imgFiles, setImgFiles ] = useState([]);
-  const fileId = useRef(1);
   const [ value, setValue ] = useState(0);
   const [sendReviewData, setSendReviewData] = useState({
     review: "", // text
     title: "",  // string
     travelId: "",  // string
-    userId: ""  // string
+    userId: "",
+    rating: ''// string
   });
 
   const travelInfoReview = useQuery(['infoReview'], async () => {
@@ -182,9 +181,17 @@ const ReviewDetail = () => {
 
     onSuccess: (response) => {
       if(response.status === 200) {
-        setReviewData(response.data.data)
+        setSendReviewData({
+          review: response.data.data.reviewContents,
+          title: response.data.data.reviewTitle,
+          rating: parseInt(response.data.data.reviewRating),
+          userId: parseInt(response.data.data.userId),
+          travelId: parseInt(searchParams.get('id')),
+        })
+        setReviewData(response.data.data);
       }
-    }
+    },
+    enabled: !reviewData
   })
 
   console.log(reviewData);
@@ -214,25 +221,6 @@ useEffect(() => {
   }
 
 }, [schedules, selectedDate]);
-
-
-
-  // const addFileHandle = (e) => {
-  //   const newImgFiles = [];
-  //
-  //   for(const file of e.target.files) {
-  //     const fileData = {
-  //       id: fileId.current,
-  //       file
-  //     }
-  //     fileId.current += 1;
-  //     newImgFiles.push(fileData);
-  //   }
-  //
-  //   setImgFiles([...imgFiles, ...newImgFiles]);
-  //
-  //   e.target.value = null;
-  // }
 
   const handleLocationUpdate = (locations) => {
     setSendReviewData((prevData) => {
@@ -301,12 +289,12 @@ useEffect(() => {
         </div>
         <div css={reviewContainer}>
           <div css={titleAndSaveContainer}>
-            <input disabled={true} css={reviewTitle} type="text" value={getReviewDetails.isLoading ? '' : reviewData.reviewTitle} onChange={handleTitleChange} />
+            <input disabled={true} css={reviewTitle} type="text" value={getReviewDetails.isLoading ? '' : sendReviewData.title} onChange={handleTitleChange} />
             <div css={rating}>
             <Rating
                 disabled={true}
               name="rating"
-              value={getReviewDetails.isLoading ? '' : reviewData.reviewRating}
+              value={getReviewDetails.isLoading ? '' : sendReviewData.rating}
               onChange={(event, newValue) => {
                 setValue(newValue);
               }}
@@ -315,19 +303,12 @@ useEffect(() => {
             <button css={saveButton} onClick={reviewRePlanClickHandle}>경로 가져오기</button>
           </div>
           <div css={photoContainer}>
-            {/*<input id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />*/}
-            {/*{imgFiles.length > 0 &&*/}
-            {/*    imgFiles.map((imgFile, index) => (*/}
-            {/*        <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />*/}
-            {/*    ))}*/}
-            {!getReviewDetails.isLoading && reviewData.reviewImgUrls.map((data, index) => {
+            {!getReviewDetails.isLoading && reviewData && reviewData.reviewImgUrls && reviewData.reviewImgUrls.map((data, index) => {
               return <img key={index} css={photo} src={data} alt={`${index}`}/>
             })}
-
-
           </div>
           <div>
-            <textarea disabled={true} css={writeReviewContainer} name="" id="" cols="113" rows="16" value={getReviewDetails.isLoading ? '' : reviewData.reviewContents} onChange={handleReviewChange}></textarea>
+            <textarea disabled={true} css={writeReviewContainer} name="" id="" cols="113" rows="16" value={getReviewDetails.isLoading ? '' : sendReviewData.review} onChange={handleReviewChange}></textarea>
          </div>
         </div>
       </div>

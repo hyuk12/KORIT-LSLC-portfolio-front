@@ -237,6 +237,26 @@ const ModifyReviewForm = () => {
         }
     })
 
+    const reviewDelete = useMutation(async (deleteId) =>  {
+        try {
+            const option = {
+                headers: {
+                    Authorization: `${localStorage.getItem('accessToken')}`
+                }
+            }
+            const response = await axios.delete(`http://localhost:8080/api/v1/review/${deleteId}`, option);
+            return response
+        }catch (error) {
+
+        }
+    }, {
+        onSuccess: (response) => {
+            if (response.status === 200) {
+                navigate('/home', {replace: true});
+            }
+        }
+    })
+
     useEffect(() => {
         if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
             const container = document.getElementById('map');
@@ -327,6 +347,12 @@ const ModifyReviewForm = () => {
         reviewUpdate.mutate(sendReviewData);
     }
 
+    const reviewDeleteClickHandle = () => {
+        if (window.confirm("정말로 삭제 하시겠습니까?")) {
+            reviewDelete.mutate(parseInt(searchParams.get('reviewId')));
+        }
+    }
+
     return (
         <div css={viewContainer}>
             <div css={mapContainer}>
@@ -370,6 +396,7 @@ const ModifyReviewForm = () => {
 
                     </div>
                     <button css={saveButton} onClick={reviewRePlanClickHandle}>리뷰 수정하기</button>
+                    <button css={saveButton} onClick={reviewDeleteClickHandle}>리뷰 삭제하기</button>
                 </div>
                 <div css={photoContainer} onClick={() => document.getElementById("imageInput").click()}>
                     <input hidden={true} id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />

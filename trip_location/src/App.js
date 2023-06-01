@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { CssBaseline } from "@mui/material";
+import {css} from "@emotion/react";
+import {CssBaseline} from "@mui/material";
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import './App.css';
 import Nav from "./components/Nav/Nav";
 import AuthRouter from "./components/Routes/AuthRoute/AuthRouter";
@@ -20,12 +20,12 @@ import SignUp from './pages/SignUp/SignUp';
 import ModifyPassword from "./pages/NewPassword/ModifyPassword";
 import RegionRegister from "./components/contents/ModifyForm/RegionRegister";
 import CheckMyTrip from "./pages/CheckItinerary/CheckMyTrip";
-import Review from "./pages/review/Review";
 import WriteReview from "./pages/CheckItinerary/WriteReview";
 import ReviewListPage from "./pages/review/ReviewListPage";
 import Withdrawal from "./pages/Withdrawal/Withdrawal";
 import CheckCopyTrip from "./pages/CheckItinerary/CheckCopyTrip";
 import ReviewDetail from "./pages/review/ReviewDetail";
+import ModifyReviewForm from "./pages/review/ModifyReviewForm";
 
 
 const mainStyles = css`
@@ -56,8 +56,8 @@ function App() {
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
         <Route path={"/user/trip"} element={<AuthRouter path={'/user/trip'} element={<CheckMyTrip />} />} />
+        <Route path={"/user/review"} element={<AuthRouter path={'/user/review'} element={<ModifyReviewForm />} />} />
         <Route path={"/user/trip/replan"} element={<AuthRouter path={'/user/trip/replan'} element={<CheckCopyTrip />} />} />
-        <Route path={"/user/:id/review"} element={<AuthRouter path={'/user/:id/review'} element={<Review />} />} />
         <Route path={"/user/review/write"} element={<AuthRouter path={'/user/review/write'} element={<WriteReview />} />} />
       </Routes>
 

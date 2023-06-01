@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from "axios";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
+import CoustomCalendar from "../../components/Calendar/CoustomCalendar";
 import AddUserModal from "../../components/contents/Modal/AddUserModal";
-import dayjs from "dayjs";
-import Calendar from "../../components/Calendar/Calendar";
 
 const { kakao } = window;
 
@@ -109,12 +109,12 @@ const CheckCopyTrip = () => {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [isEditable, setIsEditable] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
-    const [selectedDate, setSelectedDate] = useState(0);
-    const [ schedules, setSchedules ] = useState([]);
     const [startDay, setStartDay] = useState(dayjs());
     const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
-    const [totalDate, setTotalDate] =useState(1);
-    const [paths, setPaths] = useState([]);
+    const [totalDate, setTotalDate] =useState(2);
+    const [selectedDate, setSelectedDate] = useState(0);
+    const [ schedules, setSchedules ] = useState([]);
+    
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -153,28 +153,30 @@ const CheckCopyTrip = () => {
         onSuccess: (response) => {
             console.log(response);
             setSchedules([ ...response.data.schedules ]);
-            setPaths([...response.data.schedules])
         }
     })
+
     let map = null;
 
     const openModal = () => {
         setIsModalOpen(!isModalOpen);
       };
       
-      const closeModal = () => {
+    const closeModal = () => {
         setIsModalOpen(!isModalOpen);
-      };
+    };
 
-    const startDayHandle = (newValue) => {
+
+      const startDayHandle = (newValue) => {
         setStartDay(newValue);
         setTotalDate(endDay.diff(newValue, 'day') + 1);
-    }
-
-    const endDayHandle = (newValue) => {
+      }
+      
+      const endDayHandle = (newValue) => {
         setEndDay(newValue);
-        setTotalDate(newValue.diff(startDay, 'day') + 1)
-    }
+        setTotalDate(newValue.diff(startDay, 'day') + 1);
+      }
+      
 
     const resetDay = () => {
         setStartDay(dayjs());
@@ -271,6 +273,9 @@ const CheckCopyTrip = () => {
                 });
             }
         }
+
+
+
     }, [copyReviewInfo, schedules, isEditable])
 
     const updateTravelInfo = useMutation(async (travelPlan) => {
@@ -286,10 +291,28 @@ const CheckCopyTrip = () => {
             window.location.replace(`/user/${userInfo.userId}`);
             return response;
         }catch (error) {
-
+            return error;
         }
     },)
 
+    const saveTravelInfo = useMutation( async ()=>{
+
+        const option = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `${localStorage.getItem('accessToken')}`
+            }
+        }
+
+        try {
+            const response = await axios.post(`http://localhost:8080/api/v1/travel/plan/save`, option)
+        } catch (error) {
+            
+        }
+    })
+
+    console.log(schedules);
+    
     const clickDateHandler = (date) => {
         setSelectedDate(date);
     }
@@ -305,21 +328,18 @@ const CheckCopyTrip = () => {
         updateTravelInfo.mutate(updatedTravelPlan);
     }
 
-    console.log(schedules)
 
     return (
         <div css={viewContainer}>
             <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
-                <Calendar 
-                // css={calendar}
+            <CoustomCalendar
                 startDay={startDay}
                 endDay={endDay}
                 totalDate={totalDate}
                 onStartDayChange={startDayHandle}
                 onEndDayChange={endDayHandle}
-                markerData={paths}
                 userInfo={userInfo}
-              />
+            />
             <div css={mapContainer}>
                 <div id="map" style={{
                     width: "100%",

@@ -81,7 +81,7 @@ const Contents = () => {
   const [refresh, setRefresh] = useState(true);
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
-  const [totalDate, setTotalDate] =useState(1);
+  const [totalDate, setTotalDate] =useState(2);
   const [paths, setPaths] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [userInfo, setUserInfo] = useState({

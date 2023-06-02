@@ -60,9 +60,6 @@ const ReviewListPage = () => {
         navigate(`/review/list/detail?id=${travelId}&reviewId=${reviewId}`)
     };
 
-    const handleCloseModal = () => {
-        
-    };
 
     return (
         <Container>

@@ -113,7 +113,7 @@ const CheckCopyTrip = () => {
     const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
     const [totalDate, setTotalDate] =useState(2);
     const [selectedDate, setSelectedDate] = useState(0);
-    const [scheduleDate, setScheduleDate] = useState([]);
+    const [scheduleData, setScheduleData] = useState([]);
     const [ schedules, setSchedules ] = useState([]);
     
 
@@ -320,33 +320,33 @@ const CheckCopyTrip = () => {
         }
       })
 
-      useEffect(()=>{
+      // useEffect(()=>{
         
         
-      },[scheduleDate])
+      // },[scheduleData])
+
+    const submitPlanHandler = () => {
       const partyData = JSON.parse(localStorage.getItem("partyData"));
-      const getScheduleDate =JSON.parse(localStorage.getItem(`scheduleData`)); 
+      const getScheduleData = JSON.parse(localStorage.getItem("scheduleData"));
+      
+      console.log("getScheduleData:", getScheduleData);
+      
+      const updatedScheduleData = getScheduleData.map((scheduleDate,index) => {
+        console.log("schedule:", scheduleDate);
+        const locations = schedules.map((item) => item.locations);
+        console.log("locations:", locations);
+        return {
+          id:scheduleDate.id,
+          date: scheduleDate.date,
+          location: locations[index],
+          partyData: partyData.partyData,
+        };
+      });
+      
+      console.log(updatedScheduleData);
+      requestData.mutate(updatedScheduleData);
+    };
 
-      console.log(partyData);
-      console.log(getScheduleDate);
-      console.log(scheduleDate);
-      const submitPlanHandler = () => {
-
-        setScheduleDate(getScheduleDate);
-
-        const updatedScheduleData = scheduleDate.map((schedule) => {
-          return {
-            ...schedule,
-            partyData: partyData.partyData,
-          };
-        });
-        console.log(updatedScheduleData);
-        requestData.mutate(updatedScheduleData);
-        // localStorage.removeItem("partyData");
-      };
-
-   
-    
     const clickDateHandler = (date) => {
         setSelectedDate(date);
     }
@@ -375,6 +375,7 @@ const CheckCopyTrip = () => {
                 onEndDayChange={endDayHandle}
                 userInfo={userInfo}
             />
+             <button css={buttonStyle} onClick={openModal}>친구 추가</button>
             <div css={mapContainer}>
                 <div id="map" style={{
                     width: "100%",
@@ -408,7 +409,7 @@ const CheckCopyTrip = () => {
                         <button css={buttonStyle} onClick={editHandler} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
                         <button css={buttonStyle} onClick={saveHandler} style={{display: isEditable ? 'block' : 'none'}}>저장</button>
                         <button css={buttonStyle} onClick={() => window.location.replace(`/user/${searchParams.get("userId")}`)}>취소</button>
-                        <button css={buttonStyle} onClick={openModal}>친구 추가</button>
+                        <button css={buttonStyle} onClick={submitPlanHandler}>일정저장</button>
                     </div>
                 </div>
                 

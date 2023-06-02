@@ -52,7 +52,6 @@ export default function CoustomCalendar(props) {
   }, [startDay, endDay]);
 
   localStorage.setItem("scheduleData", JSON.stringify(scheduleData));
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div id='calendar'>

@@ -360,10 +360,10 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
 
   const addPartyHandler = () => {
     const isAlreadyAdded = partyUsers.some((party) => party.userId === searchInfo.userId);
-    console.log(isAlreadyAdded);
+    // console.log(isAlreadyAdded);
     const updatedPartyData = !isAlreadyAdded ? [...partyUsers, searchInfo] : partyUsers;
     setPartyUsers(updatedPartyData);
-    console.log(partyUsers);
+    // console.log(partyUsers);
   };
   
   const removePartyHandler = (index) => {

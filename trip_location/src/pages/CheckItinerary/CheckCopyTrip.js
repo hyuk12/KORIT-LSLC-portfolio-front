@@ -316,7 +316,8 @@ const CheckCopyTrip = () => {
     
       }, {
         onSuccess: (response) => {
-          // localStorage.removeItem("scheduleData");
+          localStorage.removeItem("scheduleData");
+          localStorage.removeItem("partyData");
         }
       })
 

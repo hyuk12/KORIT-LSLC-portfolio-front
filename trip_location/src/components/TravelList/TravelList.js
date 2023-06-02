@@ -77,25 +77,29 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
-                            { dayjs().isAfter(data.scheduleDate[data.scheduleDate.length - 1]) ? (
+                            {dayjs().isBefore(data.scheduleDate[0]) ? (
+                                <CardActions sx={{ minWidth: 150}}>
+                                    <Typography variant="body3" color="textSecondary" component="p">
+                                        일정시작 전
+                                    </Typography>
+                                    <Button sx={{ height: 20 }} size="small" color="primary" onClick={() => removeReviewClickHandler(data.travelId)}>
+                                        일정삭제
+                                    </Button>
+                                </CardActions>
+                            ) : (dayjs().isAfter(data.scheduleDate[data.scheduleDate.length - 1]) ? (
                                 <CardActions sx={{ minWidth: 100}}>
-                                    <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> moveReviewClickHandler(data.travelId)}>
+                                    <Button sx={{ height: 20 }} size="small" color="primary" onClick={() => moveReviewClickHandler(data.travelId)}>
                                         리뷰쓰기
                                     </Button>
-                                    <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> removeReviewClickHandler()}>
-                                        일정삭제
-                                    </Button>
                                 </CardActions>
-                                ) : (
+                            ) : (
                                 <CardActions sx={{ minWidth: 100}}>
-                                    <Button sx={{ height: 20 }}size="small" color="primary">
+                                    <Typography variant="body3" color="textSecondary" component="p">
                                         일정 진행중
-                                    </Button>
-                                    <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> removeReviewClickHandler(data.travelId)}>
-                                        일정삭제
-                                    </Button>
+                                    </Typography>
                                 </CardActions>
-                            )}
+                            ))}
+
                         </Card>
                     </Grid>
                 ))}

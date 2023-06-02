@@ -10,6 +10,7 @@ const OAuth2Login = () => {
     const accessToken = searchParams.get("accessToken");
 
     if (!!accessToken) {
+        console.log(accessToken);
         localStorage.setItem("accessToken", accessToken);
         setAuthState({
             isAuthenticated: true,

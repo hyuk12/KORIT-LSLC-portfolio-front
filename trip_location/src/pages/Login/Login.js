@@ -169,7 +169,7 @@ const Login = () => {
             }
             const response = await axios.post(`http://localhost:8080/api/v1/auth/login`, loginData, option);
 
-            const accessToken = response.data.grantType + " " + response.data.accessToken;
+            const accessToken = response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
             setAuthState({
                 isAuthenticated: true,

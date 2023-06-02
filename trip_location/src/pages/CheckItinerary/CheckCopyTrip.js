@@ -113,6 +113,7 @@ const CheckCopyTrip = () => {
     const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
     const [totalDate, setTotalDate] =useState(2);
     const [selectedDate, setSelectedDate] = useState(0);
+    const [scheduleDate, setScheduleDate] = useState([]);
     const [ schedules, setSchedules ] = useState([]);
     
 
@@ -273,45 +274,78 @@ const CheckCopyTrip = () => {
                 });
             }
         }
-
-
-
     }, [copyReviewInfo, schedules, isEditable])
 
+    
+    
+    
     const updateTravelInfo = useMutation(async (travelPlan) => {
         const travelId = parseInt(searchParams.get('travelId'));
         const option = {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `${localStorage.getItem('accessToken')}`
+              }
             }
-        }
-        try {
-            const response = await axios.put(`http://localhost:8080/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
-            window.location.replace(`/user/${userInfo.userId}`);
-            return response;
-        }catch (error) {
-            return error;
-        }
-    },)
+            try {
+              const response = await axios.put(`http://localhost:8080/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
+              window.location.replace(`/user/${userInfo.userId}`);
+              return response;
+            }catch (error) {
+              return error;
+            }
+          },)
+          
+    
 
-    const saveTravelInfo = useMutation( async ()=>{
-
+    const requestData = useMutation(async (updatedScheduleData) => {
         const option = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `${localStorage.getItem('accessToken')}`
-            }
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${localStorage.getItem("accessToken")}`
+          }
         }
-
         try {
-            const response = await axios.post(`http://localhost:8080/api/v1/travel/plan/save`, option)
-        } catch (error) {
-            
+          const response = await axios.post("http://localhost:8080/api/v1/travel/plan/save", updatedScheduleData, option)
+    
+          window.location.replace(`/user/${userInfo.userId}`)
+          return response;
+        }catch (error) {
+          return error;
         }
-    })
+    
+      }, {
+        onSuccess: (response) => {
+          // localStorage.removeItem("scheduleData");
+        }
+      })
 
-    console.log(schedules);
+      useEffect(()=>{
+        
+        
+      },[scheduleDate])
+      const partyData = JSON.parse(localStorage.getItem("partyData"));
+      const getScheduleDate =JSON.parse(localStorage.getItem(`scheduleData`)); 
+
+      console.log(partyData);
+      console.log(getScheduleDate);
+      console.log(scheduleDate);
+      const submitPlanHandler = () => {
+
+        setScheduleDate(getScheduleDate);
+
+        const updatedScheduleData = scheduleDate.map((schedule) => {
+          return {
+            ...schedule,
+            partyData: partyData.partyData,
+          };
+        });
+        console.log(updatedScheduleData);
+        requestData.mutate(updatedScheduleData);
+        // localStorage.removeItem("partyData");
+      };
+
+   
     
     const clickDateHandler = (date) => {
         setSelectedDate(date);
@@ -326,6 +360,7 @@ const CheckCopyTrip = () => {
         const updatedTravelPlan = {...travelPlan, schedules: schedules}
         setTravelPlan(updatedTravelPlan);
         updateTravelInfo.mutate(updatedTravelPlan);
+        
     }
 
 

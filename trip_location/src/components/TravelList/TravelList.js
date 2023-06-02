@@ -24,6 +24,12 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
     const moveReviewClickHandler =(travelId)=>{
         navigate(`/user/review/write?userId=${userInfo.userId}&id=${travelId}`)
     }
+    
+    const removeReviewClickHandler =()=>{
+    
+    }
+
+
 
     return (
         <Container>
@@ -49,15 +55,21 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
                                 </CardContent>
                             </CardActionArea>
                             { dayjs().isAfter(data.scheduleDate[data.scheduleDate.length - 1]) ? (
-                                <CardActions sx={{ minWidth: 250}}>
+                                <CardActions sx={{ minWidth: 100}}>
                                     <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> moveReviewClickHandler(data.travelId)}>
                                         리뷰쓰기
                                     </Button>
+                                    <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> removeReviewClickHandler()}>
+                                        일정삭제
+                                    </Button>
                                 </CardActions>
                                 ) : (
-                                    <CardActions sx={{ minWidth: 250}}>
+                                <CardActions sx={{ minWidth: 100}}>
                                     <Button sx={{ height: 20 }}size="small" color="primary">
                                         일정 진행중
+                                    </Button>
+                                    <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> removeReviewClickHandler()}>
+                                        일정삭제
                                     </Button>
                                 </CardActions>
                             )}

@@ -246,6 +246,7 @@ const ModifyReviewForm = () => {
                 }
             }
             const response = await axios.delete(`http://localhost:8080/api/v1/review/${deleteId}`, option);
+            
             return response
         }catch (error) {
 

@@ -130,8 +130,6 @@ const CheckMyTrip = () => {
     let map = null;
 
 
-
-
     useEffect(() => {
 
         if(!!schedules) {
@@ -232,7 +230,7 @@ const CheckMyTrip = () => {
         }
         try {
             const response = await axios.put(`http://localhost:8080/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
-            window.location.replace(`/user/${userInfo.userId}`);
+            window.location.replace(`/user/${searchParams.get('userId')}`);
             return response;
         }catch (error) {
 

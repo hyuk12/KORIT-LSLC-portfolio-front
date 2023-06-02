@@ -13,9 +13,32 @@ import {useNavigate} from "react-router-dom";
 //import dayjs from 'dayjs';
 import React from 'react';
 import dayjs from "dayjs";
+import {useMutation} from "react-query";
+import axios from "axios";
 
 const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
     const navigate = useNavigate();
+
+    const deletePlan = useMutation(async (travelId) => {
+        try {
+            const option = {
+                headers: {
+                    Authorization: `${localStorage.getItem('accessToken')}`
+                }
+            }
+            const response = await axios.delete(`http://localhost:8080/api/v1/travel/plan/${travelId}`, option);
+            console.log('요청됬음 삭제')
+            return response
+        }catch (error) {
+
+        }
+    }, {
+        onSuccess: (response) => {
+            if(response.status === 200) {
+                navigate('/home');
+            }
+        }
+    })
     
     const myPlanClickHandler =(travelId)=>{
         navigate(`/user/trip?userId=${userInfo.userId}&id=${travelId}`)
@@ -25,8 +48,8 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
         navigate(`/user/review/write?userId=${userInfo.userId}&id=${travelId}`)
     }
     
-    const removeReviewClickHandler =()=>{
-    
+    const removeReviewClickHandler =(travelId)=>{
+        deletePlan.mutate(travelId);
     }
 
 
@@ -68,7 +91,7 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
                                     <Button sx={{ height: 20 }}size="small" color="primary">
                                         일정 진행중
                                     </Button>
-                                    <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> removeReviewClickHandler()}>
+                                    <Button sx={{ height: 20 }}size="small" color="primary" onClick={()=> removeReviewClickHandler(data.travelId)}>
                                         일정삭제
                                     </Button>
                                 </CardActions>

@@ -3,9 +3,10 @@ import {css} from "@emotion/react";
 
 export const viewContainer = css`
   display: flex;
-  margin-top: 64px;
-  width: 1920px;
-  height: 862px;
+  position: fixed;
+  top: 64px;
+  width: 100%;
+  height: calc(100vh - 64px);
 
 `;
 
@@ -28,11 +29,30 @@ export const ReviewMapContainer = css`
 
 export const buttonContainer = css`
   display: flex;
-  justify-content: space-around;
-  margin-top: 50px;
-  width: 100%;
-  height: 214px;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #2c2c2c2c;
   
+`;
+
+export const dayButtonStyle = css`
+  width: 80px;
+  height: 50px;
+  margin: 3px 0px 3px 10px;
+
+  border: none;
+
+  cursor: pointer;
+
+  &:active {
+    color: white;
+    background-color: #40D6BD;
+    
+    &::after {
+      background-color: #40D6BD;
+    }
+  }
 `;
 
 export const resetButton= css`
@@ -49,19 +69,19 @@ export const buttonStyle = css`
 export const mainStyle = css`
   display: flex;
   flex-direction: column;
-  width: 30%;
+  justify-content: space-between;
+  width: 450px;
   height: 100%;
 `;
+
 
 export const tripLocationList = css`
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 648px;
 
-  border: 1px solid black;
+  padding: 0px 20px;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -81,18 +101,45 @@ export const tripLocationList = css`
 
 export const tripLocationItem = css`
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 70%;
-  height: 180px;
-  border: 1px solid black;
+  overflow: auto;
+
+  margin: 20px 0px;
+  width: 100%;
+  height: 80px;
+  border-radius: 5px;
+
+  box-shadow: 5px 5px 15px #dbdbdbdb;
+
+`;
+
+export const indexStyle = css`
+  width: 60px;
+  margin-left: 10px;
+
+  color: #0BD0AF;
+  font-weight: 600;
+  font-size: 14px;
+`;
+
+export const addressStyle = css`
+  display: flex;
+  align-items: center;
+  height: 80px;
+  width: 80%;
+
+  padding: 0px 10px;
+
+  font-size: 14px;
+
 `;
 
 export const footerStyle = css`
   display: flex;
   border: 1px solid black;
   width: 100%;
-  height: 214px;
+  height: 100px;
+  margin-top: 20px;
 `;
 
 export const footerButtonContainer = css`

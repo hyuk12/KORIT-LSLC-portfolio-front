@@ -1,76 +1,28 @@
 /** @jsxImportSource @emotion/react */
 import React, {useEffect, useMemo, useState} from 'react';
-import { css } from "@emotion/react";
-import {Container, Paper, Typography} from '@mui/material';
+import {Container} from '@mui/material';
 import cityNight from '../images/city_night.jpg';
 import building from '../images/building.jpg';
 import PopularDestinations from '../components/contents/main/PopularDestinations';
-import styled from "@emotion/styled";
 import LocationCard from "../components/contents/main/LocationCard";
-import { useQuery } from 'react-query';
+import {useQuery} from 'react-query';
 import axios from 'axios';
 import PopularReviewList from "../components/contents/main/PopularReviewList";
-
-
-const MainWrapper = styled.main`
-  scroll-snap-type: y mandatory;
-  /* overflow-y: scroll; */
-  height: 100vh;
-`;
-
-const SectionWrapper = styled.div`
-  scroll-snap-align: start;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 100px;
-  min-height: 100vh;
-  width: 100%;
-`;
-
-const StyledPaper = styled(Paper)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  background-color: rgba(128, 128, 128, 0.8);
-  color: #fff;
-  margin: 20px auto;
-  border: none;
-  min-width: 80%;
-  min-height: 100vh;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  object-fit: cover;
-`;
-
-const StyleTitleTypography = styled(Typography)`
-  margin-top: 40px;
-  margin-bottom: 10px;
-  text-align: center;
-`;
-
-const StyleSubTitleTypography = styled(Typography)`
-  margin-bottom: 30px;
-  color: #808080;
-  text-align: center;
-`;
-
-const footerContainer = css`
-    height: 300px;
-`;
+import {
+    footerContainer,
+    MainWrapper,
+    SectionWrapper,
+    StyledPaper,
+    StyleSubTitleTypography,
+    StyleTitleTypography
+} from "./styles/HomeAndMyPageStyles";
 
 
 const Home = () => {
 
     const images = useMemo(() => [cityNight, building], []);
-    const [ regions, setRegions ] = useState([
-        {
-            destination : ''
-        }
-    ]);
+
+
 
     const [currentImage, setCurrentImage] = useState(images[0]);
 

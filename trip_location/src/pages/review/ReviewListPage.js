@@ -1,39 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import {css} from "@emotion/react";
-import styled from "@emotion/styled";
-import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, TextField, Typography} from '@mui/material';
+import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, Typography} from '@mui/material';
 import React, {useState} from "react";
 import {useQuery} from "react-query";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import {contents, searchContainer, searchField} from "./styles/ReivewStyles";
+import {StyleInput} from "../../components/contents/main/styles/MainStyles";
+import SearchIcon from "@mui/icons-material/Search";
 
-const contents = css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 20px auto;
-  min-width: 80%;
-`;
-
-const searchContainer = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-`;
-
-const StyleInput = styled(TextField)`
-  margin-bottom: 50px;
-  width: 100%;
-`;
-
-const searchField = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-`;
 
 const ReviewListPage = () => {
     const navigate = useNavigate();
@@ -54,21 +28,20 @@ const ReviewListPage = () => {
         }
     })
 
-
-
     const handleCardClick = (reviewId, travelId) => {
         navigate(`/review/list/detail?id=${travelId}&reviewId=${reviewId}`)
     };
 
-
     return (
         <Container>
-
             <div css={searchContainer}>
-
                 <Grid container justifyContent="center" alignItems="center" css={searchField}>
                     <Grid item xs={12} sm={8} md={6} lg={4}>
+                        <StyleInput
+                            placeholder="여행기 검색"
+                            InputProps={{ startAdornment: <SearchIcon /> }}
 
+                        />
                     </Grid>
                 </Grid>
             </div>
@@ -76,7 +49,6 @@ const ReviewListPage = () => {
                 {review.map((data, index) => (
                     <Grid key={index} item xs={12} sm={6} md={3}>
                         <Card onClick={() => handleCardClick(data.reviewId,data.travelId)}>
-
                             <CardActionArea>
                                 {data.reviewImgUrl ? (
                                     <CardMedia

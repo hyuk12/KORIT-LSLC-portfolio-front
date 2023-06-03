@@ -1,6 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import {
     Box,
     Button,
@@ -10,158 +8,26 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
     Typography
 } from '@mui/material';
 import axios from 'axios';
-import React, { useState } from 'react';
-import { useMutation, useQuery } from "react-query";
-import { Link } from 'react-router-dom';
-import { useRecoilState } from "recoil";
-import { authenticationState, updateUserState } from "../../../store/atoms/AuthAtoms";
-
-//다시돌아옴
-
-const modifyContainer = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 800px;
-    margin-top: 100px;
-`;
-
-const modifyBox = css`
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-`;
-
-const profileImgContainer = css`
-    position: relative;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-`;
-
-const imgStyle = css`
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-`;
-
-const hiddenInput = css`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-     
-`;
-
-const signupText = css`
-    margin-bottom: 30px;
-`;
-
-const inputContainer = css`
-    width: 500px;
-`;
-
-const StyleInput = styled(TextField)`
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-`;
-
-const editInputStyle = css`
-  display: flex;
-  
-  width: 100%;
-`;
-
-const editButtonStyle = css`
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 3px;
-  width: 50px;
-  height: 56px;
-  
-  background-color: #0bd0af;
-  color: #fff;
-  box-shadow: 0px 1px 1px 1px #dbdbdb;
-  &:hover {
-    background-color: #0BAF94;
-  }
-
-  &:active {
-    background-color: #40D6BD;
-  }
-  
-`;
-
-const addressForm = css`
-    width: 100%;
-    margin-top: 15px;
-  
-`;
-
-const addressEditButtonStyle = css`
-  margin-top: 15px;
-  border: none;
-  border-radius: 3px;
-  width: 50px;
-  height: 56px;
-
-  background-color: #0bd0af;
-  color: #fff;
-  box-shadow: 0px 1px 1px 1px #dbdbdb;
-  &:hover {
-    background-color: #0BAF94;
-  }
-
-  &:active {
-    background-color: #40D6BD;
-  }
-`;
-const errorMsg = css`
-    margin-left: 5px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: red;
-`;
-
-const submitButton = css`
-    height: 45px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-
-    background-color: #0BD0AF;
-    color: white;
-
-    font-size: 15px;
-    
-    &:hover {
-        background-color: #0BAF94;
-    }
-
-    &:active {
-        background-color: #40D6BD;
-    }
-`;
-
-const withdrawalStyle = css`
-    font-size: 12px;
-    color: #888;
-`;
+import React, {useState} from 'react';
+import {useMutation, useQuery} from "react-query";
+import {Link} from 'react-router-dom';
+import {useRecoilState} from "recoil";
+import {authenticationState, updateUserState} from "../../../store/atoms/AuthAtoms";
+import {
+    addressEditButtonStyle,
+    addressForm,
+    editButtonStyle,
+    editInputStyle, errorMsg,
+    hiddenInput,
+    imgStyle,
+    inputContainer,
+    modifyBox,
+    modifyContainer,
+    profileImgContainer, signupText, StyleInput, submitButton, withdrawalStyle
+} from "./styles/ModifyStyles";
 
 const address = [
     "서울특별시",
@@ -189,7 +55,6 @@ const ModifyForm = () => {
     const [ imgFiles, setImgFiles ] = useState(null);
     const [ preview, setPreview ] = useState('');
 
-    console.log(refresh)
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") }});
@@ -276,7 +141,6 @@ const ModifyForm = () => {
 
         console.log(updateUser);
     };
-
 
     const modifyUser = useMutation(async (modifyData) => {
         try {

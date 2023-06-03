@@ -1,101 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect, useRef, useState} from 'react';
-import {css} from "@emotion/react";
+import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery} from "react-query";
 import axios from "axios";
 import {useSearchParams} from "react-router-dom";
-import {useRecoilValue} from "recoil";
-import {authenticationState} from "../../store/atoms/AuthAtoms";
+import {
+    buttonContainer,
+    buttonStyle, footerButtonContainer, footerStyle,
+    mainStyle,
+    mapContainer, tripLocationItem,
+    tripLocationList,
+    viewContainer
+} from "./styles/CheckPageStyles";
 
 const { kakao } = window;
-
-const viewContainer = css`
-  display: flex;
-  margin-top: 64px;
-  width: 1920px;
-  height: 862px;
-
-`;
-
-const mapContainer = css`
-  display: flex;
-  flex-direction: column;  
-  width: 100%;
-  height: 100%;
-    
-`;
-
-const buttonContainer = css`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 50px;
-  width: 100%;
-  height: 214px;
-  
-`;
-
-const buttonStyle = css`
-
-  width: 150px;
-  height: 50px;
-`;
-
-const mainStyle = css`
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-  height: 100%;
-`;
-
-const tripLocationList = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  height: 648px;
-
-  border: 1px solid black;
-
-  &::-webkit-scrollbar {
-    width: 3px;
-    background: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #f8f7fb;
-    opacity: .4;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: none;
-  }
-  
-`;
-
-const tripLocationItem = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 70%;
-  height: 180px;
-  border: 1px solid black;
-`;
-
-const footerStyle = css`
-  display: flex;
-  border: 1px solid black;
-  width: 100%;
-  height: 214px;
-`;
-
-const footerButtonContainer = css`
-
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-`;
 
 const CheckMyTrip = () => {
     const [travelPlan, setTravelPlan] = useState({schedules: []});
@@ -109,7 +26,6 @@ const CheckMyTrip = () => {
         try {
                 const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
                     params: {
-                        userId: searchParams.get('userId'),
                         travelId: searchParams.get('id'),
                     },
                     headers: {

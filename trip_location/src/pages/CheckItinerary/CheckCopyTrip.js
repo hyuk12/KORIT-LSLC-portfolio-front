@@ -1,106 +1,21 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import axios from "axios";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {useMutation, useQuery} from "react-query";
+import {useSearchParams} from "react-router-dom";
 import CoustomCalendar from "../../components/Calendar/CoustomCalendar";
 import AddUserModal from "../../components/contents/Modal/AddUserModal";
+import {
+    buttonContainer,
+    buttonStyle, footerButtonContainer, footerStyle,
+    mainStyle,
+    mapContainer,
+    resetButton, tripLocationItem, tripLocationList,
+    viewContainer
+} from "./styles/CheckPageStyles";
 
 const { kakao } = window;
-
-const viewContainer = css`
-  display: flex;
-  margin-top: 64px;
-  width: 1920px;
-  height: 862px;
-
-`;
-
-const mapContainer = css`
-  display: flex;
-  flex-direction: column;  
-  width: 100%;
-  height: 100%;
-    
-`;
-
-const buttonContainer = css`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 50px;
-  width: 100%;
-  height: 214px;
-  
-`;
-const resetButton= css`
-  
-  margin: 0 auto;
-
-`;
-const buttonStyle = css`
-
-  width: 150px;
-  height: 50px;
-`;
-
-const mainStyle = css`
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-  height: 100%;
-`;
-
-const tripLocationList = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  height: 648px;
-
-  border: 1px solid black;
-
-  &::-webkit-scrollbar {
-    width: 3px;
-    background: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #f8f7fb;
-    opacity: .4;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: none;
-  }
-  
-`;
-
-const tripLocationItem = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 70%;
-  height: 180px;
-  border: 1px solid black;
-`;
-
-const footerStyle = css`
-  display: flex;
-  border: 1px solid black;
-  width: 100%;
-  height: 214px;
-`;
-
-const footerButtonContainer = css`
-
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-`;
 
 const CheckCopyTrip = () => {
     const [travelPlan, setTravelPlan] = useState({schedules: []});
@@ -321,11 +236,6 @@ const CheckCopyTrip = () => {
         }
       })
 
-      // useEffect(()=>{
-        
-        
-      // },[scheduleData])
-
     const submitPlanHandler = () => {
       const partyData = JSON.parse(localStorage.getItem("partyData"));
       const getScheduleData = JSON.parse(localStorage.getItem("scheduleData"));
@@ -363,7 +273,6 @@ const CheckCopyTrip = () => {
         updateTravelInfo.mutate(updatedTravelPlan);
         
     }
-
 
     return (
         <div css={viewContainer}>

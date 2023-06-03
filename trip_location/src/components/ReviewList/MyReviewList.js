@@ -1,19 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import {css} from "@emotion/react";
 import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, Rating, Typography} from '@mui/material';
 import React from 'react';
 import logotitle from "../../images/logotitle.png"
 import {useNavigate} from "react-router-dom";
-
-
-const cardTitleContainer = css`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const ratingStyle = css`
-    font-size: 14px;
-`;
+import {cardTitleContainer, ratingStyle} from "./styles/MyReviewListStyles";
 
 const MyReviewList = ({ reviewDataList, userInfo }) => {
     const navigate = useNavigate();

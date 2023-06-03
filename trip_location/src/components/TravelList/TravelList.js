@@ -52,8 +52,6 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
         deletePlan.mutate(travelId);
     }
 
-
-
     return (
         <Container>
             <Grid container spacing={4} >

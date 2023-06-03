@@ -1,26 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import axios from "axios";
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {DemoContainer} from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
-import { useMutation } from "react-query";
+import React, {useEffect, useState} from 'react';
+import {calendarContainer, Total} from "./styles/CalendarStyles";
 
-const calendarContainer = css`
-  display:flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-`;
-const Total=css`
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-`;
 
 export default function CoustomCalendar(props) {
   const { startDay, endDay, totalDate, onStartDayChange, onEndDayChange, userInfo } = props;

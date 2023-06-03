@@ -1,283 +1,44 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
-import { useQuery } from 'react-query';
+import React, {useState} from 'react';
+import {useQuery} from 'react-query';
 import logoTitle from '../../../images/logotitle.png';
-import {useRecoilValue} from "recoil";
-import {authenticationState} from "../../../store/atoms/AuthAtoms";
+import {
+  addPartyButton,
+  listContainer,
+  listUser,
+  listUserContainer,
+  logoBox,
+  logoImage,
+  modalContainer,
+  modalContent,
+  modalStyle,
+  profileImg,
+  searchBar,
+  searchBox,
+  searchButton,
+  searchContainer,
+  searchedUser,
+  searchHeader,
+  searchMain,
+  searchSubmit,
+  searchTextBox,
+  searchUserInfo,
+  selectRadio,
+  text,
+  titleText,
+  user,
+  userName,
+  userProfileImg,
+  userText,
+  withList
+} from "./styles/ModalStyles";
 
-const modalStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-`;
-
-const modalContent = css`
-  display: flex;
-  flex-direction: row;
-  background-color: white;
-  width: 50%;
-  max-height: 60%;
-  overflow: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-`;
-
-const buttonStyle = css`
-  margin-top: 40px;
-  border: none;
-  width: 144px;
-  height: 44px;
-  background-color: #0BD0AF;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-
-  &:hover {
-    background-color: #0BAF94;
-  }
-
-  &:active {
-    background-color: #40D6BD;
-  }
-`;
-const modalContainer =css`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  /* border: 1px solid #dbdbdb; */
-  width: 100%;
-  height: 100%;
-`;
-const searchContainer = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-
-  /* border: 1px solid #dbdbdb; */
-  width: 100%;
-  height: 500px;
-`;
-
-const searchHeader =css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-
-  /* border: 1px solid #dbdbdb; */
-  box-shadow: 0px 4px 6px #dbdbdb;
-  margin-bottom: 5px;
-  width: 100%;
-  height: 30%;
-`;
-const logoBox = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* border: 1px solid #dbdbdb; */
-  width: 25%;
-  height: 100%;
-`;
-const logoImage = css`
-  width: 50%;
-  box-sizing: border-box;
-  border-radius: 50%;
-`;
-const searchBox = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-start;
-  width: 75%;
-  height: 100%;
-  /* border: 1px solid #dbdbdb; */
-`;
-
-const searchTextBox = css`
-  display: flex;
-  justify-content: center;
-  margin: 0;
-  padding: 5px 0;
-  font-size: 16px;
-  
-`;
-const titleText =css`
-  margin: 0;
-  padding: 0px 5px;
-  padding-right: 0px;
-  font-size: 24px;
-  text-align: center;
-`;
-const text =css`
-  margin: 0;
-  padding: 5px 10px;
-  font-size: 20px;
-  font-weight: 600;
-  text-align: center;
-`;
-
-const searchSubmit =css`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 5px 5px;
-  width: 100%; 
-  height: 30%;
-`;
-
-const searchBar = css`
-  line-height: 30px;
-  text-align: center;
-  width: 80%;
-  height: 30px;
-`;
-
-const searchButton = css`
-  width: 20%;
-  height: 30px;
-  text-align: center;
-`;
-
-const selectRadio =css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  height: 20%;
-`;
-
-const searchMain =css`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-
-  /* border: 1px solid #dbdbdb; */
-  box-shadow: 0px 4px 6px #dbdbdb;
-  width: 100%;
-  height: 20%;
-`;
-const searchedUser = css`
-  display: flex;
-  /* flex-wrap: wrap; */
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-`;
-const searchUserInfo = css`
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  width: 100%;
-  height: 100%;
-`;
-
-const profileImg =css`
-  width: 10%;
-  box-sizing: border-box;
-  border-radius: 50%;
-  overflow: hidden;
-`;  
-
-const userText =css`
-  margin: 0;
-  padding: 5px 10px;
-  font-size: 25px;
-  font-weight: 900;
-  text-align: center;
-`;
-const addPartyButton =css`
-  display: flex;
-  margin-right: 20px;
-  width: 50px;
-  text-align: center;
-`;
-
-const listContainer = css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  box-sizing: border-box;
-  /* border: 1px solid #dbdbdb; */
-  width: 100%;
-  height: 44%;
-`; 
-const withList =css`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-
-  text-align: center;
-  font-size: 20px;
-  font-weight: 900;
-  box-shadow: 0px 4px 6px #dbdbdb;
-  /* border: 1px solid #dbdbdb; */
-  width: 100%;
-  height: 20%;
-  
-`;
-
-const listUserContainer = css`
-  width: 100%;
-  height: 80%;
-`;
-const listUser= css`
-  margin: 0;
-  display:flex; 
-  align-content:flex-start; 
-  flex-direction:column; 
-  flex-wrap:wrap; 
-  overflow:auto;
-  
-  padding-left: 20px;
-  border: 1px solid #dbdbdb;
-  list-style: none;
-  width: 100%;
-  height: 100%;
-`;
-
-const user = css`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 5px 0px;
-`;
-const userProfileImg =css`
-  
-  margin-right: 10px;
-  box-sizing: border-box;
-  border-radius: 50%;
-  
-  width: 8%;
-
-`; 
-
-const userName= css`
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 20px;
-`;
 
 const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
   const [searchType, setSearchType] = useState('email');
   const [searchValue, setSearchValue] = useState('');
-  // const [myInfo, setMyInfo] = useState({
-  //   userId: '',
-  //   email: '',
-  //   name: '',
-  //   phone: '',
-  //   profileImg: '',
-  // }); 
+
   const [partyUsers, setPartyUsers] = useState([
     {
       userId: '',

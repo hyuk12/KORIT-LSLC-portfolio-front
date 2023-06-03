@@ -1,97 +1,21 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
-import { Button } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from 'react';
-import { useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {useQuery} from "react-query";
+import {useNavigate} from "react-router-dom";
 import MyReviewList from '../components/ReviewList/MyReviewList';
 import TravelList from '../components/TravelList/TravelList';
-
-
-const container = css`
-  display: flex;
-  margin-top: 64px;
-  width: 100%;
-  height: 100vh;
-`;
-
-const main = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-`;
-
-const imgContainer = css`
-  margin-bottom: 20px;
-  border: 1px solid #dbdbdb;
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  background-color: rgba(0,0,0,0.8);
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-`;
-
-const imgStyle = css`
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-`;
-
-const modifyButtons = css`
-
-`;
-
-const ModifyButton = styled(Button)`
-  margin: 20px 10px;
-  border-radius: 0;
-  width: 110px;
-  background-color: #0BD0AF;
-  color: #FFFFFF;
-  font-weight: 600;
-
-  &:hover {
-    background-color: #0BAF94;
-  }
-
-  &:active {
-    background-color: #40D6BD;
-  }
-`;
-
-const mainContents = css`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 50%;
-  
-`;
-
-const myPlanAndReview = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 20px;
-  border: 1px solid #dbdbdb;
-  width: 40%;
-  height: 100px;
-  cursor: pointer;
-`;
-
-const planAndReviewContainer =css`
-  display: flex;
-  align-content:flex-start; 
-  flex-direction:column; 
-  flex-wrap:wrap; 
-  overflow:auto;
-`;
+import {
+  container,
+  imgContainer,
+  imgStyle,
+  main,
+  mainContents,
+  ModifyButton,
+  modifyButtons,
+  myPlanAndReview,
+  planAndReviewContainer
+} from "./styles/HomeAndMyPageStyles";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -141,11 +65,8 @@ const MyPage = () => {
   });
 
   const travelList = useQuery(['travelList'], async () => {
-    const params = {
-      userId: userInfo.userId !== '' ? parseInt(userInfo.userId) : 0
-    }
+
     const option = {
-      params,
       headers: {
         Authorization: `${localStorage.getItem('accessToken')}`
       }
@@ -161,21 +82,19 @@ const MyPage = () => {
     onSuccess: (response) => {
       setAllTravelList([...response.data]);
       setTravelCount(response.data.length);
-    },
-    enabled: userInfo.userId !== '',
+    }
   })
 
 
 
   const review = useQuery(['review'], async () => {
     try {
-      const userId = userInfo.userId !== '' ? parseInt(userInfo.userId) : 0;
       const option = {
         headers : {
           'Authorization' : `${localStorage.getItem('accessToken')}`
         }
       }
-      const response = await axios.get(`http://localhost:8080/api/v1/review/${userId}`, option)
+      const response = await axios.get(`http://localhost:8080/api/v1/review/mylist`, option)
       return response;
     } catch (error) {
       return error;
@@ -187,8 +106,7 @@ const MyPage = () => {
         setReviewCount(response.data.data.length);
       }
 
-    },
-    enabled: userInfo.userId !== '',
+    }
   });
 
 

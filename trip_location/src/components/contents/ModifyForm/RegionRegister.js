@@ -1,12 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import axios from 'axios';
-import React, { useState } from 'react';
-import { useMutation } from 'react-query';
-
-const container = css`
-    margin-top: 70px;
-`;
+import React, {useState} from 'react';
+import {useMutation} from 'react-query';
+import {container} from './styles/ModifyStyles'
 
 const RegionRegister = () => {
     const [ title, setTitle ] = useState("");

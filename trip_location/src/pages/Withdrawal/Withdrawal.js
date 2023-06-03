@@ -1,67 +1,32 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    TextField,
+    Typography
+} from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { authenticationState } from "../../store/atoms/AuthAtoms";
+import React, {useState} from "react";
+import {useMutation, useQuery} from "react-query";
+import {useNavigate} from "react-router-dom";
+import {useRecoilState} from "recoil";
+import {authenticationState} from "../../store/atoms/AuthAtoms";
+import {
+    pageContainer, contentContainer, pageBoxStyle,
+    listStyle, submitButton, titleText
+} from "./styles/WithDrawalStyles";
 
-const pageContainer = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 800px;
-`;
-
-const pageBoxStyle = css`
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 8px;
-`;
-const contentContainer = css`
-    width: 500px;
-`;
-
-const listStyle = css`
-    list-style-type: none;
-    list-style: none;
-    color: #777;
-`;
-
-const titleText = css`
-    margin-top: 80px;
-    margin-bottom: 30px;
-`;
-
-const submitButton = css`
-    height: 45px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-
-    background-color: #0bd0af;
-    color: white;
-
-    font-size: 15px;
-
-    &:hover {
-        background-color: #0baf94;
-    }
-
-    &:active {
-        background-color: #40d6bd;
-    }
-`;
 
 const Withdrawal = () => {
     const navigate = useNavigate();
     const [ open, setOpen ] = useState(true);
     const [ authState, setAuthState ] = useRecoilState(authenticationState);
-    const [ refresh, setRefresh ] = useState(true);
     const [ userCheck, setUserCheck ] = useState({
         email: "",
         password: "",

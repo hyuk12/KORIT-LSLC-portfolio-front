@@ -3,71 +3,17 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useMutation} from "react-query";
 import axios from "axios";
-import {Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography} from "@mui/material";
-import {css} from "@emotion/react";
-import styled from "@emotion/styled";
-
-const signupContainer = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 800px;
-`
-;
-const signupBox = css`
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 8px;
-`;
-
-const signupText = css`
-    margin-top: 80px;
-    margin-bottom: 30px;
-`;
-
-const inputContainer = css`
-    width: 500px;
-`;
-
-const StyleInput = styled(TextField)`
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-`;
-
-const addressForm = css`
-    width: 100%;
-    margin-top: 15px;
-`;
-
-const errorMsg = css`
-    margin-left: 5px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: red;
-`;
-
-const submitButton = css`
-    height: 45px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-
-    background-color: #0BD0AF;
-    color: white;
-
-    font-size: 15px;
-    
-    &:hover {
-        background-color: #0BAF94;
-    }
-
-    &:active {
-        background-color: #40D6BD;
-    }
-`;
+import {Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography} from "@mui/material";
+import {
+    addressForm,
+    errorMsg,
+    inputContainer,
+    signupBox,
+    signupContainer,
+    signupText,
+    StyleInput,
+    submitButton
+} from "../styles/SignUpStyles";
 
 const address = [
     "서울특별시",
@@ -88,7 +34,6 @@ const address = [
     "경상남도",
     "제주특별자치도"
 ];
-
 
 const OAuth2Register = () => {
     const navigate = useNavigate();
@@ -255,7 +200,6 @@ const OAuth2Register = () => {
                     </Button>
                 </Box>
             </Box>
-
         </Grid>
     );
 };

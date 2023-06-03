@@ -1,53 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import React, {useState} from 'react';
-import {css} from "@emotion/react";
 import Carousel from 'react-material-ui-carousel';
 import {Paper} from '@mui/material';
 import {useQuery} from "react-query";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import defaultImg from "../../../images/Trip_Together.gif";
-
-const carouselStyle = css`
-  width: 100%;
-`;
-
-const paperStyle = css`
-  position: relative;
-  margin: 0 10px;
-  width: calc(100% / 2 - 20px); // 변경 한줄에 2개가 보이도록 수정
-  height: 350px;
-  cursor: pointer;
-  display: inline-block;
-`;
-
-const popularImg = css`
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-`;
-
-const textOverlay = css`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  padding: 20px;
-  color: white;
-  font-size: 1.5rem;
-  pointer-events: none;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  text-align: center;
-`;
-
-const largeText = css`
-  font-size: 2rem;
-`;
-
-const smallText = css`
-  font-size: 1rem;
-`;
+import {carouselStyle, largeText, paperStyle, popularImg, reviewPaperStyle, smallText, textOverlay} from "./styles/MainStyles";
 
 
 const PopularReviewList = () => {
@@ -136,7 +94,7 @@ const PopularReviewList = () => {
                             <Paper
                                 key={index}
                                 onClick={() => handleImageClick(review)}
-                                css={paperStyle}
+                                css={reviewPaperStyle}
                             >
                                 {review.reviewImgUrl !== 'default.png' ?
                                     <img

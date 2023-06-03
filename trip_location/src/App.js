@@ -40,20 +40,27 @@ function App() {
       <Routes css={mainStyles}>
         <Route path={"/"} element={<AuthRouter path={'/'} element={<></>} />} />
         <Route path={"/home"} element={<AuthRouter path={'/home'} element={<Home />} />} />
+
         <Route path={"/review/list"} element={<AuthRouter path={'/review/list'} element={<ReviewListPage />} />} />
         <Route path={"/review/list/detail"} element={<AuthRouter path={'/review/list/detail'} element={<ReviewDetail />} />} />
+
         <Route path={"/auth/login"} element={<AuthRouter path={'/auth/login'} element={<Login />} />} />
         <Route path={"/auth/oauth2/login"} element={<AuthRouter path={'/auth/oauth2/login'} element={<OAuth2Login />} />} />
+
         <Route path={"/auth/signup"} element={<AuthRouter path={'/auth/signup'} element={<SignUp />} />} />
         <Route path={"/auth/oauth2/signup"} element={<AuthRouter path={'/auth/oauth2/signup'} element={<OAuth2Register />} />} />
+        <Route path={"/auth/oauth2/merge"} element={<AuthRouter path={'/auth/oauth2/merge'} element={<OAuth2Merge />} />} />
+
         <Route path={"/auth/password/verify"} element={<AuthRouter path={'/auth/password/verify'} element={<CheckEmail />} />} />
         <Route path={"/auth/password/reset"} element={<AuthRouter path={'/auth/password/reset'} element={<PasswordReset />} />} />
-        <Route path={"/auth/oauth2/merge"} element={<AuthRouter path={'/auth/oauth2/merge'} element={<OAuth2Merge />} />} />
+
         <Route path={"/auth/post/register"} element={<AuthRouter path={'/auth/post/register'} element={<RegionRegister />} />} />
+
         <Route path={"/user/:id"} element={<AuthRouter path={'/user/:id'} element={<MyPage />} />} />
         <Route path={"/user/:id/withdrawal"} element={<AuthRouter path={'/user/:id/withdrawal'} element={<Withdrawal />} />} />
         <Route path={"/user/modify/:id"} element={<AuthRouter path={'/user/modify/:id'} element={<ModifyForm />} />} />
         <Route path={"/user/modify/password/:id"} element={<AuthRouter path={'/user/modify/password/:id'} element={<ModifyPassword />} />} />
+
         <Route path={"/contents"} element={<AuthRouter path={'/contents'} element={<Contents />} />} />
         <Route path={"/user/trip"} element={<AuthRouter path={'/user/trip'} element={<CheckMyTrip />} />} />
         <Route path={"/user/review"} element={<AuthRouter path={'/user/review'} element={<ModifyReviewForm />} />} />

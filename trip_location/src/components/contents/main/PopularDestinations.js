@@ -1,50 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import React, {useState} from 'react';
-import {css} from "@emotion/react";
 import Modal from "../Modal/Modal";
 import Carousel from 'react-material-ui-carousel';
 import {Paper} from '@mui/material';
-
-const carouselStyle = css`
-  width: 100%;
-`;
-
-const paperStyle = css`
-  position: relative;
-  margin: 0 10px;
-  width: calc(100% / 3 - 20px);
-  height: 350px;
-  cursor: pointer;
-  display: inline-block;
-`;
-
-const popularImg = css`
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-`;
-
-const textOverlay = css`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  padding: 20px;
-  color: white;
-  font-size: 1.5rem;
-  pointer-events: none;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  text-align: center;
-`;
-
-const largeText = css`
-  font-size: 2rem;
-`;
-
-const smallText = css`
-  font-size: 1rem;
-`;
+import {carouselStyle, largeText, paperStyle, popularImg, smallText, textOverlay} from "./styles/MainStyles";
 
 
 const PopularDestinations = ({ destination }) => {

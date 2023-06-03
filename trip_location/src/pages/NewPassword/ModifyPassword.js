@@ -1,78 +1,21 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Box, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import {Box, Button, CircularProgress, Grid, Typography} from '@mui/material';
 import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { authenticationState } from "../../store/atoms/AuthAtoms";
-import { useMutation, useQuery } from 'react-query';
-
-const signupContainer = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 800px;
-`;
-
-const signupBox = css`
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 8px;
-`;
-
-const signupText = css`
-    margin-top: 80px;
-    margin-bottom: 30px;
-`;
-
-const inputContainer = css`
-    width: 500px;
-`;
-
-const StyleInput = styled(TextField)`
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-`;
-
-const guideMsg = css`
-    margin-left: 5px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: red;
-`;
-
-const inputMsg = css`
-    font-size: 12px;
-    color: #888;
-`;
-
-const submitButton = css`
-    height: 45px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-
-    background-color: #0BD0AF;
-    color: white;
-
-    font-size: 15px;
-    
-    &:hover {
-        background-color: #0BAF94;
-    }
-
-    &:active {
-        background-color: #40D6BD;
-    }
-`;
-
-
-
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useRecoilState} from 'recoil';
+import {authenticationState} from "../../store/atoms/AuthAtoms";
+import {useMutation, useQuery} from 'react-query';
+import {
+    errorMsg,
+    guideMsg,
+    inputContainer,
+    signupBox,
+    signupContainer,
+    signupText,
+    StyleInput,
+    submitButton
+} from "./styles/PasswordStyles";
 
 const ModifyPassword = () => {
 
@@ -217,9 +160,9 @@ const ModifyPassword = () => {
                             onChange={onChangeHandler}
                         />
 
-                        <div css={inputMsg}>새로운 비밀번호를 입력해주세요.</div>
+                        <div css={guideMsg}>새로운 비밀번호를 입력해주세요.</div>
 
-                        <div css={guideMsg}>{guideMessages.newPassword}</div>
+                        <div css={errorMsg}>{guideMessages.newPassword}</div>
                         <StyleInput
                             required
                             id="password"

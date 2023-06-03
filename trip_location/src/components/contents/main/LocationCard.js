@@ -1,38 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import {css} from "@emotion/react";
-import styled from "@emotion/styled";
 import SearchIcon from "@mui/icons-material/Search";
-import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, TextField, Typography} from '@mui/material';
+import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, Typography} from '@mui/material';
 import React, {useState} from "react";
 import Modal from "../Modal/Modal";
+import {contents, searchContainer, searchField, StyleInput} from "./styles/MainStyles";
 
-const contents = css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 20px auto;
-  min-width: 80%;
-`;
-
-const searchContainer = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-`;
-
-const StyleInput = styled(TextField)`
-  margin-bottom: 50px;
-  width: 100%;
-`;
-
-const searchField = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-`;
 
 const LocationCard = ({ destination }) => {
     const [ modalOpen, setModalOpen ] = useState(false);

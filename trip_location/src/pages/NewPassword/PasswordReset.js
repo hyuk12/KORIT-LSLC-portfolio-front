@@ -1,72 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import {Box, Button, Grid, Typography} from '@mui/material';
 import axios from 'axios';
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-const pageContainer = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 800px;
-`;
-
-const pageBoxStyle = css`
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 8px;
-`;
-
-const titleText = css`
-    margin-top: 80px;
-    margin-bottom: 30px;
-`;
-
-const inputContainer = css`
-    width: 500px;
-`;
-
-const StyleInput = styled(TextField)`
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-`;
-
-const guideMsg = css`
-    margin-left: 5px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: red;
-`;
-
-const inputMsg = css`
-    font-size: 12px;
-    color: #888;
-`;
-
-const submitButton = css`
-    height: 45px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-
-    background-color: #0BD0AF;
-    color: white;
-
-    font-size: 15px;
-    
-    &:hover {
-        background-color: #0BAF94;
-    }
-
-    &:active {
-        background-color: #40D6BD;
-    }
-`;
+import React, {useState} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {
+    errorMsg,
+    guideMsg,
+    inputContainer,
+    pageBoxStyle,
+    pageContainer,
+    StyleInput,
+    submitButton,
+    titleText
+} from "./styles/PasswordStyles";
 
 const PasswordReset = () => {
     const location = useLocation();
@@ -160,7 +106,7 @@ const PasswordReset = () => {
                         onChange={onChangeHandler}
                     />
 
-                    <div css={inputMsg}>새로운 비밀번호를 입력해주세요.</div>
+                    <div css={errorMsg}>새로운 비밀번호를 입력해주세요.</div>
 
                     <div css={guideMsg}>{guideMessages.resetPassword}</div>
                     <StyleInput

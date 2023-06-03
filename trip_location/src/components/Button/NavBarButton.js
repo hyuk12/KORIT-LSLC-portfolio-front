@@ -1,33 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import React, {useState} from 'react';
+import React from 'react';
 import {Button} from "@mui/material";
 import {useQuery} from "react-query";
 import axios from "axios";
 import {useRecoilState} from "recoil";
 import {authenticationState} from "../../store/atoms/AuthAtoms";
-import {css} from "@emotion/react";
 import {useNavigate} from "react-router-dom";
+import {divStyle, buttonStyle} from "./styles/ButtonStyle";
 
-const divStyle = css`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    width: 300px;
-    height: 64px;
-`;
-
-const buttonStyle = css`
-    margin-left: 5px;
-    border: 1px solid #bababa;
-    border-radius: 5px;
-
-    color: #7c7f86;
-
-    &:hover {
-        background-color: #dbdbdb;
-        color: #282c34;
-    }
-`;
 
 const NavBarButton = ({ handleSignUpClick, handleSignInClick }) => {
     const navigate = useNavigate();

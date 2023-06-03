@@ -4,49 +4,16 @@ import {useMutation} from "react-query";
 import axios from "axios";
 import {useSearchParams} from "react-router-dom";
 import {Button, TextField} from "@mui/material";
-import {css} from "@emotion/react";
+import {
+    buttonContainer,
+    buttonStyle,
+    inputContainer,
+    mergeContainer,
+    pStyle,
+    textFieldStyle
+} from "../styles/SignUpStyles";
 
 
-const mergeContainer = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  margin: 150px auto;
-  border: 1px solid #dbdbdb;
-  border-radius: 12px;
-  box-shadow: 0px 1px 5px rgba(0,0,0,0.8);
-  width: 600px;
-  height: 600px;
-`;
-
-const pStyle = css`
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
-`;
-
-const inputContainer = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-const textFieldStyle = css`
-  margin-top: 10px;
-  width: 350px;
-`;
-
-const buttonContainer = css`
-  display: flex;
-  margin-top: 10px;
-`;
-
-const buttonStyle = css`
-  width: 150px;
-  height: 50px;
-`;
 
 const OAuth2Merge = () => {
     const providerMerge  = useMutation(async (mergeData) => {

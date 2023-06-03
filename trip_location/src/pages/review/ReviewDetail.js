@@ -1,136 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import {css} from "@emotion/react";
 import axios from "axios";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {useQuery} from "react-query";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Rating from '@mui/material/Rating';
-
+import {
+  viewContainer, mapContainer,
+  mapMove, buttonMove, scheduleButton,
+  mapList, locList, myLocation,
+  reviewMove, reviewContainer, titleAndSaveContainer,
+  reviewTitle, rating, saveButton,
+  photoContainer, photo, writeReviewContainer
+} from "./styles/ReivewStyles";
 
 const { kakao } = window;
-
-const viewContainer = css`
-  display: flex;
-  margin-top: 64px;
-  width: 1920px;
-  height: 862px;
-`;
-
-const mapContainer = css`
-  flex-direction: column;
-  padding-top: 64px;
-  margin: 100px 20px 0px 150px;
-  width: 600px;
-  border: 1px solid black;
-`;
-
-const mapMove = css`
-  
-`;
-
-const buttonMove = css`
-  height: 1px;
-`;
-
-const scheduleButton = css`
-    position: relative ;
-    bottom: 65px;
-    right: 50px;
-    display: block; 
-    height: 100px;
-    line-height: 100px;
-    
-`;
-
-const mapList = css`
-    margin: -50px 0px 0px 15px;
-    right: 50px;
-    width: 400px;
-    height: 400px;
-`;
-
-const locList = css`
-    margin: 15px 0px 0px 15px;
-    width: 400px;
-    height: 400px;
-    max-height: 400px;
-    overflow-y: auto;
-    padding-top: 40px;
-    `;
-
-const myLocation = css`
-  text-align: left;
-  font-size: 22px;
-  text-decoration: underline;
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const reviewMove = css`
-  
-`;
-
-const reviewContainer = css`
-    width: 1100px;
-`;
-
-const titleAndSaveContainer = css`
-    display: flex;
-    margin-top: 64px;
-    width: 100%;
-    padding: 10px 10px 10px 0;
-`;
-
-const reviewTitle = css`
-    width: 500px;
-    height: 80px;
-    font-size: 30px;
-`;
-
-const rating = css`
-  position: relative;
-  top: 30px;
-  left: 250px;
-`;
-
-const saveButton = css`
-    position: relative;
-    align-items: center;
-    top: 30px;
-    left: 400px;
-    width: 100px;
-    height: 50px;
-`;
-
-const photoContainer = css`
-    display: flex;
-    align-items: center;
-    margin: 15px 0 25px 0;
-    padding: 10px;
-    width: 100%;
-    max-width: 1100px;
-    height: 300px;
-    overflow-x: auto;
-    white-space: nowrap;
-    border: 1px solid black;
-`;
-
-const photo = css`
-    justify-content: space-around;
-    align-items: center;
-    margin: 5px;
-    border: 1px solid black;
-    width: 300px;
-    height: 100% ;
-`;
-
-const writeReviewContainer = css`
-  width: 100%;
-  height: 350px;
-  padding: 10px;
-  font-size: 19px;
-`;
-
 
 const ReviewDetail = () => {
   const navigate = useNavigate();

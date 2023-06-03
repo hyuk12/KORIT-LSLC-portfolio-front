@@ -1,82 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
-import {
-    Box,
-    Button,
-    FormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    Typography,
-} from "@mui/material";
+import {Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography,} from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
+import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {
+    addressForm,
+    errorMsg,
+    inputContainers,
+    signupBox,
+    signupContainer,
+    signupText,
+    StyleInput,
+    submitButton
+} from "./styles/SignUpStyles";
 
-const signupContainer = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 800px;
-`;
-const signupBox = css`
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 8px;
-`;
-
-const signupText = css`
-    margin-top: 80px;
-    margin-bottom: 30px;
-`;
-
-const inputContainer = css`
-    width: 500px;
-`;
-
-const StyleInput = styled(TextField)`
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-`;
-
-const addressForm = css`
-    width: 100%;
-    margin-top: 15px;
-`;
-
-const errorMsg = css`
-    margin-left: 5px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: red;
-`;
-
-const submitButton = css`
-    height: 45px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-
-    background-color: #0bd0af;
-    color: white;
-
-    font-size: 15px;
-
-    &:hover {
-        background-color: #0baf94;
-    }
-
-    &:active {
-        background-color: #40d6bd;
-    }
-`;
 
 const address = [
     "서울특별시",
@@ -262,7 +199,7 @@ const SignUp = () => {
                     Sign Up
                 </Typography>
 
-                <Box component="form" css={inputContainer}>
+                <Box component="form" css={inputContainers}>
                     <StyleInput
                         required
                         id="email"

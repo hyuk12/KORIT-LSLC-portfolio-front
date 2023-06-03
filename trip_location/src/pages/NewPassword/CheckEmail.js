@@ -1,72 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import {Box, Button, Grid, Typography} from '@mui/material';
 import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-
-const signupContainer = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 800px;
-`
-;
-const signupBox = css`
-    width: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 8px;
-`;
-
-const signupText = css`
-    margin-top: 80px;
-    margin-bottom: 30px;
-`;
-
-const inputContainer = css`
-    width: 500px;
-`;
-
-const StyleInput = styled(TextField)`
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-`;
-
-const errorMsg = css`
-    margin-left: 5px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: red;
-`;
-
-const guideMsg = css`
-    font-size: 12px;
-    color: #888;
-`;
-
-const submitButton = css`
-    height: 45px;
-
-    background-color: #0BD0AF;
-    color: white;
-
-    font-size: 15px;
-    
-    &:hover {
-        background-color: #0BAF94;
-    }
-
-    &:active {
-        background-color: #40D6BD;
-    }
-`;
-
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {
+    errorMsg,
+    guideMsg,
+    inputContainer,
+    signupBox,
+    signupContainer,
+    signupText,
+    StyleInput,
+    submitButton
+} from "./styles/PasswordStyles";
 
 const CheckEmail = () => {
     
@@ -117,7 +63,6 @@ const CheckEmail = () => {
 
     }
 
-
     return (
         <Grid component="main" maxWidth="xs" css={signupContainer}>
 
@@ -151,7 +96,6 @@ const CheckEmail = () => {
                     </Button>
                 </Box>
             </Box>
-            
         </Grid>
     );
 };

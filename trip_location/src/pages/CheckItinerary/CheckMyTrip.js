@@ -9,7 +9,7 @@ import {
     mainStyle,
     mapContainer, tripLocationItem,
     tripLocationList,
-    viewContainer
+    viewContainer, indexStyle, addressStyle, locationContainer, dayButtonStyle
 } from "./styles/CheckPageStyles";
 
 const { kakao } = window;
@@ -170,31 +170,25 @@ const CheckMyTrip = () => {
 
     return (
         <div css={viewContainer}>
-            <div css={mapContainer}>
-                <div id="map" style={{
-                    width: "100%",
-                    height: "648px"
-                }} />
-                <div css={buttonContainer}>
-                    {schedules.map((_, index) => (
-                            <button
-                                css={buttonStyle}
-                                key={index}
-                                onClick={() => clickDateHandler(index)}
-                            >
-                                {index + 1}일차
-                            </button>
-                    ))}
-                </div>
+            <div css={buttonContainer}>
+                {schedules.map((_, index) => (
+                        <button
+                            css={dayButtonStyle}
+                            key={index}
+                            onClick={() => clickDateHandler(index)}
+                        >
+                            DAY{index + 1}
+                        </button>
+                ))}
             </div>
             <main css={mainStyle}>
-
                 <div css={tripLocationList}>
                     {myTravelInfo.isLoading || !schedules[selectedDate] ? "" :
                         Array.from(new Set(schedules[selectedDate].locations.map(location => location.addr)))
                             .map((locationAddr, index) => (
                                 <div key={index} css={tripLocationItem}>
-                                    <div>{locationAddr}</div>
+                                    <div css={indexStyle}>STEP {index + 1}&nbsp;&nbsp;</div>
+                                    <div css={addressStyle}>{locationAddr}</div>
                                 </div>
                             ))}
                 </div>
@@ -206,6 +200,12 @@ const CheckMyTrip = () => {
                     </div>
                 </div>
             </main>
+            <div css={mapContainer}>
+                <div id="map" style={{
+                    width: "100%",
+                    height: "100%"
+                }} />
+            </div>
         </div>
 
     );

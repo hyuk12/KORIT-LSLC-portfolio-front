@@ -17,6 +17,15 @@ export const mapContainer = css`
     
 `;
 
+export const ReviewMapContainer = css`
+  flex-direction: column;
+  margin: 100px 20px 0 150px;
+  padding-top: 64px;
+  border: 1px solid black;
+  width: 600px;
+    
+`;
+
 export const buttonContainer = css`
   display: flex;
   justify-content: space-around;

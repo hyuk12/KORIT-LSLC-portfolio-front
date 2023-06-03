@@ -9,7 +9,7 @@ import {
     locList,
     mapContainer,
     mapList,
-    myLocation, photo, photoContainer, rating, reviewContainer, reviewTitle, saveButton,
+    myLocation, photo, photoContainer, rating, reviewContainer, ReviewMapContainer, reviewTitle, saveButton,
     scheduleButton, titleAndSaveContainer,
     viewContainer, writeReviewContainer
 } from "./styles/CheckPageStyles";
@@ -181,7 +181,7 @@ useEffect(() => {
 
     return (
       <div css={viewContainer}>
-        <div css={mapContainer}>
+        <div css={ReviewMapContainer}>
           <div css={mapMove}>
             <div css={buttonMove}>
             {schedules.map((_, index) => (

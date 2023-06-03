@@ -61,7 +61,7 @@ const Home = () => {
                         최신 후기
                     </StyleTitleTypography>
                     <StyleSubTitleTypography variant="subtitle1" component="p">
-                        POPULAR REVIEW
+                        LATEST REVIEWS
                     </StyleSubTitleTypography>
                     <PopularReviewList destination={destination} />
                 </Container>

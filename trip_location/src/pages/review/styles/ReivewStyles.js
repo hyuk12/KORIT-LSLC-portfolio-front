@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
-import styled from "@emotion/styled";
-import {TextField} from "@mui/material";
 
 export const viewContainer = css`
   display: flex;
@@ -147,4 +145,33 @@ export const searchField = css`
   justify-content: center;
   align-items: center;
   padding: 5px;
+`;
+
+export const sortingButtonGroupStyle = css`
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+  width: 700px;
+  height: 100px;
+  
+`;
+
+export const sortingButtonStyle = css`
+  border: none;
+  border-radius: 3px;
+  width: 150px;
+  height: 40px;
+  color: #f3f3f3;
+  background-color: rgba(97, 218, 251, 0.62);
+  box-shadow: 0 0 1px 2px rgba(97, 218, 251, 0.5);
+  cursor: pointer;
+  
+  &:hover {
+    background-color: rgba(97, 218, 251, 0.8);
+  }
+  
+  &:active {
+    background-color: rgba(97, 218, 251);
+  }
+  
 `;

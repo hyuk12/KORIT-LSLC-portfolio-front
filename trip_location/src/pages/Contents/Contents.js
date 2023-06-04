@@ -7,7 +7,7 @@ import Map from '../../components/contents/Map/Map';
 import AddUserModal from '../../components/contents/Modal/AddUserModal';
 import {useQuery} from 'react-query';
 import axios from 'axios';
-import {addFriendButton,Title, avatarBox, calendar, container, main, resetButton, sidebar} from "./styles/ContentStyles";
+import {addFriendButton,Title, avatarBox, imgIcon,calendar, container, main, resetButton, sidebar} from "./styles/ContentStyles";
 
 
 const Contents = () => {
@@ -21,8 +21,12 @@ const Contents = () => {
   const [userInfo, setUserInfo] = useState({
     userId: '',
     email:'',
+    name:'',
+    phone:'',
     profileImg:''
   })
+  const [partyData, setPartyData] = useState([]);
+
   const principal = useQuery(["principal"], async () => {
     // const accessToken = localStorage.getItem("accessToken");
     const response = await axios.get('http://localhost:8080/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") }});
@@ -65,6 +69,7 @@ const Contents = () => {
   const closeModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
   return (
     <>
       <div css={container}>
@@ -73,6 +78,13 @@ const Contents = () => {
           <div css={sidebar}>
               <div css={Title}>{searchParams.get("destinationTitle")}</div>
               <div css={avatarBox}>
+                {Array.isArray(partyData) ? (
+                  partyData.map((user) => (
+                    <img css={imgIcon} key={user.userId} src={user.profileImg} alt={user.profileImg} />
+                  ))
+                  ) : (
+                    <img css={imgIcon} src={userInfo.profileImg} alt={userInfo.profileImg} />
+                )}
                 <button css={addFriendButton} onClick={openModal}>친구 추가</button>
               </div>
               <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
@@ -94,6 +106,7 @@ const Contents = () => {
       onClose={closeModal}
       destination={{ image: 'image-url', title: searchParams.get("destinationTitle"), englishing: 'Englishing' }}
       userInfo={userInfo}
+      updatePartyData={(updatedPartyData) => setPartyData(updatedPartyData)}
       />
     </>
 

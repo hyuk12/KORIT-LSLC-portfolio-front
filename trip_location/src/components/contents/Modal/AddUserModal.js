@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import axios from 'axios';
-import React, {useState} from 'react';
-import {useQuery} from 'react-query';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import logoTitle from '../../../images/logotitle.png';
 import {
-  addPartyButton,
+  buttonStyle,
   listContainer,
   listUser,
   listUserContainer,
@@ -13,48 +13,44 @@ import {
   modalContainer,
   modalContent,
   modalStyle,
-  profileImg,
   searchBar,
   searchBox,
   searchButton,
   searchContainer,
-  searchedUser,
   searchHeader,
-  searchMain,
   searchSubmit,
   searchTextBox,
-  searchUserInfo,
   selectRadio,
   text,
   titleText,
   user,
   userName,
   userProfileImg,
-  userText,
-  withList
+  withList,
 } from "./styles/ModalStyles";
 
 
-const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
+const AddUserModal = ({ isOpen, onClose, destination, userInfo, updatePartyData }) => {
   const [searchType, setSearchType] = useState('email');
   const [searchValue, setSearchValue] = useState('');
 
-  const [partyUsers, setPartyUsers] = useState([
-    {
-      userId: '',
-      email: '',
-      name: '',
-      phone: '',
-      profileImg: '',
-    },
-  ]);
-  const [searchInfo, setSearchInfo] = useState({
-    userId: '',
-    email: '',
-    name: '',
-    phone: '',
-    profileImg: '',
-  })
+  const [partyUsers, setPartyUsers] = useState([]);
+
+  useEffect(() => {
+    if (userInfo.userId) {
+      setPartyUsers([
+        {
+          userId: userInfo.userId,
+          email: userInfo.email,
+          name: userInfo.name,
+          phone: userInfo.phone,
+          profileImg: userInfo.profileImg,
+        },
+      ]);
+    }
+  }, [userInfo]);
+
+  const [searchInfo, setSearchInfo] = useState({});
 
   const { image, title, englishing } = destination;
 
@@ -83,29 +79,31 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
   },{
     enabled: userInfo.userId !== '',
     onSuccess: (response) => {
-        setPartyUsers([{
-          userId: userInfo.userId,
-          name: userInfo.name,
-          email: userInfo.email,
-          phone: userInfo.phone,
-          profileImg: userInfo.profileImg,
-        },])
-        if (response?.data?.data) {
-          setSearchInfo({
-            userId: response.data.data.userId,
-            email: response.data.data.email,
-            name: response.data.data.name,
-            phone: response.data.data.phone,
-            profileImg: response.data.data.postsImgUrl,
-          });
-        }
-     }    
+      if (response?.data?.data) {
+        const newSearchInfo = {
+          userId: response.data.data.userId,
+          email: response.data.data.email,
+          name: response.data.data.name,
+          phone: response.data.data.phone,
+          profileImg: response.data.data.postsImgUrl,
+        };
+        setSearchInfo(newSearchInfo);
+    
+        setPartyUsers((prevPartyUsers) => {
+          const isAlreadyAdded = prevPartyUsers.some((party) => party.userId === newSearchInfo.userId);
+          if (!isAlreadyAdded) {
+            return [...prevPartyUsers, newSearchInfo];
+          }
+          return prevPartyUsers;
+        });
+      }
+    }
+    
   });
-
   const submitSearchHandler = (e) => {
     e.preventDefault();
     const inputValue = e.target.elements.searchMember.value;
-    if(userInfo.email !== inputValue){
+    if (userInfo.email !== inputValue) {
       setSearchValue(inputValue);
     }
     e.target.reset();
@@ -118,14 +116,6 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
   if (!isOpen || !destination) {
       return null;
   }
-
-  const addPartyHandler = () => {
-    const isAlreadyAdded = partyUsers.some((party) => party.userId === searchInfo.userId);
-    // console.log(isAlreadyAdded);
-    const updatedPartyData = !isAlreadyAdded ? [...partyUsers, searchInfo] : partyUsers;
-    setPartyUsers(updatedPartyData);
-    // console.log(partyUsers);
-  };
   
   const removePartyHandler = (index) => {
     setPartyUsers((prevPartyData) => {
@@ -137,18 +127,22 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
   
   const savePartyHandler = () => {
     const partyData = {
-      partyData: partyUsers.map((party) => {
-        return {
-          userId: party.userId,
-          name: party.name,
-        };
-      }),
+      partyData: partyUsers.map((party) => ({
+        userId: party.userId,
+        name: party.name,
+        profileImg: party.profileImg
+      }))
     };
-  
+    
     localStorage.setItem('partyData', JSON.stringify(partyData));
+    
+    if (updatePartyData) {
+      updatePartyData(partyData.partyData);
+    }
+    
     onClose();
   };
-
+  
   return (
       <div css={modalStyle} onClick={onClose}>
           <div css={modalContent} onClick={(e) => e.stopPropagation()}>
@@ -172,22 +166,6 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
                           <input type="radio" name="chk_info" value="phone" checked={searchType === 'phone'} onChange={handleSearchTypeChange}/>Phone
                         </div>
                       </div>
-                    </div>
-                    <div css={searchMain}>
-                      {searchInfo ? (
-                          <div css={searchedUser}>
-                            <div css={searchUserInfo}>
-                              <img css={profileImg} src={searchInfo.profileImg} alt={searchInfo.profileImg} />
-                              <span css={userText}>{searchInfo.name}</span>
-                            </div>
-                            <button css={addPartyButton} onClick={addPartyHandler}>
-                              추가
-                            </button>
-                          </div>
-                        ) : (
-                          <p>검색 결과가 없습니다.</p>
-                        )
-                      }
                     </div>
                   <div css={listContainer}>
                     <span css={withList}>
@@ -213,7 +191,7 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo }) => {
                       </ul>
                     </div>
                   </div>
-                  <button onClick={savePartyHandler}>저장</button>
+                  <button css={buttonStyle} onClick={savePartyHandler}>저장</button>
                 </div>
               </div>
           </div>

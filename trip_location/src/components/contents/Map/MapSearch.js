@@ -121,12 +121,7 @@ const MapSearch = ({ map }) => {
       el.className = 'item';
 
       const placeNameEl = el.querySelector('.place-name');
-      // placeNameEl.addEventListener('click', function() {
-      //   // Handle the onclick event here for the place name
-      //   // You can access the "places" data and perform the desired action
-      //   console.log('Place name clicked:', places.place_name);
-      // });
-      console.log( places.place_name)
+
       return el;  
     }
      

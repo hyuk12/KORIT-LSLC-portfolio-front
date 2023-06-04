@@ -58,7 +58,7 @@ const ModifyForm = () => {
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get('http://localhost:8080/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") }});
-        console.log("요청")
+
         return response;
     }, {
         enabled: refresh,
@@ -139,7 +139,7 @@ const ModifyForm = () => {
             }
         )
 
-        console.log(updateUser);
+
     };
 
     const modifyUser = useMutation(async (modifyData) => {
@@ -154,8 +154,6 @@ const ModifyForm = () => {
             if(imgFiles) {
                 formData.append("profileImg", imgFiles)
             }
-
-            console.log(formData.get("profileImg"));
 
             const option = {
                 headers: {

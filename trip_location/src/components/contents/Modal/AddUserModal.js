@@ -71,7 +71,7 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo, updatePartyData 
     }
     try {
       const response = await axios.get('http://localhost:8080/api/v1/user/search', option);
-      // console.log(response);
+
       return response;
     } catch (error) {
       return error;  

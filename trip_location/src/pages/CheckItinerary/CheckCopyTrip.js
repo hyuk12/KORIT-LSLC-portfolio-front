@@ -60,14 +60,14 @@ const CheckCopyTrip = () => {
                         Authorization: `${localStorage.getItem('accessToken')}`
                     }
                 })
-                console.log(response.data);
+
                 return response;
         }catch (error) {
             return error;
         }
     }, {
         onSuccess: (response) => {
-            console.log(response);
+
             setSchedules([ ...response.data.schedules ]);
         }
     })
@@ -140,8 +140,7 @@ const CheckCopyTrip = () => {
                         let coord = new kakao.maps.LatLng(lat, lng);
                         const callBack = (result, status) => {
                             if(status === kakao.maps.services.Status.OK) {
-                                console.log(result[0].address.address_name);
-                                console.log(location.addr)
+
                                 updateLocation(result[0].address.address_name);
                             }
                         }
@@ -151,8 +150,7 @@ const CheckCopyTrip = () => {
 
                     kakao.maps.event.addListener(marker, 'dragend', () => {
                         let latlng = marker.getPosition();
-                        // console.log(latlng.getLat());
-                        // console.log(latlng.getLng());
+
 
                         setSchedules(prevSchedules => {
                             const newSchedules = [...prevSchedules];
@@ -240,12 +238,12 @@ const CheckCopyTrip = () => {
       const partyData = JSON.parse(localStorage.getItem("partyData"));
       const getScheduleData = JSON.parse(localStorage.getItem("scheduleData"));
       
-      console.log("getScheduleData:", getScheduleData);
+
       
       const updatedScheduleData = getScheduleData.map((scheduleDate,index) => {
-        console.log("schedule:", scheduleDate);
+
         const locations = schedules.map((item) => item.locations);
-        console.log("locations:", locations);
+
         return {
           id:scheduleDate.id,
           date: scheduleDate.date,
@@ -253,8 +251,7 @@ const CheckCopyTrip = () => {
           partyData: partyData.partyData,
         };
       });
-      
-      console.log(updatedScheduleData);
+
       requestData.mutate(updatedScheduleData);
     };
 

@@ -21,9 +21,6 @@ import {
 const Home = () => {
 
     const images = useMemo(() => [cityNight, building], []);
-
-
-
     const [currentImage, setCurrentImage] = useState(images[0]);
 
     useEffect(() => {
@@ -40,7 +37,6 @@ const Home = () => {
 
     const cardData = useQuery(['cardData'], async () => {
         const response = await axios.get('http://localhost:8080/post');
-        console.log(response)
         return response.data;
     }, );
 

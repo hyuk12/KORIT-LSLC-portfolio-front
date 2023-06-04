@@ -95,7 +95,7 @@ const ModifyReviewForm = () => {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
             }
-            console.log(parseInt(updateData.rating));
+
             const formData = new FormData();
             formData.append('title', updateData.title);
             formData.append('travelId', parseInt(updateData.travelId));
@@ -160,7 +160,6 @@ const ModifyReviewForm = () => {
                     map: map
                 });
                 bounds.extend(markerPosition);
-                console.log(schedules)
             });
 
             map.setBounds(bounds);

@@ -43,16 +43,20 @@ export const dayButtonStyle = css`
 
   border: none;
 
-  cursor: pointer;
+  background-color: #fdfdfdfd;
 
-  &:active {
-    color: white;
-    background-color: #40D6BD;
-    
-    &::after {
-      background-color: #40D6BD;
-    }
-  }
+  cursor: pointer;
+`;
+
+export const selectedButtonStyle = css`
+  background-color: #40D6BD;
+  color: white;
+
+  transition: all 0.3s;
+  transform: scale(1.1);
+  transform-origin: right;
+
+
 `;
 
 export const resetButton= css`
@@ -61,9 +65,23 @@ export const resetButton= css`
 `;
 
 export const buttonStyle = css`
-
   width: 150px;
   height: 50px;
+
+  border: none;
+  background-color: #0BD0AF;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0BAF94;
+  }
+
+  &:active {
+    background-color: #40D6BD;
+  }
 `;
 
 export const mainStyle = css`
@@ -78,9 +96,12 @@ export const mainStyle = css`
 export const tripLocationList = css`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   width: 100%;
 
+  overflow: auto;
+
+  margin-top: 20px;
   padding: 0px 20px;
 
   &::-webkit-scrollbar {
@@ -99,12 +120,28 @@ export const tripLocationList = css`
   
 `;
 
+export const scheduleDate = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 15px 0px;
+
+  font-weight: 600;
+  color: #555;
+`;
+
+export const itemContainer = css`
+    width: 100%;
+    height: 130px;
+`;
+
 export const tripLocationItem = css`
   display: flex;
   align-items: center;
   overflow: auto;
 
-  margin: 20px 0px;
+  margin: 10px 0px;
   width: 100%;
   height: 80px;
   border-radius: 5px;
@@ -114,7 +151,7 @@ export const tripLocationItem = css`
 `;
 
 export const indexStyle = css`
-  width: 60px;
+  width: 70px;
   margin-left: 10px;
 
   color: #0BD0AF;
@@ -134,9 +171,14 @@ export const addressStyle = css`
 
 `;
 
+export const itemIconStyle = css`
+  display: flex;
+  justify-content: center;
+  color: #dbdbdbdb;
+`;
+
 export const footerStyle = css`
   display: flex;
-  border: 1px solid black;
   width: 100%;
   height: 100px;
   margin-top: 20px;

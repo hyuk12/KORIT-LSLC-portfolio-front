@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useMutation, useQuery} from "react-query";
 import axios from "axios";
 import {useSearchParams} from "react-router-dom";
@@ -9,7 +9,7 @@ import {
     mainStyle,
     mapContainer, tripLocationItem,
     tripLocationList,
-    viewContainer, indexStyle, addressStyle, locationContainer, dayButtonStyle
+    viewContainer, indexStyle, addressStyle, dayButtonStyle, itemIconStyle, itemContainer, scheduleDate, selectedButtonStyle
 } from "./styles/CheckPageStyles";
 
 const { kakao } = window;
@@ -21,6 +21,9 @@ const CheckMyTrip = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [selectedDate, setSelectedDate] = useState(0);
     const [ schedules, setSchedules ] = useState([]);
+    const tripLocationListRef = useRef(null);
+    const [selectedButton, setSelectedButton] = useState(0);
+
 
     const myTravelInfo = useQuery(['info'], async () => {
         try {
@@ -155,6 +158,10 @@ const CheckMyTrip = () => {
 
     const clickDateHandler = (date) => {
         setSelectedDate(date);
+
+        // Day 버튼을 클릭하면 상단으로 스크롤 이동 및 포커싱
+        tripLocationListRef.current.scrollTo({ top: 0, behavior: "smooth" });
+        tripLocationListRef.current.focus();
     }
 
     const editHandler = () => {
@@ -164,6 +171,7 @@ const CheckMyTrip = () => {
     const saveHandler = () => {
         setIsEditable(false);
         const updatedTravelPlan = {...travelPlan, schedules: schedules}
+        console.log(updatedTravelPlan.data.scheduleDate);
         setTravelPlan(updatedTravelPlan);
         updateTravelInfo.mutate(updatedTravelPlan);
     }
@@ -173,22 +181,40 @@ const CheckMyTrip = () => {
             <div css={buttonContainer}>
                 {schedules.map((_, index) => (
                         <button
-                            css={dayButtonStyle}
+                            css={[dayButtonStyle, selectedButton === index && selectedButtonStyle]}
                             key={index}
-                            onClick={() => clickDateHandler(index)}
+                            onClick={() => {
+                                setSelectedButton(index);
+                                clickDateHandler(index);
+                            }}
                         >
                             DAY{index + 1}
                         </button>
                 ))}
             </div>
             <main css={mainStyle}>
-                <div css={tripLocationList}>
+                <div css={tripLocationList} ref={tripLocationListRef}>
+                    {/* 여행 날짜 표시 */}
+                    {myTravelInfo.isLoading || !schedules[selectedDate] ? "" :
+                        <div css={scheduleDate}>{schedules[selectedDate].scheduleDate}</div>
+                    }
+                    {/* 여행 경로 표시 */}
                     {myTravelInfo.isLoading || !schedules[selectedDate] ? "" :
                         Array.from(new Set(schedules[selectedDate].locations.map(location => location.addr)))
-                            .map((locationAddr, index) => (
-                                <div key={index} css={tripLocationItem}>
-                                    <div css={indexStyle}>STEP {index + 1}&nbsp;&nbsp;</div>
-                                    <div css={addressStyle}>{locationAddr}</div>
+                            .map((locationAddr, index, arr) => (
+                                <div key={index} css={itemContainer}>
+                                    <div  css={tripLocationItem}>
+                                        <div css={indexStyle}>STEP {index + 1}&nbsp;&nbsp;</div>
+                                        <div css={addressStyle}>{locationAddr}</div>
+                                    </div>
+                                    <div css={itemIconStyle}>
+                                        {
+                                            index === arr.length - 1
+                                            ? <></>
+                                            : <>▼</>
+                                            
+                                        }
+                                    </div>
                                 </div>
                             ))}
                 </div>

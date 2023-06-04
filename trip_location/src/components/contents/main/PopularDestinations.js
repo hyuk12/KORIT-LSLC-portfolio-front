@@ -35,7 +35,7 @@ const PopularDestinations = ({ destination }) => {
         for (let i = 0; i < length; i++) {
             indicators.push(
                 <button
-                    key={i}
+                    key={`indicator-${i}`}
                     onClick={() => {
                         // Carousel의 setActiveIndex를 사용하여 인디케이터 클릭 시 해당 슬라이드로 이동
                         setActiveIndex(i);
@@ -59,11 +59,11 @@ const PopularDestinations = ({ destination }) => {
                 setActiveIndex={setActiveIndex}
                 activeIndex={activeIndex}
             >
-                {destinationChunks.map((chunk, index) => (
-                    <div key={index}>
-                        {chunk.map((destination) => (
+                {destinationChunks.map((chunk, chunkIndex) => (
+                    <div key={`chunk-${chunkIndex}`}>
+                        {chunk.map((destination, destinationIndex) => (
                             <Paper
-                                key={destination.id}
+                                key={destination.id ? `chunk-${chunkIndex}-destination-${destination.id}` : `chunk-${chunkIndex}-destinationIndex-${destinationIndex}`}
                                 onClick={() => handleImageClick(destination)}
                                 css={paperStyle}
                             >

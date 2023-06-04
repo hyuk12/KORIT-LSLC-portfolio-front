@@ -62,7 +62,6 @@ const OAuth2Register = () => {
     const email = searchParams.get("email");
     const name = searchParams.get("name");
     const provider = searchParams.get("provider");
-    console.log(email, name)
 
     const oauth2Register = useMutation(async (registerData) => {
         const option = {
@@ -71,7 +70,6 @@ const OAuth2Register = () => {
             }
         }
         try {
-            console.log(registerData)
             const response = await axios.post('http://localhost:8080/api/v1/auth/oauth2/register', registerData, option);
             return response
         }catch (error) {

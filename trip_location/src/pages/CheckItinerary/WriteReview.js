@@ -80,7 +80,6 @@ useEffect(() => {
         map: map
       });
       bounds.extend(markerPosition);
-      console.log(schedules)
     });
 
     map.setBounds(bounds);
@@ -141,8 +140,7 @@ useEffect(() => {
   const saveReview = useMutation(async (reviewData) => {
       try{
 
-          console.log(reviewData.review);
-          console.log(reviewData.title);
+
           const formData = new FormData();
           formData.append('review', reviewData.review);
           formData.append('title', reviewData.title);
@@ -160,7 +158,7 @@ useEffect(() => {
                 Authorization: `${localStorage.getItem('accessToken')}`
             }
           }
-          console.log(formData.get('imgFile'))
+
           const response = await axios.post('http://localhost:8080/api/v1/review/save', formData, option);
           return response
       }catch(error) {

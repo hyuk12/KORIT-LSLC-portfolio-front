@@ -38,9 +38,7 @@ const Withdrawal = () => {
         return response;
     }, {
         enabled: authState.isAuthenticated
-        // onSuccess: (response) => {
-        //     setRefresh(false);
-        // }
+
     });
     
 

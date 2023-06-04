@@ -18,7 +18,7 @@ const PopularReviewList = () => {
     const reviewListByRating = useQuery(['list'], async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/v1/review/list');
-            console.log(response.data);
+
             return response.data
         }catch (error) {
             console.error('Failed to fetch reviews', error);

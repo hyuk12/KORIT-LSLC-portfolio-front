@@ -27,7 +27,7 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
                 }
             }
             const response = await axios.delete(`http://localhost:8080/api/v1/travel/plan/${travelId}`, option);
-            console.log('요청됬음 삭제')
+
             return response
         }catch (error) {
 

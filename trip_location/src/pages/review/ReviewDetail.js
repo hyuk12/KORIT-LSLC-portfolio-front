@@ -77,7 +77,7 @@ const ReviewDetail = () => {
     enabled: !reviewData
   })
 
-  console.log(reviewData);
+
 useEffect(() => {
   if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
     const container = document.getElementById('map');
@@ -97,7 +97,6 @@ useEffect(() => {
         map: map
       });
       bounds.extend(markerPosition);
-      console.log(schedules)
     });
 
     map.setBounds(bounds);

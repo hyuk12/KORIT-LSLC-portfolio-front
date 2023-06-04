@@ -35,7 +35,6 @@ const CheckMyTrip = () => {
                         Authorization: `${localStorage.getItem('accessToken')}`
                     }
                 })
-                console.log(response.data);
                 return response;
         }catch (error) {
 
@@ -88,8 +87,6 @@ const CheckMyTrip = () => {
                         let coord = new kakao.maps.LatLng(lat, lng);
                         const callBack = (result, status) => {
                             if(status === kakao.maps.services.Status.OK) {
-                                console.log(result[0].address.address_name);
-                                console.log(location.addr)
                                 updateLocation(result[0].address.address_name);
                             }
                         }
@@ -99,8 +96,6 @@ const CheckMyTrip = () => {
 
                     kakao.maps.event.addListener(marker, 'dragend', () => {
                         let latlng = marker.getPosition();
-                        console.log(latlng.getLat());
-                        console.log(latlng.getLng());
 
                         setSchedules(prevSchedules => {
                             const newSchedules = [...prevSchedules];
@@ -170,8 +165,7 @@ const CheckMyTrip = () => {
 
     const saveHandler = () => {
         setIsEditable(false);
-        const updatedTravelPlan = {...travelPlan, schedules: schedules}
-        console.log(updatedTravelPlan.data.scheduleDate);
+        const updatedTravelPlan = {...travelPlan, schedules: schedules};
         setTravelPlan(updatedTravelPlan);
         updateTravelInfo.mutate(updatedTravelPlan);
     }

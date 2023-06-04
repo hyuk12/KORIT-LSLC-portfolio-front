@@ -21,7 +21,7 @@ export const modalContent = css`
   flex-direction: row;
   background-color: white;
   width: 50%;
-  max-height: 60%;
+  max-height: 70%;
   overflow: auto;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -29,7 +29,7 @@ export const modalContent = css`
 `;
 
 export const buttonStyle = css`
-  margin-top: 40px;
+  margin-top: 50px;
   border: none;
   width: 144px;
   height: 44px;
@@ -51,6 +51,7 @@ export const modalContainer =css`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+  margin-top: 20px;
   width: 100%;
   height: 100%;
 `;
@@ -205,6 +206,7 @@ export const listContainer = css`
   justify-content: flex-start;
   align-items: flex-start;
   box-sizing: border-box;
+  margin-top:20px;
   width: 100%;
   height: 44%;
 `;
@@ -219,7 +221,7 @@ export const withList =css`
   font-weight: 900;
   box-shadow: 0px 4px 6px #dbdbdb;
   width: 100%;
-  height: 20%;
+  height: 40%;
 `;
 
 export const listUserContainer = css`
@@ -253,7 +255,8 @@ export const userProfileImg =css`
   margin-right: 10px;
   box-sizing: border-box;
   border-radius: 50%;
-  width: 8%;
+  width: 50px;
+  height: 50px;
 
 `;
 
@@ -300,3 +303,4 @@ export const FavoriteIcon = styled(Favorite)`
 export const Pstyle = css`
   color: #808080;
 `;
+

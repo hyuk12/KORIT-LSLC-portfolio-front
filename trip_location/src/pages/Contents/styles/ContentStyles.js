@@ -43,7 +43,20 @@ export const avatarBox = css`
   justify-content: center;
   align-items: center;
   margin: 10px 0px;
-  height: 15vh;
+  height: 50px
+`;
+
+export const imgIcon = css`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-right: 10px;
+  
+  box-sizing: border-box;
+  border-radius: 50%;
+  weight: 50px;
+  height: 50px;
+
 `;
 
 export const resetButton= css`

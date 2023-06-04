@@ -30,7 +30,7 @@ const CheckCopyTrip = () => {
     const [selectedDate, setSelectedDate] = useState(0);
     const [scheduleData, setScheduleData] = useState([]);
     const [ schedules, setSchedules ] = useState([]);
-    
+    const [partyData, setPartyData] = useState([]);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -329,6 +329,7 @@ const CheckCopyTrip = () => {
             onClose={closeModal}
             destination={{ image: 'image-url', title: searchParams.get("destinationTitle"), englishing: 'Englishing' }}
             userInfo={userInfo}
+            updatePartyData={(updatedPartyData) => setPartyData(updatedPartyData)}
             />
         </div>
 

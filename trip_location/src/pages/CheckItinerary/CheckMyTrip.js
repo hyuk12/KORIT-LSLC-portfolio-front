@@ -43,6 +43,7 @@ const CheckMyTrip = () => {
         onSuccess: (response) => {
 
             setSchedules([ ...response.data.schedules ]);
+            console.log([ response ]);
         }
     })
     let map = null;

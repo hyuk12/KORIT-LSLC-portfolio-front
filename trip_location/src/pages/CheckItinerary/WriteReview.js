@@ -11,7 +11,8 @@ import {
     mapList,
     myLocation, photo, photoContainer, rating, reviewContainer, ReviewMapContainer, reviewTitle, saveButton,
     scheduleButton, titleAndSaveContainer,
-    viewContainer, writeReviewContainer
+    viewContainer, writeReviewContainer, dayButtonContainer, selectedButtonStyle,
+    tripLocationItem, indexStyle, addressStyle, itemIconStyle
 } from "./styles/CheckPageStyles";
 import {mapMove, reviewMove} from "../review/styles/ReivewStyles";
 
@@ -25,6 +26,7 @@ const WriteReview = () => {
   const [ imgFiles, setImgFiles ] = useState([]);
   const fileId = useRef(1);
   const [ value, setValue ] = useState(0);
+  const [selectedButton, setSelectedButton] = useState(0);
 
   const [sendReviewData, setSendReviewData] = useState({
   review: "", // text
@@ -179,33 +181,44 @@ useEffect(() => {
 
     return (
       <div css={viewContainer}>
-        <div css={ReviewMapContainer}>
-          <div css={mapMove}>
-            <div css={buttonMove}>
-            {schedules.map((_, index) => (
-              <button
-                css={scheduleButton}
-                key={index}
-                onClick={() => clickDateHandler(index)}>
-                {index + 1}일차
-              </button>
-                ))}
-            </div>
-            <div css={mapList}>
-            <div id="map" style={{
-                    width: "550px",
-                    height: "450px",
-                }} />
-            </div>
-          </div>
-          <div css={reviewMove}>
-            <div css={locList}>
-              {schedules[selectedDate]?.locations?.map((location) => (
-                <div css={myLocation} key={location.locationId}>
-                  {location.addr}
-                </div>
+        <div css={dayButtonContainer}>
+          {schedules.map((_, index) => (
+            <button
+              css={[scheduleButton, selectedButton === index && selectedButtonStyle]}
+              key={index}
+              onClick={() => {
+                setSelectedButton(index);
+                clickDateHandler(index);
+              }}
+            >
+              DAY {index + 1}
+            </button>
               ))}
-            </div>
+        </div>
+        <div css={ReviewMapContainer}>
+          <div css={mapList}>
+            <div id="map" style={{
+                  width: "95%",
+                  height: "95%",
+            }} />
+          </div>
+          <div css={locList}>
+            {schedules[selectedDate]?.locations?.map((location, index, arr) => (
+              <div css={myLocation} key={location.locationId}>
+                <div  css={tripLocationItem} style={{ width: '500px' }}>
+                    <div css={indexStyle}>STEP {index + 1}</div>
+                    <div css={addressStyle}>{location.addr}</div>
+                </div>
+                <div css={itemIconStyle}>
+                    {
+                        index === arr.length - 1
+                        ? <></>
+                        : <>▼</>
+                        
+                    }
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         <div css={reviewContainer}>

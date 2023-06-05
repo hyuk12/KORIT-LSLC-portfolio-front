@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import {useMutation} from "react-query";
 import axios from "axios";
 
-const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
+const TravelList = ({ userInfo, myTravelList, regionInfo, reviewDataList }) => {
     const navigate = useNavigate();
 
     const deletePlan = useMutation(async (travelId) => {
@@ -51,7 +51,13 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
     const removeReviewClickHandler =(travelId)=>{
         deletePlan.mutate(travelId);
     }
+    console.log(reviewDataList);
 
+    const isReviewWritten = (travelId) => {
+        const review = reviewDataList.find((review) => review.travelId === travelId);
+        return review && review.reviewId;
+      };
+    
     return (
         <Container>
             <Grid container spacing={4} >
@@ -84,11 +90,17 @@ const TravelList = ({ userInfo, myTravelList, regionInfo  }) => {
                                         일정삭제
                                     </Button>
                                 </CardActions>
-                            ) : (dayjs().isAfter(data.scheduleDate[data.scheduleDate.length - 1]) ? (
+                            ) : (dayjs().isAfter(data.scheduleDate[data.scheduleDate.length - 1]) ? ( 
                                 <CardActions sx={{ minWidth: 100}}>
+                                    {isReviewWritten(data.travelId) ? (
+                                    <Typography variant="body3" color="textSecondary" component="p">
+                                        리뷰 작성 완료
+                                    </Typography>
+                                    ) : (
                                     <Button sx={{ height: 20 }} size="small" color="primary" onClick={() => moveReviewClickHandler(data.travelId)}>
-                                        리뷰쓰기
+                                        리뷰 쓰기
                                     </Button>
+                                    )}
                                 </CardActions>
                             ) : (
                                 <CardActions sx={{ minWidth: 100}}>

@@ -176,7 +176,7 @@ const MyPage = () => {
           </div>
         </div>
         <div css={planAndReviewContainer}>
-          {checkType ?(<TravelList userInfo={userInfo} myTravelList={myTravelList} regionInfo={regionInfo}  />):(<MyReviewList reviewDataList={reviewDataList} userInfo={userInfo}/>)}
+          {checkType ?(<TravelList userInfo={userInfo} myTravelList={myTravelList} regionInfo={regionInfo} reviewDataList={reviewDataList} />):(<MyReviewList reviewDataList={reviewDataList} userInfo={userInfo}/>)}
         </div>
       </main>
     </div>

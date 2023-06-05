@@ -123,8 +123,8 @@ export default function Calendar(props) {
               />
           </DemoContainer>
           <VerticalTabs scheduleData={scheduleData}/>
-          <button onClick={submitPlanHandler}>일정 확정하기 </button>
         </div>
+          <button onClick={submitPlanHandler}>일정 확정하기 </button>
       </div>
     </LocalizationProvider>
   );

@@ -94,12 +94,12 @@ const CheckCopyTrip = () => {
       }
       
 
-    const resetDay = () => {
-        setStartDay(dayjs());
-        setEndDay(dayjs().add(1, 'day'));
-        const newTotalDate = dayjs().add(1, 'day').diff(dayjs(), 'day') + 1;
-        setTotalDate(newTotalDate);
-    };
+    // const resetDay = () => {
+    //     setStartDay(dayjs());
+    //     setEndDay(dayjs().add(1, 'day'));
+    //     const newTotalDate = dayjs().add(1, 'day').diff(dayjs(), 'day') + 1;
+    //     setTotalDate(newTotalDate);
+    // };
 
     useEffect(() => {
 
@@ -286,21 +286,20 @@ const CheckCopyTrip = () => {
         setSelectedDate(date);
     }
 
-    const editHandler = () => {
-        setIsEditable(true);
-    }
+    // const editHandler = () => {
+    //     setIsEditable(true);
+    // }
 
-    const saveHandler = () => {
-        setIsEditable(false);
-        const updatedTravelPlan = {...travelPlan, schedules: schedules}
-        setTravelPlan(updatedTravelPlan);
-        updateTravelInfo.mutate(updatedTravelPlan);
+    // const saveHandler = () => {
+    //     setIsEditable(false);
+    //     const updatedTravelPlan = {...travelPlan, schedules: schedules}
+    //     setTravelPlan(updatedTravelPlan);
+    //     updateTravelInfo.mutate(updatedTravelPlan);
         
-    }
+    // }
 
     return (
         <div css={viewContainer}>
-            <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
             <CoustomCalendar
                 startDay={startDay}
                 endDay={endDay}
@@ -309,7 +308,7 @@ const CheckCopyTrip = () => {
                 onEndDayChange={endDayHandle}
                 userInfo={userInfo}
             />
-             <button css={buttonStyle} onClick={openModal}>친구 추가</button>
+             
             <div css={mapContainer}>
                 <div id="map" style={{
                     width: "100%",
@@ -340,10 +339,11 @@ const CheckCopyTrip = () => {
                 </div>
                 <div css={footerStyle}>
                     <div css={footerButtonContainer}>
-                        <button css={buttonStyle} onClick={editHandler} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
-                        <button css={buttonStyle} onClick={saveHandler} style={{display: isEditable ? 'block' : 'none'}}>저장</button>
-                        <button css={buttonStyle} onClick={() => window.location.replace(`/user/${searchParams.get("userId")}`)}>취소</button>
+                        {/* <button css={buttonStyle} onClick={editHandler} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
+                        <button css={buttonStyle} onClick={saveHandler} style={{display: isEditable ? 'block' : 'none'}}>저장</button> */}
+                        <button css={buttonStyle} onClick={openModal}>친구 추가</button>
                         <button css={buttonStyle} onClick={submitPlanHandler}>일정저장</button>
+                        <button css={buttonStyle} onClick={() => window.location.replace(`/review/list`)}>취소</button>
                     </div>
                 </div>
                 

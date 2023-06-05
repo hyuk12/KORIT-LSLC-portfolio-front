@@ -423,6 +423,8 @@ export const writeReviewContainer = css`
     width: 100%;
     height: 100%;
     
+    background-color: #fefefe;
+    
     font-size: 19px;
 `;
 

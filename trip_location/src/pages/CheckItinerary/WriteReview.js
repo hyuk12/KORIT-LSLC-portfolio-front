@@ -80,6 +80,34 @@ useEffect(() => {
         map: map
       });
       bounds.extend(markerPosition);
+
+        const customOverlayStyleString = `
+                        position: absolute;
+                        top: -90px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background-color: white;
+                        color: black;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: 600;
+                        font-size: 14px;
+                        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+                    `;
+        const content = `<div style="${customOverlayStyleString}">${index + 1}</div>`;
+        // 마커를 맵위에 그린다.
+
+        const customOverlay = new kakao.maps.CustomOverlay({
+            position: markerPosition,
+            content: content,
+            yAnchor: 0.9
+        });
+
+        customOverlay.setMap(map);
     });
 
     map.setBounds(bounds);
@@ -193,8 +221,8 @@ useEffect(() => {
             </div>
             <div css={mapList}>
             <div id="map" style={{
-                    width: "550px",
-                    height: "450px",
+                    width: "400px",
+                    height: "400px",
                 }} />
             </div>
           </div>

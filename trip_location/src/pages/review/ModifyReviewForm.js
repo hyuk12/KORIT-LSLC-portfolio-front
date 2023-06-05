@@ -247,6 +247,12 @@ const ModifyReviewForm = () => {
         }
     }
 
+    const removeImage = (removeIndex) => {
+        setImgFiles(prevImgFiles =>
+            prevImgFiles.filter((imgFile, index) => index !== removeIndex)
+        );
+    }
+
     return (
         <div css={viewContainer}>
             <div css={reviewPageContainer}>
@@ -317,19 +323,25 @@ const ModifyReviewForm = () => {
                     </div>
                     {isImageSelected && imgFiles.length > 0 &&
                         imgFiles.map((imgFile, index) => (
-                            <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
-                        ))}
+                            <img
+                                key={index}
+                                css={photo}
+                                src={URL.createObjectURL(imgFile.file)}
+                                alt={`Preview ${index}`}
+                                onClick={() => removeImage(index)} // removeImage 호출하면서 index 전달
+                            />
+                        ))
+                    }
                     {!isImageSelected && !getReviewDetails.isLoading && reviewData && reviewData.reviewImgUrls && reviewData.reviewImgUrls.map((data, index) => {
                         return <img key={index} css={photo} src={data} alt={`${index}`}/>
                     })}
-                    </div>
-
-                    <div css={writeReviewContainer}>
+                </div>
+                <div css={writeReviewContainer}>
                         <textarea css={reviewContentsInput} name="" id="" value={getReviewDetails.isLoading ? '' : sendReviewData.review} onChange={handleReviewChange}></textarea>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
     );
 };
 

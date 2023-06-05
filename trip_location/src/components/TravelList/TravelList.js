@@ -51,7 +51,6 @@ const TravelList = ({ userInfo, myTravelList, regionInfo, reviewDataList }) => {
     const removeReviewClickHandler =(travelId)=>{
         deletePlan.mutate(travelId);
     }
-    console.log(reviewDataList);
 
     const isReviewWritten = (travelId) => {
         const review = reviewDataList.find((review) => review.travelId === travelId);

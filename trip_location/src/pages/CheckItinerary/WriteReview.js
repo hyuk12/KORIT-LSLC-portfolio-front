@@ -5,16 +5,13 @@ import {useMutation, useQuery} from "react-query";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import {
-    buttonMove,
     locList,
-    mapContainer,
     mapList,
     myLocation, photo, photoContainer, rating, reviewContainer, reviewMapContainer, reviewTitle, saveButton,
     scheduleButton, titleAndSaveContainer,
     reviewPageContainer, writeReviewContainer, dayButtonContainer, selectedButtonStyle, viewContainer,
     tripLocationItem, indexStyle, addressStyle, itemIconStyle, reviewSaveButton, fileInputBox, fileInputButton, reviewContentsInput
 } from "./styles/CheckPageStyles";
-import {mapMove, reviewMove} from "../review/styles/ReivewStyles";
 import RateReviewOutlined from '@mui/icons-material/RateReviewOutlined';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 

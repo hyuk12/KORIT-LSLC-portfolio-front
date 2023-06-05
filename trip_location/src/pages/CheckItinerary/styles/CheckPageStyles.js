@@ -4,6 +4,7 @@ import {css} from "@emotion/react";
 export const viewContainer = css`
   display: flex;
   position: fixed;
+  justify-content: center;
   top: 64px;
   width: 100%;
   height: calc(100vh - 64px);
@@ -19,11 +20,15 @@ export const mapContainer = css`
 `;
 
 export const ReviewMapContainer = css`
+  display: flex;
   flex-direction: column;
-  margin: 100px 20px 0 150px;
-  padding-top: 64px;
-  border: 1px solid black;
+  align-items: center;
+  margin: 100px 20px 0 0px;
+  padding: 10px;
+  /* border: 1px solid black; */
+  background-color: #1111;
   width: 600px;
+  height: 800px;
     
 `;
 
@@ -42,8 +47,10 @@ export const dayButtonStyle = css`
   margin: 3px 0px 3px 10px;
 
   border: none;
+  font-weight: 600;
 
   background-color: #fdfdfdfd;
+  color: #888;
 
   cursor: pointer;
 `;
@@ -51,6 +58,8 @@ export const dayButtonStyle = css`
 export const selectedButtonStyle = css`
   background-color: #40D6BD;
   color: white;
+
+  font-weight: 600;
 
   transition: all 0.3s;
   transform: scale(1.1);
@@ -72,7 +81,8 @@ export const buttonStyle = css`
   background-color: #0BD0AF;
   color: #FFFFFF;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: 3px;
   cursor: pointer;
 
   &:hover {
@@ -192,40 +202,69 @@ export const footerButtonContainer = css`
   width: 100%;
 `;
 
+export const dayButtonContainer = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+`;
+
 export const buttonMove = css`
   height: 1px;
 `;
 
 export const scheduleButton = css`
-    position: relative ;
-    bottom: 65px;
-    right: 50px;
-    display: block; 
-    height: 100px;
-    line-height: 100px;
+  width: 80px;
+  height: 50px;
+  margin: 3px 0px;
+
+  border: none;
+  font-weight: 600;
+
+  background-color: #1111;
+  color: #888;
+
+  cursor: pointer;
     
 `;
 
 export const mapList = css`
-    margin: -50px 0px 0px 15px;
-    right: 50px;
-    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     height: 400px;
+    background-color: #fefefefe;
 `;
 
 export const locList = css`
-    margin: 15px 0px 0px 15px;
-    width: 400px;
-    height: 400px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
     max-height: 400px;
-    overflow-y: auto;
+    overflow: auto;
     padding-top: 40px;
-    `;
+    background-color: #fefefefe;
+
+    &::-webkit-scrollbar {
+    width: 3px;
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f8f7fb;
+    opacity: .4;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+`;
 
 export const myLocation = css`
   text-align: left;
   font-size: 22px;
-  text-decoration: underline;
   margin-top: 10px;
   margin-bottom: 10px;
 `;

@@ -11,6 +11,16 @@ export const viewContainer = css`
 
 `;
 
+export const reviewPageContainer = css`
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  top: 64px;
+  width: 80%;
+  height: calc(100vh - 64px);
+
+`;
+
 export const mapContainer = css`
   display: flex;
   flex-direction: column;  
@@ -19,16 +29,17 @@ export const mapContainer = css`
     
 `;
 
-export const ReviewMapContainer = css`
+export const reviewMapContainer = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 100px 20px 0 0px;
+  
+  width: 40%;
+  height: 90%;
+  margin: 60px 20px 0 0px;
   padding: 10px;
-  /* border: 1px solid black; */
+  
   background-color: #1111;
-  width: 600px;
-  height: 800px;
     
 `;
 
@@ -36,6 +47,7 @@ export const buttonContainer = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  
 
   background-color: #2c2c2c2c;
   
@@ -45,7 +57,8 @@ export const dayButtonStyle = css`
   width: 80px;
   height: 50px;
   margin: 3px 0px 3px 10px;
-
+  
+  overflow: auto;
   border: none;
   font-weight: 600;
 
@@ -206,7 +219,22 @@ export const dayButtonContainer = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 85%;
   margin-top: 100px;
+  
+  &::-webkit-scrollbar {
+    width: 3px;
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: none;
+    opacity: .4;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
 `;
 
 export const buttonMove = css`
@@ -232,8 +260,11 @@ export const mapList = css`
     display: flex;
     justify-content: center;
     align-items: center;
+    
     width: 100%;
-    height: 400px;
+    height: 600px;
+    padding-top: 10px;
+    
     background-color: #fefefefe;
 `;
 
@@ -242,9 +273,10 @@ export const locList = css`
     align-items: center;
     flex-direction: column;
     width: 100%;
-    max-height: 400px;
+    height: 100%;
+    
     overflow: auto;
-    padding-top: 40px;
+    padding: 20px 10px;
     background-color: #fefefefe;
 
     &::-webkit-scrollbar {
@@ -263,72 +295,147 @@ export const locList = css`
 `;
 
 export const myLocation = css`
-  text-align: left;
-  font-size: 22px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 90%;
+  font-size: 14px;
 `;
 
 export const reviewContainer = css`
-    width: 1100px;
+    display: flex;
+    flex-direction: column;
+    
+    width: 60%;
+    height: 90%;
+    margin: 60px 20px 0 0px;
+    padding: 10px;
+    
+    background-color: #1111;
 `;
 
 export const titleAndSaveContainer = css`
     display: flex;
-    margin-top: 64px;
+    justify-content: space-between;
     width: 100%;
-    padding: 10px 10px 10px 0;
+    padding: 10px;
+    
+    background-color: #fefefefe;
 `;
 
 export const reviewTitle = css`
-    width: 500px;
-    height: 80px;
-    font-size: 30px;
+    width: 63%;
+    margin: 10px;
+    font-size: 25px;
+    
+    border: none;
+    border-bottom: 1px solid #dbdbdb;
+    outline: none;
+    
+    color: #888;
+    font-weight: 200;
+    background-color: transparent;
 `;
 
 export const rating = css`
-  position: relative;
-  top: 30px;
-  left: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 export const saveButton = css`
-    position: relative;
+    display: flex;
     align-items: center;
-    top: 30px;
-    left: 400px;
-    width: 100px;
+    
+    width: 50px;
     height: 50px;
+    
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+
+`;
+
+export const reviewSaveButton = css`
+  font-size: 30px;
+  color: #888;
+  
+  &:hover {
+    color: #0BAF94;
+  }
+
+  &:active {
+    color: #40D6BD;
+  }
 `;
 
 export const photoContainer = css`
     display: flex;
     align-items: center;
-    margin: 15px 0 25px 0;
-    padding: 10px;
     width: 100%;
-    max-width: 1100px;
-    height: 300px;
+    height: 30%;
+    margin: 15px 0px;
+    padding: 10px 13px;
+    
     overflow-x: auto;
+    overflow-y: hidden;
     white-space: nowrap;
-    border: 1px solid black;
+    background-color: #fefefefe;
+    
+    &::-webkit-scrollbar {
+    height: 8px;
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #5555;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+`;
+
+export const fileInputBox = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 95%;
+    
+    background-color: #ededed;
     cursor: pointer;
 `;
 
+export const fileInputButton = css`
+    font-size: 60px;
+    color: #4444;
+`;
+
 export const photo = css`
-    justify-content: space-around;
     align-items: center;
     margin: 5px;
-    border: 1px solid black;
     width: 300px;
-    height: 100% ;
+    height: 95% ;
 `;
 
 export const writeReviewContainer = css`
-  width: 100%;
-  height: 350px;
-  padding: 10px;
-  font-size: 19px;
+    width: 100%;
+    height: 100%;
+    
+    font-size: 19px;
+`;
+
+export const reviewContentsInput = css`
+    width: 100%;
+    height: 100%;
+    resize: none;
+    
+    padding: 30px;
+    
+    border: none;
+    outline: none;
+
 `;
 
 export const customOverlayStyle = css`

@@ -175,8 +175,6 @@ useEffect(() => {
 
   const saveReview = useMutation(async (reviewData) => {
       try{
-
-
           const formData = new FormData();
           formData.append('review', reviewData.review);
           formData.append('title', reviewData.title);
@@ -211,6 +209,12 @@ useEffect(() => {
 
   const saveClickHandler = () => {
     saveReview.mutate(sendReviewData);
+  }
+
+  const removeImage = (removeIndex) => {
+      setImgFiles(prevImgFiles =>
+          prevImgFiles.filter((imgFile, index) => index !== removeIndex)
+      );
   }
 
     return (
@@ -277,10 +281,17 @@ useEffect(() => {
                 <AddRoundedIcon css={fileInputButton}/>
                 <input hidden={true} id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg, .png, .jpeg"} ></input>
               </div>
-              {imgFiles.length > 0 &&
-                  imgFiles.map((imgFile, index) => (
-                      <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
-                  ))}
+                {imgFiles.length > 0 &&
+                    imgFiles.map((imgFile, index) => (
+                        <img
+                            key={index}
+                            css={photo}
+                            src={URL.createObjectURL(imgFile.file)}
+                            alt={`Preview ${index}`}
+                            onClick={() => removeImage(index)} // onClick 핸들러 추가
+                        />
+                    ))
+                }
             </div>
             <div css={writeReviewContainer}>
               <textarea css={reviewContentsInput} name="" id="" value={sendReviewData.review} onChange={handleReviewChange}></textarea>

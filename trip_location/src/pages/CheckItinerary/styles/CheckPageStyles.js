@@ -343,6 +343,12 @@ export const rating = css`
     align-items: center;
 `;
 
+export const reviewButtonContainer = css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
 export const saveButton = css`
     display: flex;
     align-items: center;
@@ -422,6 +428,8 @@ export const photo = css`
 export const writeReviewContainer = css`
     width: 100%;
     height: 100%;
+    
+    background-color: #fefefe;
     
     font-size: 19px;
 `;

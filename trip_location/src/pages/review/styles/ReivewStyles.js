@@ -94,6 +94,21 @@ export const saveButton = css`
     height: 50px;
 `;
 
+export const getRouteButton = css`
+    width: 70px;
+    background-color: transparent;
+    border: none;
+`;
+
+export const getRouteButtonIcon = css`
+    font-size: 30px;
+    color: #40D6BD;
+    cursor: pointer;
+    &:hover {
+    color: #0BAF94;
+  }
+`;
+
 export const photoContainer = css`
     display: flex;
     align-items: center;

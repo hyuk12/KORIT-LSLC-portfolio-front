@@ -9,7 +9,8 @@ import {
     mainStyle,
     mapContainer, tripLocationItem,
     tripLocationList,
-    viewContainer, indexStyle, addressStyle, dayButtonStyle, itemIconStyle, itemContainer, scheduleDate, selectedButtonStyle
+    viewContainer, indexStyle, addressStyle, dayButtonStyle, itemIconStyle, itemContainer, scheduleDate, selectedButtonStyle,
+    customOverlayStyle
 } from "./styles/CheckPageStyles";
 
 const { kakao } = window;
@@ -73,15 +74,42 @@ const CheckMyTrip = () => {
                 // 스케쥴의 해당 선택 일차의 경로를 반복을 돌려 마커를 찍는다.
                 schedules[selectedDate].locations.forEach((location, index) => {
                     const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
-
                     location.id = index;
+
+                    const customOverlayStyleString = `
+                        position: absolute;
+                        top: -90px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background-color: white;
+                        color: black;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: 600;
+                        font-size: 14px;
+                        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+                    `;
+                    const content = `<div style="${customOverlayStyleString}">${index + 1}</div>`;
                     // 마커를 맵위에 그린다.
+
                     const marker = new kakao.maps.Marker({
                         position: markerPosition,
                         map: map,
                         draggable: isEditable
 
                     });
+
+                    const customOverlay = new kakao.maps.CustomOverlay({
+                        position: markerPosition,
+                        content: content,
+                        yAnchor: 0.9
+                    });
+
+                    customOverlay.setMap(map);
 
                     const geometry = (lat, lng, updateLocation) => {
                         let geocoder = new kakao.maps.services.Geocoder();

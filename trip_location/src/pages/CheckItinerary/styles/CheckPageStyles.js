@@ -330,3 +330,25 @@ export const writeReviewContainer = css`
   padding: 10px;
   font-size: 19px;
 `;
+
+export const customOverlayStyle = css`
+  position: absolute;
+  top: -12px; /* 마커보다 약간 위로 조정 */
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9); /* 투명도를 적용한 흰색 배경 */
+  color: black; /* 검은색 대신 흰색 글자 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2); /* 입체감을 주기 위한 텍스트 그림자 효과 */
+`;
+
+
+export const customOverlayContentStyle = css`
+  padding: 4px;
+`;

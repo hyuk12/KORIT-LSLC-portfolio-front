@@ -343,6 +343,12 @@ export const rating = css`
     align-items: center;
 `;
 
+export const reviewButtonContainer = css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
 export const saveButton = css`
     display: flex;
     align-items: center;

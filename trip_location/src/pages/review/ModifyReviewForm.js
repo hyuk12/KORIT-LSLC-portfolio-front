@@ -5,13 +5,19 @@ import {useMutation, useQuery} from "react-query";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import {
-    viewContainer, mapContainer,
-    mapMove, buttonMove, scheduleButton,
-    mapList, locList, myLocation,
-    reviewMove, reviewContainer, titleAndSaveContainer,
-    reviewTitle, rating, saveButton,
-    photoContainer, photo, writeReviewContainer
-} from "./styles/ReivewStyles";
+    getRouteButton, getRouteButtonIcon
+  } from "./styles/ReivewStyles";
+import {
+locList,
+mapList,
+myLocation, photo, photoContainer, rating, reviewContainer, reviewMapContainer, reviewTitle, saveButton,
+scheduleButton, titleAndSaveContainer,
+reviewPageContainer, writeReviewContainer, dayButtonContainer, selectedButtonStyle, viewContainer,
+tripLocationItem, indexStyle, addressStyle, itemIconStyle, reviewContentsInput, fileInputBox, fileInputButton, reviewSaveButton, reviewButtonContainer
+} from "../CheckItinerary/styles/CheckPageStyles";
+import RateReviewOutlined from '@mui/icons-material/RateReviewOutlined';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 const { kakao } = window;
 
@@ -25,6 +31,8 @@ const ModifyReviewForm = () => {
     const [isImageSelected, setIsImageSelected] = useState(false);
     const fileId = useRef(1);
     const [ value, setValue ] = useState(0);
+    const [selectedButton, setSelectedButton] = useState(0);
+    const tripLocationListRef = useRef(null);
     const [sendReviewData, setSendReviewData] = useState({
         review: "", // text
         title: "",  // string
@@ -220,6 +228,9 @@ const ModifyReviewForm = () => {
 
     const clickDateHandler = (date) => {
         setSelectedDate(date);
+        
+        tripLocationListRef.current.scrollTo({ top: 0, behavior: "smooth" });
+        tripLocationListRef.current.focus();
 
         if (!!schedules && schedules.length > 0 && schedules[date]?.locations?.length > 0) {
             const locations = schedules[date].locations;
@@ -238,33 +249,45 @@ const ModifyReviewForm = () => {
 
     return (
         <div css={viewContainer}>
-            <div css={mapContainer}>
-                <div css={mapMove}>
-                    <div css={buttonMove}>
-                        {schedules.map((_, index) => (
-                            <button
-                                css={scheduleButton}
-                                key={index}
-                                onClick={() => clickDateHandler(index)}>
-                                {index + 1}일차
-                            </button>
-                        ))}
-                    </div>
-                    <div css={mapList}>
-                        <div id="map" style={{
-                            width: "550px",
-                            height: "450px",
-                        }} />
-                    </div>
+            <div css={reviewPageContainer}>
+                <div css={dayButtonContainer}>
+                    {schedules.map((_, index) => (
+                        <button
+                            css={[scheduleButton, selectedButton === index && selectedButtonStyle]}
+                            key={index}
+                            onClick={() => {
+                            setSelectedButton(index);
+                            clickDateHandler(index);
+                            }}
+                        >
+                            DAY {index + 1}
+                        </button>
+                            ))}
                 </div>
-                <div css={reviewMove}>
-                    <div css={locList}>
-                        {schedules[selectedDate]?.locations?.map((location) => (
-                            <div css={myLocation} key={location.locationId}>
-                                {location.addr}
+                <div css={reviewMapContainer}>
+                    <div css={mapList}>
+                    <div id="map" style={{
+                            width: "95%",
+                            height: "95%",
+                    }} />
+                </div>
+                <div css={locList} ref={tripLocationListRef}>
+                    {schedules[selectedDate]?.locations?.map((location, index, arr) => (
+                        <div css={myLocation} key={location.locationId}>
+                            <div css={tripLocationItem} >
+                                <div css={indexStyle}>STEP {index + 1}</div>
+                                <div css={addressStyle}>{location.addr}</div>
                             </div>
-                        ))}
-                    </div>
+                            <div css={itemIconStyle}>
+                                {
+                                    index === arr.length - 1
+                                    ? <></>
+                                    : <>▼</>
+                                    
+                                }
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
             <div css={reviewContainer}>
@@ -278,24 +301,32 @@ const ModifyReviewForm = () => {
                         />
 
                     </div>
-                    <button css={saveButton} onClick={reviewRePlanClickHandle}>리뷰 수정하기</button>
-                    <button css={saveButton} onClick={reviewDeleteClickHandle}>리뷰 삭제하기</button>
-                </div>
-                <div css={photoContainer} onClick={() => document.getElementById("imageInput").click()}>
-                    <input hidden={true} id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg,.png"} />
-                    <div>
-                        {isImageSelected && imgFiles.length > 0 &&
-                            imgFiles.map((imgFile, index) => (
-                                <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
-                            ))}
-                        {!isImageSelected && !getReviewDetails.isLoading && reviewData && reviewData.reviewImgUrls && reviewData.reviewImgUrls.map((data, index) => {
-                            return <img key={index} css={photo} src={data} alt={`${index}`}/>
-                        })}
+                    <div css={reviewButtonContainer}>
+                        <button css={saveButton} onClick={reviewRePlanClickHandle}>
+                            <RateReviewOutlined css={reviewSaveButton}/>
+                        </button>
+                        <button css={saveButton} onClick={reviewDeleteClickHandle}>
+                            <DeleteOutlineRoundedIcon css={reviewSaveButton}/>
+                        </button>
                     </div>
                 </div>
+                <div css={photoContainer}>
+                    <div onClick={() => document.getElementById("imageInput").click()} css={fileInputBox}>
+                        <AddRoundedIcon css={fileInputButton}/>
+                        <input hidden={true} id="imageInput" type="file" multiple={true} onChange={addFileHandle} accept={".jpg, .png, .jpeg"} ></input>
+                    </div>
+                    {isImageSelected && imgFiles.length > 0 &&
+                        imgFiles.map((imgFile, index) => (
+                            <img key={index} css={photo} src={URL.createObjectURL(imgFile.file)} alt={`Preview ${index}`} />
+                        ))}
+                    {!isImageSelected && !getReviewDetails.isLoading && reviewData && reviewData.reviewImgUrls && reviewData.reviewImgUrls.map((data, index) => {
+                        return <img key={index} css={photo} src={data} alt={`${index}`}/>
+                    })}
+                    </div>
 
-                <div>
-                    <textarea css={writeReviewContainer} name="" id="" cols="113" rows="16" value={getReviewDetails.isLoading ? '' : sendReviewData.review} onChange={handleReviewChange}></textarea>
+                    <div css={writeReviewContainer}>
+                        <textarea css={reviewContentsInput} name="" id="" value={getReviewDetails.isLoading ? '' : sendReviewData.review} onChange={handleReviewChange}></textarea>
+                    </div>
                 </div>
             </div>
         </div>

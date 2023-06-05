@@ -149,7 +149,12 @@ export default function VerticalTabs({ scheduleData }) {
         sx={{ borderRight: 1, borderColor: 'divider' }}
       >
         {scheduleData.map((day, index) => (
-          <Tab label={day.date} {...a11yProps(index+1)} key={day.date} />
+            <Tab
+                label={day.date}
+                {...a11yProps(index+1)}
+                key={day.date}
+                disabled={index > 0 && (!scheduleData[index - 1].location.length || !scheduleData[index - 1].location[0].addr)}
+            />
         ))}
       </Tabs>
       {scheduleData.map((day, index) => (

@@ -100,8 +100,7 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
   return (
     <div css={map} ref={mapRef}>
       <div css={guideBox}>
-            <button css={guideButton} onClick={handleSavePath}>경로 저장</button> 
-            <button css={guideButton} onClick={handleSavePath}>경로 수정</button> 
+            <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
       </div>
      {/* <MapSearch map={mapRef.current} /> */}
     </div>

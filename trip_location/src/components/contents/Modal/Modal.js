@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import {useNavigate} from "react-router-dom";
-import {buttonStyle, imageWrapper, imgStyle, infoWrapper, modalContent, modalStyle, Pstyle} from "./styles/ModalStyles";
+import {buttonStyle, imageWrapper, imgStyle, infoWrapper, modalContent, modalStyle, Pstyle, contentsButtonStyle} from "./styles/ModalStyles";
 
 const Modal = ({ isOpen, onClose, destination }) => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Modal = ({ isOpen, onClose, destination }) => {
           <h2>{title}</h2>
           <span>{englishing}</span>
           <p css={Pstyle}>{description}</p>
-          <button css={buttonStyle} onClick={() => navigate(`/contents?destinationTitle=${title}`, {replace: true})}>일정 만들기</button>
+          <button css={contentsButtonStyle} onClick={() => navigate(`/contents?destinationTitle=${title}`, {replace: true})}>일정 만들기</button>
         </div>
       </div>
     </div>

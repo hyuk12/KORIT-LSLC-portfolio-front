@@ -35,7 +35,8 @@ const TravelList = ({ userInfo, myTravelList, regionInfo, reviewDataList }) => {
     }, {
         onSuccess: (response) => {
             if(response.status === 200) {
-                navigate('/home');
+                // navigate(`/user/${userInfo.userId}`);
+                window.location.reload();
             }
         }
     })
@@ -49,7 +50,11 @@ const TravelList = ({ userInfo, myTravelList, regionInfo, reviewDataList }) => {
     }
     
     const removeReviewClickHandler =(travelId)=>{
-        deletePlan.mutate(travelId);
+        if(window.confirm('여행 일정을 삭제하시겠습니까?')) {
+            deletePlan.mutate(travelId);
+        }else {
+
+        }
     }
 
     const isReviewWritten = (travelId) => {

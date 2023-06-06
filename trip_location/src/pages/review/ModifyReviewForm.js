@@ -5,9 +5,6 @@ import {useMutation, useQuery} from "react-query";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import {
-    getRouteButton, getRouteButtonIcon
-  } from "./styles/ReivewStyles";
-import {
 locList,
 mapList,
 myLocation, photo, photoContainer, rating, reviewContainer, reviewMapContainer, reviewTitle, saveButton,
@@ -123,7 +120,7 @@ const ModifyReviewForm = () => {
     }, {
         onSuccess: (response) => {
             if (response.status === 200) {
-                navigate("/home");
+                navigate(`/user/${reviewData.userId}`);
             }
         }
     })
@@ -144,7 +141,7 @@ const ModifyReviewForm = () => {
     }, {
         onSuccess: (response) => {
             if (response.status === 200) {
-                navigate('/home', {replace: true});
+                navigate(`/user/${reviewData.userId}`, {replace: true});
             }
         }
     })
@@ -238,7 +235,11 @@ const ModifyReviewForm = () => {
         }
     };
     const reviewRePlanClickHandle = () => {
-        reviewUpdate.mutate(sendReviewData);
+        if (sendReviewData.review && sendReviewData.title && value && imgFiles.length > 0) {
+            reviewUpdate.mutate(sendReviewData);
+        } else {
+            alert('모든 부분을 작성해주세요');
+        }
     }
 
     const reviewDeleteClickHandle = () => {

@@ -206,7 +206,11 @@ const WriteReview = () => {
   })
 
   const saveClickHandler = () => {
-    saveReview.mutate(sendReviewData);
+    if (sendReviewData.review && sendReviewData.title && value && imgFiles.length > 0) {
+      saveReview.mutate(sendReviewData);
+    } else {
+      alert('모든 부분을 작성해주세요');
+    }
   }
 
   const removeImage = (removeIndex) => {

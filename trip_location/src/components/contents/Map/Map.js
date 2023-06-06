@@ -8,6 +8,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const markerId = useRef(1);
   const mapRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
+  const [markerData, setMarkerData] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
@@ -31,25 +32,28 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         localStorage.setItem('titleLongitude', longitude);        
       }
     });
-  
-     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {  //지도 클릭시 이벤트
-        const position = mouseEvent.latLng; //지도에서 클릭한 위치
-        geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) { //coord2Address 좌표 값에 해당하는 구 주소와 도로명 주소 정보를 요청
-          if (status === kakao.maps.services.Status.OK) {
-            const address = result[0].address.address_name;
-            setAddress(addr => [...addr, address]);
-          }
-        });
-        const marker = new kakao.maps.Marker({ position }); //마커 객체 생성
-        marker.setMap(map); //마커 지도에 보여줌
-        setMarkers(prevMarkers => [...prevMarkers, marker]);  //새로 생성된 마커 저장
-        setMarkerPositions(prevPositions => [...prevPositions, position]);  //마커와 연결된 좌표 저장
-      
-    kakao.maps.event.addListener(marker, 'click', function() {  //마커 클릭시 이벤트
-        setMarkers(prevMarkers => prevMarkers.filter(prevMarker => prevMarker !== marker)); //클릭한 마커 배열에서 제거
-        marker.setMap(null);  //클릭한 마커 지도에서 제거
-        });
+
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {  //지도 클릭시 이벤트
+      const position = mouseEvent.latLng; //지도에서 클릭한 위치
+
+      geocoder.coord2Address(position.getLng(), position.getLat(), function(result, status) { //coord2Address 좌표 값에 해당하는 구 주소와 도로명 주소 정보를 요청
+        if (status === kakao.maps.services.Status.OK) {
+          const address = result[0].address.address_name;
+
+          const marker = new kakao.maps.Marker({ position }); //마커 객체 생성
+          marker.setMap(map); //마커 지도에 보여줌
+
+          const data = {marker, position, address}; // 마커, 위치, 주소를 하나의 객체에 저장
+          setMarkerData(prevData => [...prevData, data]); // 객체를 배열에 저장
+
+          kakao.maps.event.addListener(marker, 'click', function() {  //마커 클릭시 이벤트
+            setMarkerData(prevData => prevData.filter(prev => prev.marker !== marker)); // 클릭한 마커와 관련된 데이터 삭제
+            marker.setMap(null);  //클릭한 마커 지도에서 제거
+          });
+        }
+      });
     });
+
 
     return () => {
         kakao.maps.event.removeListener(map, 'click');
@@ -57,17 +61,17 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   }, [editMode, destinationTitle]);
 
   const handleSavePath = () => { //로컬저장소에 마커 위도,경도,주소 정보 저장
-    if (markerPositions.length === 0) {
+    if (markerData.length === 0) {
       alert('경로를 지정해주세요.');
       return;
     }
 
-    const markerData = markerPositions.map((position, index) => {
+    const newMarkerData = markerData.map((data) => {
       const locations = [
         {
-          addr: address[index],
-          lat: position.getLat(),
-          lng: position.getLng(),
+          addr: data.address,
+          lat: data.position.getLat(),
+          lng: data.position.getLng(),
         },
       ];
 
@@ -75,28 +79,26 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         id: markerId.current,
         location: locations,
       };
-  });
-  
-  const groupedMarkerData = markerData.reduce((result, current) => {
-    const existingItem = result.find((item) => item.id === current.id);
-  
-    if (existingItem) {
-      existingItem.location.push(...current.location);
-    } else {
-      result.push(current);
-    }
-  
-    return result;
-  }, []);
-  
-  markerId.current += 1; 
-  setPaths(groupedMarkerData);
-  setMarkerPositions([]);
-  setMarkers([]);
-  setAddress([]);
-  markers.forEach(marker => marker.setMap(null));
-}
+    });
 
+    const groupedMarkerData = newMarkerData.reduce((result, current) => {
+      const existingItem = result.find((item) => item.id === current.id);
+
+      if (existingItem) {
+        existingItem.location.push(...current.location);
+      } else {
+        result.push(current);
+      }
+
+      return result;
+    }, []);
+
+    markerId.current += 1;
+    setPaths(groupedMarkerData);
+    setMarkerData([]);
+    markerData.forEach(data => data.marker.setMap(null));
+  }
+  
   return (
     <div css={map} ref={mapRef}>
       <div css={guideBox}>

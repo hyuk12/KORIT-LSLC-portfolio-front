@@ -33,7 +33,7 @@ const ReviewDetail = () => {
     title: "",  // string
     travelId: "",  // string
     userId: "",
-    rating: ''// string
+    rating: 0 // string
   });
 
   const travelInfoReview = useQuery(['infoReview'], async () => {
@@ -222,15 +222,15 @@ const ReviewDetail = () => {
           <div css={titleAndSaveContainer}>
             <input disabled={true} css={reviewTitle} type="text" value={getReviewDetails.isLoading ? '' : sendReviewData.title} onChange={handleTitleChange} />
             <div css={rating}>
-            <Rating
-              disabled={true}
-              name="rating"
-              value={getReviewDetails.isLoading ? '' : sendReviewData.rating}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-            />
-              </div>
+              <Rating
+                  disabled={true}
+                  name="rating"
+                  value={getReviewDetails.isLoading ? 0 : parseInt(sendReviewData.rating)}
+                  onChange={(event, newValue) => {
+                    setValue(newValue);
+                  }}
+              />
+            </div>
             <button css={getRouteButton} onClick={reviewRePlanClickHandle}>
               <AddLocationAltRoundedIcon css={getRouteButtonIcon}/>
             </button>

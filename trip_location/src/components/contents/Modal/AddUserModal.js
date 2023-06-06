@@ -2,7 +2,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import logoTitle from '../../../images/logotitle.png';
+import logo from '../../../images/logo.png';
 import {
   buttonStyle,
   listContainer,
@@ -16,6 +16,7 @@ import {
   searchBar,
   searchBox,
   searchButton,
+  searchIcon,
   searchContainer,
   searchHeader,
   searchSubmit,
@@ -27,7 +28,17 @@ import {
   userName,
   userProfileImg,
   withList,
+  radioContainer,
+  RadioInput,
+  RadioLabel,
+  radioIcons,
+  removeButton,
+  saveButtonStyle
 } from "./styles/ModalStyles";
+import PersonSearchRoundedIcon from '@mui/icons-material/PersonSearchRounded';
+import AlternateEmailRoundedIcon from '@mui/icons-material/AlternateEmailRounded';
+import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 
 const AddUserModal = ({ isOpen, onClose, destination, userInfo, updatePartyData }) => {
@@ -150,48 +161,62 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo, updatePartyData 
                 <div css={searchContainer}>
                   <div css={searchHeader}>
                       <div css={logoBox}>
-                        <img css={logoImage} src={logoTitle} alt={logoTitle}/>
+                        <img css={logoImage} src={logo} alt={logo}/>
                       </div>
                       <div css={searchBox}>
                         <div css={searchTextBox}>
                           <h4 css={titleText}>{title}</h4>
-                          <p css={text}> 에 함께갈 친구를 검색하세요</p>
+                          <p css={text}> 에 함께 여행갈 친구를 초대해보세요.</p>
                         </div>
                           <form css={searchSubmit} onSubmit={submitSearchHandler}>                              
                             <input css={searchBar} type="text" name="searchMember" placeholder="검색할 email 또는 전화번호를 입력하세요" />
-                            <input css={searchButton} type="submit" value="search" />
+                            <button css={searchButton} type="submit"><PersonSearchRoundedIcon css={searchIcon}/></button>
                           </form>
                         <div css={selectRadio}>
-                          <input type="radio" name="chk_info" value="email" checked={searchType === 'email'} onChange={handleSearchTypeChange}/>E-Mail
-                          <input type="radio" name="chk_info" value="phone" checked={searchType === 'phone'} onChange={handleSearchTypeChange}/>Phone
+
+                          <div css={radioContainer}>
+                            <RadioInput type='radio' name="chk_info"value="email"id='radio_email'checked={searchType === 'email'} onChange={handleSearchTypeChange}/>
+                            <RadioLabel htmlFor='radio_email'>
+                              <div css={radioIcons} ><AlternateEmailRoundedIcon css={radioIcons}/> email</div>
+                            </RadioLabel>
+                          </div>
+                          <div css={radioContainer}>
+                            <RadioInput type="radio" name="chk_info" value="phone" id='radio_phone' hecked={searchType === 'phone'} onChange={handleSearchTypeChange}/>
+                            <RadioLabel htmlFor='radio_phone'>
+                              <div css={radioIcons}><PhoneRoundedIcon css={radioIcons}/> phone</div>
+                            </RadioLabel>
+                          </div>
+                          
                         </div>
                       </div>
                     </div>
                   <div css={listContainer}>
                     <span css={withList}>
-                      함께할 친구 목록
+                      함께 여행갈 친구
                     </span>
                     <div css={listUserContainer}>
-                      <ul css={listUser}>
+                      <div css={listUser}> 
                         {partyUsers.length > 0 ? (
                           partyUsers.map((partyMember, index) => (
-                            <li css={user} key={index}>
+                            <div css={user} key={index}>
                               <img css={userProfileImg} src={partyMember.profileImg} alt={partyMember.profileImg}/>
                               <span css={userName}>
                                 {partyMember.name}
                               </span>
                               {partyMember.userId !== userInfo.userId ? (
-                                <button onClick={() => removePartyHandler(index)}>x</button>
+                                <button css={removeButton} onClick={() => removePartyHandler(index)}>x</button>
                               ):(<button onClick={() => removePartyHandler(index)} style={{ display: 'none' }}>x</button>)}
-                            </li>
+                            </div>
                           ))
                         ) : (
                           <li>추가된 인원이 없습니다.</li>
                         )}
-                      </ul>
+                      </div>
                     </div>
                   </div>
-                  <button css={buttonStyle} onClick={savePartyHandler}>저장</button>
+                  <div css={saveButtonStyle}>
+                      <SendRoundedIcon css={buttonStyle} onClick={savePartyHandler}/>
+                  </div>
                 </div>
               </div>
           </div>

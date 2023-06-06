@@ -13,11 +13,12 @@ import {addFriendButton,Title, avatarBox, imgIcon,calendar, container, main, res
 const Contents = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [refresh, setRefresh] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(true);
   const [startDay, setStartDay] = useState(dayjs());
   const [endDay, setEndDay] = useState(dayjs().add(1, 'day'));
   const [totalDate, setTotalDate] =useState(2);
   const [paths, setPaths] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [partyData, setPartyData] = useState([]);
   const [userInfo, setUserInfo] = useState({
     userId: '',
     email:'',
@@ -25,7 +26,6 @@ const Contents = () => {
     phone:'',
     profileImg:''
   })
-  const [partyData, setPartyData] = useState([]);
 
   const principal = useQuery(["principal"], async () => {
     // const accessToken = localStorage.getItem("accessToken");

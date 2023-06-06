@@ -15,11 +15,9 @@ import {
 } from "./styles/PasswordStyles";
 
 const CheckEmail = () => {
-    
     const [ searchUserEmail, setSearchUserEmail ] = useState('');
     const [ errorMessage, setErrorMessage ] = useState('');
     const navigate = useNavigate();
-    
       
     const onChangeHandler = (e) => {
         const { name, value } = e.target;

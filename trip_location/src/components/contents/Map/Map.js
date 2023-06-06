@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, {useEffect, useRef, useState} from 'react';
-import {map, guideBox, guideButton} from "./styles/MapStyles";
+import {guideBox, guideButton, map} from "./styles/MapStyles";
 
 const { kakao } = window;
 
@@ -56,25 +56,25 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     };
   }, [editMode, destinationTitle]);
 
-function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정보 저장
-  if (markerPositions.length === 0) {
-    alert('경로를 지정해주세요.');
-    return;
-  }
+  const handleSavePath = () => { //로컬저장소에 마커 위도,경도,주소 정보 저장
+    if (markerPositions.length === 0) {
+      alert('경로를 지정해주세요.');
+      return;
+    }
 
-  const markerData = markerPositions.map((position, index) => {
-    const locations = [
-      {
-        addr: address[index],
-        lat: position.getLat(),
-        lng: position.getLng(),
-      },
-    ];
-  
-    return {
-      id: markerId.current,
-      location: locations,
-    };
+    const markerData = markerPositions.map((position, index) => {
+      const locations = [
+        {
+          addr: address[index],
+          lat: position.getLat(),
+          lng: position.getLng(),
+        },
+      ];
+
+      return {
+        id: markerId.current,
+        location: locations,
+      };
   });
   
   const groupedMarkerData = markerData.reduce((result, current) => {
@@ -102,7 +102,6 @@ function handleSavePath() { //로컬저장소에 마커 위도,경도,주소 정
       <div css={guideBox}>
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
       </div>
-     {/* <MapSearch map={mapRef.current} /> */}
     </div>
   );
   

@@ -25,13 +25,12 @@ import {
 } from "./styles/LoginStyles";
 
 const Login = () => {
+    const navigate = useNavigate();
+    const [ authState, setAuthState ] = useRecoilState(authenticationState);
     const [ loginUser, setLoginUser ] = useState({
         email: '',
         password: ''
     })
-    const [ authState, setAuthState ] = useRecoilState(authenticationState);
-    const navigate = useNavigate();
-
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;

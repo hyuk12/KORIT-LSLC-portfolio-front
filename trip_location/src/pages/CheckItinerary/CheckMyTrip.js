@@ -25,7 +25,6 @@ const CheckMyTrip = () => {
     const tripLocationListRef = useRef(null);
     const [selectedButton, setSelectedButton] = useState(0);
 
-
     const myTravelInfo = useQuery(['info'], async () => {
         try {
                 const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
@@ -47,7 +46,6 @@ const CheckMyTrip = () => {
         }
     })
     let map = null;
-
 
     useEffect(() => {
 

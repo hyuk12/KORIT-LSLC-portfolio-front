@@ -55,8 +55,6 @@ const PopularReviewList = () => {
         navigate('/review/list');
     };
 
-
-
     const createIndicators = (length) => {
         const indicators = [];
         for (let i = 0; i < length; i++) {

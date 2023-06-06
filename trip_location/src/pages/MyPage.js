@@ -20,6 +20,13 @@ import {
 const MyPage = () => {
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(true);
+  const [checkType,setCheckType] = useState(true);
+  const [ reviewDataList, setReviewDataList ] = useState([]);
+  const [schedules, setSchedules] = useState([]);
+  const [allTravelList, setAllTravelList] = useState([]);
+  const [travelCount, setTravelCount] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+
   const [regionInfo, setRegionInfo] = useState([
     {
       regionId: '',
@@ -35,18 +42,12 @@ const MyPage = () => {
       travelName:'',
     },
   ]);
-  const [ reviewDataList, setReviewDataList ] = useState([]);
-  const [travelCount, setTravelCount] = useState(0);
-  const [reviewCount, setReviewCount] = useState(0);
-  const [checkType,setCheckType] = useState(true);
+
   const [userInfo, setUserInfo] = useState({
     email: '',
     userId: '',
     profileImg: ''
   });
-
-  const [schedules, setSchedules] = useState([]);
-  const [allTravelList, setAllTravelList] = useState([]);
 
   const principal = useQuery(["principal"], async () => {
     const response = await axios.get('http://localhost:8080/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
@@ -83,9 +84,7 @@ const MyPage = () => {
       setAllTravelList([...response.data]);
       setTravelCount(response.data.length);
     }
-  })
-
-
+  });
 
   const review = useQuery(['review'], async () => {
     try {
@@ -108,7 +107,6 @@ const MyPage = () => {
 
     }
   });
-
 
   useEffect(() => {
     setAllTravelList(allTravelList);

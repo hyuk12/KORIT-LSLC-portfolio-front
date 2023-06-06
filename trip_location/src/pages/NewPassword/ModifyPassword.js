@@ -18,15 +18,15 @@ import {
 } from "./styles/PasswordStyles";
 
 const ModifyPassword = () => {
-
     const navigate = useNavigate();
     const [ authState, setAuthState] = useRecoilState(authenticationState);
+    const [ isNewPassword, setIsNewPassword ] = useState(true);
+    const [ isConfirmPassword, setIsConfirmPassword ] = useState(true);
     const [ updateUserPassword, setUpdateUserPassword] = useState({
         email: '',
         password: ''
     });
-    const [ isNewPassword, setIsNewPassword ] = useState(true);
-    const [ isConfirmPassword, setIsConfirmPassword ] = useState(true);
+
     const [ guideMessages, setGuideMessages ] = useState({
         newPassword: '',
         confirmPassword: ''

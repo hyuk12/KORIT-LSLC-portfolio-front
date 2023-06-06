@@ -38,7 +38,6 @@ const address = [
 const OAuth2Register = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
-
     const registerToken = searchParams.get("registerToken");
 
     const [ oauth2User, setOauth2User ] = useState({

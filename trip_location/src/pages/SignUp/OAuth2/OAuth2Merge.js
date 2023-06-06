@@ -16,6 +16,12 @@ import {
 
 
 const OAuth2Merge = () => {
+    const [password, setPassword] = useState();
+    const [errorMsg, setErrorMsg] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const email = searchParams.get("email");
+    const provider = searchParams.get("provider");
+
     const providerMerge  = useMutation(async (mergeData) => {
         try {
             const response = await axios.put("http://localhost:8080/api/v1/auth/oauth2/merge", mergeData);
@@ -32,11 +38,6 @@ const OAuth2Merge = () => {
             }
         }
     });
-    const [password, setPassword] = useState();
-    const [errorMsg, setErrorMsg] = useState("");
-    const [searchParams, setSearchParams] = useSearchParams();
-    const email = searchParams.get("email");
-    const provider = searchParams.get("provider");
 
     const passwordChangeHandler = (e) => {
         setPassword(e.target.value);

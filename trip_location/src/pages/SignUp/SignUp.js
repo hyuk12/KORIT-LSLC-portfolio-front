@@ -14,7 +14,6 @@ import {
     submitButton
 } from "./styles/SignUpStyles";
 
-
 const address = [
     "서울특별시",
     "부산광역시",
@@ -36,7 +35,6 @@ const address = [
 ];
 
 const SignUp = () => {
-    const navigate = useNavigate();
     const [signupUser, setSignupUser] = useState({
         profileImgPath: "",
         email: "",

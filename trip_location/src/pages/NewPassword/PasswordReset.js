@@ -19,14 +19,11 @@ const PasswordReset = () => {
     const searchParams = new URLSearchParams(location.search);
     const email = searchParams.get('email');
     const navigate = useNavigate();
-
     const [ resetUserPassword, setResetUserPassword ] = useState('');
     const [ guideMessages, setGuideMessages ] = useState({
         resetPassword: '',
         confirmPassword: ''
     });
-
-
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
@@ -60,7 +57,6 @@ const PasswordReset = () => {
         }
 
     }
-
 
     const resetHandleSubmit = async () => {
         const resetPasswordData = {

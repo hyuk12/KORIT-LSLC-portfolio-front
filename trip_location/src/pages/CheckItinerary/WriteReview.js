@@ -63,61 +63,59 @@ const WriteReview = () => {
       }
   })
 
-useEffect(() => {
-  if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
-    const container = document.getElementById('map');
-    const options = {
-      center: new kakao.maps.LatLng(37.5522, 126.570667),
-      level: 8,
-      draggable: false
-    };
-    const map = new kakao.maps.Map(container, options);
-    const bounds = new kakao.maps.LatLngBounds();
+  useEffect(() => {
+      if (!!schedules && schedules.length > 0 && schedules[selectedDate]?.locations?.length > 0) {
+        const container = document.getElementById('map');
+        const options = {
+          center: new kakao.maps.LatLng(37.5522, 126.570667),
+          level: 8,
+          draggable: false
+        };
+        const map = new kakao.maps.Map(container, options);
+        const bounds = new kakao.maps.LatLngBounds();
 
 
-    schedules[selectedDate].locations.forEach((location, index) => {
-      const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
-      const marker = new kakao.maps.Marker({
-        position: markerPosition,
-        map: map
-      });
-      bounds.extend(markerPosition);
-
-        const customOverlayStyleString = `
-                        position: absolute;
-                        top: -90px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 50%;
-                        background-color: white;
-                        color: black;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        font-weight: 600;
-                        font-size: 14px;
-                        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-                    `;
-        const content = `<div style="${customOverlayStyleString}">${index + 1}</div>`;
-        // 마커를 맵위에 그린다.
-
-        const customOverlay = new kakao.maps.CustomOverlay({
+        schedules[selectedDate].locations.forEach((location, index) => {
+          const markerPosition = new kakao.maps.LatLng(location.lat, location.lng);
+          const marker = new kakao.maps.Marker({
             position: markerPosition,
-            content: content,
-            yAnchor: 0.9
+            map: map
+          });
+          bounds.extend(markerPosition);
+
+            const customOverlayStyleString = `
+                            position: absolute;
+                            top: -90px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            background-color: white;
+                            color: black;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            font-weight: 600;
+                            font-size: 14px;
+                            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+                        `;
+            const content = `<div style="${customOverlayStyleString}">${index + 1}</div>`;
+            // 마커를 맵위에 그린다.
+
+            const customOverlay = new kakao.maps.CustomOverlay({
+                position: markerPosition,
+                content: content,
+                yAnchor: 0.9
+            });
+
+            customOverlay.setMap(map);
         });
 
-        customOverlay.setMap(map);
-    });
-
-    map.setBounds(bounds);
-  }
+        map.setBounds(bounds);
+      }
 
 }, [schedules, selectedDate]);
-
-
 
   const addFileHandle = (e) => {
     const newImgFiles = [];

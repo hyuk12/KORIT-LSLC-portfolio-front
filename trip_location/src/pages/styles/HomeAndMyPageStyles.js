@@ -132,6 +132,21 @@ export const planAndReviewContainer =css`
   display: flex;
   align-content:flex-start; 
   flex-direction:column; 
-  flex-wrap:wrap; 
+  flex-wrap:wrap;
+  height: 500px;
   overflow:auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f8f7fb;
+    opacity: .4;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
 `;

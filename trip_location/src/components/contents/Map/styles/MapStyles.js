@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 
-export const map = css`
+export const mapStyle = css`
   position: relative;
-  width: 100%;
+  width: 250%;
   height: 93vh;
   z-index: 3;
 `;

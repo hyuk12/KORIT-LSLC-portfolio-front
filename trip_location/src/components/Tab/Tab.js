@@ -139,7 +139,7 @@ export default function VerticalTabs({ scheduleData }) {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}>
+    <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 500 }}>
       <Tabs
         orientation="vertical"
         variant="scrollable"

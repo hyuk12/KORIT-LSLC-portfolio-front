@@ -178,7 +178,7 @@ const ModifyForm = () => {
     }, {
         onSuccess: (response) => {
             alert('회원정보 수정 완료');
-            window.location.replace('/');
+            window.location.replace(`/user/${principal.data.data.userId}`);
         }
     })
 

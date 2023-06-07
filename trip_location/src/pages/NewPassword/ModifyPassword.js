@@ -109,7 +109,11 @@ const ModifyPassword = () => {
         onSuccess: (response) => {
             if (response.status === 200) {
                 alert('비밀번호가 변경되었습니다.');
-                navigate('/user/:id');
+                localStorage.removeItem('accessToken');
+                setAuthState({
+                    isAuthenticated: false,
+                });
+                navigate('/auth/login');
             }
         }
     })

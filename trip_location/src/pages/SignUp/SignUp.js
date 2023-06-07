@@ -187,6 +187,7 @@ const SignUp = () => {
             return response;
         } catch (error) {
             setMessages(error.response.data);
+            alert('회원가입 실패')
         }
     };
 

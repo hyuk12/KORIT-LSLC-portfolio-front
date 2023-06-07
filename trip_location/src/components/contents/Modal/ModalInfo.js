@@ -1,15 +1,15 @@
 import React from 'react';
-import { modalContainer, modalStyle, modalInfoBox } from './styles/ModalStyles';
+import { modalContainer, modalStyle, modalInfoBox, infoImgStyle } from './styles/ModalStyles';
+import infoImg from '../../../images/infoImg3.png'
 
 
-
-const ModalInfo = ({ modalOpen, handleCloseModal }) => {
+const ModalInfo = ({ isOpen, onClose  }) => {
     return (
         <div css={modalInfoBox} >
-            <div css={modalInfoBox}>
-            <h1>모달 내용</h1>
-            <button onClick={handleCloseModal}>닫기</button>
+            <div>
+                <img  css={infoImgStyle} src={infoImg}></img>
             </div>
+            <button onClick={onClose}>닫기</button>
         </div>
     );
 };

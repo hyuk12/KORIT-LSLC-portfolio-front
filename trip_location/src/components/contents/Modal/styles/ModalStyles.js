@@ -31,12 +31,16 @@ export const modalContent = css`
 `;
 
 export const modalInfoBox = css`
-   position: fixed;
+    position: fixed;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.35),
+    background: rgba(0, 0, 0, 0.5);
+    background-color: #111;
+    z-index: 9999;
 `;
 
 export const saveButtonStyle = css`
@@ -437,5 +441,11 @@ export const FavoriteIcon = styled(Favorite)`
 
 export const Pstyle = css`
   color: #808080;
+`;
+
+export const infoImgStyle = css`
+  max-width: 500px;
+  max-height: 500px;
+  /* transform: scale(0.05); */
 `;
 

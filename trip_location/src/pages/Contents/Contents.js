@@ -69,7 +69,9 @@ const Contents = () => {
     <>
       <div css={container}>
         <div css={main}>
-          <Map destinationTitle={searchParams.get("destinationTitle")} paths={paths} setPaths={setPaths}/>
+          <Map destinationTitle={searchParams.get("destinationTitle")} paths={paths} setPaths={setPaths} 
+          isOpen={isModalOpen}
+          onClose={closeModal}/>
           <div css={sidebar}>
               <div css={Title}>{searchParams.get("destinationTitle")}</div>
               <div css={avatarBox}>

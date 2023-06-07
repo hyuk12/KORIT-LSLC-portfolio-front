@@ -338,7 +338,7 @@ const ModifyReviewForm = () => {
                     })}
                 </div>
                 <div css={writeReviewContainer}>
-                        <textarea css={reviewContentsInput} name="" id="" value={getReviewDetails.isLoading ? '' : sendReviewData.review} onChange={handleReviewChange}></textarea>
+                        <textarea css={reviewContentsInput} placeholder="- 직접 경험한 솔직한 리뷰를 남겨주세요. &#13;&#10;- 사진을 1개 이상 첨부해주세요." name="" id="" value={getReviewDetails.isLoading ? '' : sendReviewData.review} onChange={handleReviewChange}></textarea>
                 </div>
             </div>
         </div>

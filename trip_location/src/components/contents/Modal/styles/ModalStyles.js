@@ -333,13 +333,27 @@ export const listUser= css`
 
   overflow: auto;
   width: 100%;
-  height: 85%;
+  height: 137px;
   padding: 0;
   margin: 0;
 
   li {
     margin: 0;
     padding: 0;
+  }
+
+  &::-webkit-scrollbar {
+    width: 3px;
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f8f7fb;
+    opacity: .4;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
   }
 `;
 

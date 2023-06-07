@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import React, {useEffect, useRef, useState} from 'react';
-import {guideBox, guideButton, mapStyle} from "./styles/MapStyles";
+import {guideBox, guideButton, mapStyle, modalStyle} from "./styles/MapStyles";
+import ModalInfo from '../Modal/ModalInfo';
 
 const { kakao } = window;
 
-const Map = ({ destinationTitle, paths, setPaths }) => {
+const Map = ({ destinationTitle, paths, setPaths,isOpen,onClose }) => {
   const markerId = useRef(1);
   const mapRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
@@ -12,6 +13,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   const [markers, setMarkers] = useState([]);
   const [markerPositions, setMarkerPositions] = useState([]);
   const [address, setAddress] = useState([]);
+  const [ modalOpen, setModalOpen ] = useState(false);
   
   useEffect(() => { //지도의 시작 좌표,확대 단계 조절
     const mapOption = {
@@ -59,10 +61,16 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
         kakao.maps.event.removeListener(map, 'click');
     };
   }, [editMode, destinationTitle]);
-
-  const handelInformation = () => { //설명서
-
+  
+  const handleOpenModal = () => { //설명서
+    setModalOpen(true);
   }
+  
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+
 
   const handleSavePath = () => { //로컬저장소에 마커 위도,경도,주소 정보 저장
     if (markerData.length === 0) {
@@ -105,7 +113,16 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   return (
     <div css={mapStyle} ref={mapRef}>
       <div css={guideBox}>
-            <button css={guideButton} onClick={handelInformation}>?</button>
+            <button 
+              css={guideButton} 
+              style={{borderRadius: '50%', width: '30px', height: '30px', border: 'none'}} 
+              onClick={ handleOpenModal }>?</button>
+              {modalOpen && (
+                <ModalInfo
+                  isOpen={modalOpen}
+                  onClose={handleCloseModal}
+                />
+              )}
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
       </div>
     </div>

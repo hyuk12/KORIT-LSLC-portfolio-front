@@ -25,7 +25,7 @@ export const mapContainer = css`
   display: flex;
   flex-direction: column;  
   width: 100%;
-  height: 100%;
+  height: 98vh;
     
 `;
 
@@ -466,4 +466,39 @@ export const customOverlayStyle = css`
 
 export const customOverlayContentStyle = css`
   padding: 4px;
+`;
+
+export const sideContainer = css`
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const daySelectContainer = css`
+  display: flex;
+  
+`;
+
+export const daySelectButton = css`
+  width: 80px;
+  height: 50px;
+  margin: 3px 0px 3px 10px;
+  
+  border: none;
+  background-color: #fdfdfdfd;
+  color: #888;
+  cursor: pointer;
+`;
+
+export const daySelectedButtonStyle = css`
+
+  background-color: #40D6BD;
+  color: white;
+
+  font-weight: 600;
+
+  transition: all 0.3s;
+  transform: scale(1.1);
+  transform-origin: right;
+
 `;

@@ -12,7 +12,8 @@ import {
     mainStyle,
     mapContainer,
     resetButton, tripLocationItem, tripLocationList,
-    viewContainer
+    viewContainer, sideContainer, itemContainer, indexStyle, addressStyle, itemIconStyle,
+    daySelectContainer, daySelectButton, daySelectedButtonStyle
 } from "./styles/CheckPageStyles";
 
 const { kakao } = window;
@@ -31,6 +32,7 @@ const CheckCopyTrip = () => {
     const [scheduleData, setScheduleData] = useState([]);
     const [ schedules, setSchedules ] = useState([]);
     const [partyData, setPartyData] = useState([]);
+    const [selectedButton, setSelectedButton] = useState(0);
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -300,54 +302,64 @@ const CheckCopyTrip = () => {
 
     return (
         <div css={viewContainer}>
-            <CoustomCalendar
-                startDay={startDay}
-                endDay={endDay}
-                totalDate={totalDate}
-                onStartDayChange={startDayHandle}
-                onEndDayChange={endDayHandle}
-                userInfo={userInfo}
-            />
+            <div css={sideContainer}>
+                <CoustomCalendar
+                    startDay={startDay}
+                    endDay={endDay}
+                    totalDate={totalDate}
+                    onStartDayChange={startDayHandle}
+                    onEndDayChange={endDayHandle}
+                    userInfo={userInfo}
+                />
+                <div css={tripLocationList}>
+                    {copyReviewInfo.isLoading || !schedules[selectedDate] ? "" :
+                        Array.from(new Set(schedules[selectedDate].locations.map(location => location.addr)))
+                        .map((locationAddr, index, arr) => (
+                            <div key={index} css={itemContainer}>
+                                <div  css={tripLocationItem}>
+                                    <div css={indexStyle}>STEP {index + 1}&nbsp;&nbsp;</div>
+                                    <div css={addressStyle}>{locationAddr}</div>
+                                </div>
+                                <div css={itemIconStyle}>
+                                    {
+                                        index === arr.length - 1
+                                        ? <></>
+                                        : <>▼</>
+                                        
+                                    }
+                                </div>
+                            </div>
+                            ))}
+                </div>
+                <div css={footerStyle}>
+                    <div css={footerButtonContainer}>
+                        <button css={buttonStyle} onClick={openModal}>친구 추가</button>
+                        <button css={buttonStyle} onClick={submitPlanHandler}>일정저장</button>
+                        <button css={buttonStyle} onClick={() => window.location.replace(`/review/list`)}>취소</button>
+                    </div>
+                </div>
+            </div>
              
             <div css={mapContainer}>
                 <div id="map" style={{
-                    width: "100%",
-                    height: "648px"
+                    width: "150vh",
+                    height: "90%"
                 }} />
-                <div css={buttonContainer}>
+                <div css={daySelectContainer}>
                     {schedules.map((_, index) => (
                             <button
-                                css={buttonStyle}
+                                css={[daySelectButton, , selectedButton === index && daySelectedButtonStyle]}
                                 key={index}
-                                onClick={() => clickDateHandler(index)}
+                                onClick={() => {
+                                    setSelectedButton(index);
+                                    clickDateHandler(index)
+                                }}
                             >
                                 {index + 1}일차
                             </button>
                     ))}
                 </div>
             </div>
-            <main css={mainStyle}>
-
-                <div css={tripLocationList}>
-                    {copyReviewInfo.isLoading || !schedules[selectedDate] ? "" :
-                        Array.from(new Set(schedules[selectedDate].locations.map(location => location.addr)))
-                            .map((locationAddr, index) => (
-                                <div key={index} css={tripLocationItem}>
-                                    <div>{locationAddr}</div>
-                                </div>
-                            ))}
-                </div>
-                <div css={footerStyle}>
-                    <div css={footerButtonContainer}>
-                        {/* <button css={buttonStyle} onClick={editHandler} style={{display: isEditable ? 'none' : 'block'}}>수정</button>
-                        <button css={buttonStyle} onClick={saveHandler} style={{display: isEditable ? 'block' : 'none'}}>저장</button> */}
-                        <button css={buttonStyle} onClick={openModal}>친구 추가</button>
-                        <button css={buttonStyle} onClick={submitPlanHandler}>일정저장</button>
-                        <button css={buttonStyle} onClick={() => window.location.replace(`/review/list`)}>취소</button>
-                    </div>
-                </div>
-                
-            </main>
             <AddUserModal
             isOpen={isModalOpen}
             onClose={closeModal}

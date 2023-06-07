@@ -3,8 +3,9 @@ import {css} from "@emotion/react";
 
 export const container = css`
   margin-top: 64px;
-  width: 1920px;
-  height: auto;
+  width: 100vh;
+  height: (100vh - 64px);
+  
 `;
 
 export const sidebar=css`
@@ -27,6 +28,7 @@ export const calendar = css`
 `;
 
 export const main = css`
+  width: 100vh;
   position: relative;
 `;
 
@@ -42,19 +44,16 @@ export const avatarBox = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0px;
-  height: 50px
+  margin: 40px 0px;
+  height: 50px;
 `;
 
 export const imgIcon = css`
-  display: flex;
-  justify-content: flex-start;
   align-items: center;
   margin-right: 10px;
   
-  box-sizing: border-box;
   border-radius: 50%;
-  weight: 50px;
+  width: 50px;
   height: 50px;
 
 `;
@@ -71,8 +70,14 @@ export const addFriendButton = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #dbdbdb;
-  box-sizing: border-box;
+  
+  border: none;
+  background-color: transparent;
   max-width: 80px;
   max-height: 80px;
+`;
+
+export const addFriendIcon = css`
+  color: #555;
+  cursor: pointer;
 `;

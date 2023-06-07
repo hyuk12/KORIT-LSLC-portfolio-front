@@ -7,7 +7,8 @@ import Map from '../../components/contents/Map/Map';
 import AddUserModal from '../../components/contents/Modal/AddUserModal';
 import {useQuery} from 'react-query';
 import axios from 'axios';
-import {addFriendButton,Title, avatarBox, imgIcon,calendar, container, main, resetButton, sidebar} from "./styles/ContentStyles";
+import {addFriendButton,Title, avatarBox, imgIcon,calendar, container, main, resetButton, sidebar, addFriendIcon} from "./styles/ContentStyles";
+import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
 
 
 const Contents = () => {
@@ -55,12 +56,6 @@ const Contents = () => {
     setTotalDate(newValue.diff(startDay, 'day') + 1)
   }
 
- const resetDay = () => {
-  setStartDay(dayjs());
-  setEndDay(dayjs().add(1, 'day'));
-  const newTotalDate = dayjs().add(1, 'day').diff(dayjs(), 'day') + 1;
-  setTotalDate(newTotalDate);
-};
 
   const openModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -85,9 +80,10 @@ const Contents = () => {
                   ) : (
                     <img css={imgIcon} src={userInfo.profileImg} alt={userInfo.profileImg} />
                 )}
-                <button css={addFriendButton} onClick={openModal}>친구 추가</button>
+                <button css={addFriendButton} onClick={openModal}>
+                  <GroupAddRoundedIcon css={addFriendIcon}/>
+                </button>
               </div>
-              <button css={resetButton} onClick={resetDay}>Reset Start Day</button>
               <Calendar 
                 css={calendar}
                 startDay={startDay}

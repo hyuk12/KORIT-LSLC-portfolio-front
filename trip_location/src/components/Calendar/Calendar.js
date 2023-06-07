@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
 import {useMutation} from "react-query";
 import VerticalTabs from '../Tab/Tab';
-import {calendarContainer, Total} from "./styles/CalendarStyles";
+import {calendarContainer, Total, submitContainer, submitButton} from "./styles/CalendarStyles";
 
 
 export default function Calendar(props) {
@@ -103,6 +103,9 @@ export default function Calendar(props) {
   
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div css={submitContainer}>
+        <button css={submitButton} onClick={submitPlanHandler}>일정 확정하기 </button>
+      </div>
       <div id='calendar'>
         <div css={Total}>Total days: {totalDate}</div>
         <div css={calendarContainer}>
@@ -124,7 +127,6 @@ export default function Calendar(props) {
           </DemoContainer>
           <VerticalTabs scheduleData={scheduleData}/>
         </div>
-          <button onClick={submitPlanHandler}>일정 확정하기 </button>
       </div>
     </LocalizationProvider>
   );

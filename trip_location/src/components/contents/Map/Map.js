@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, {useEffect, useRef, useState} from 'react';
-import {guideBox, guideButton, map} from "./styles/MapStyles";
+import {guideBox, guideButton, mapStyle} from "./styles/MapStyles";
 
 const { kakao } = window;
 
@@ -103,7 +103,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   }
   
   return (
-    <div css={map} ref={mapRef}>
+    <div css={mapStyle} ref={mapRef}>
       <div css={guideBox}>
             <button css={guideButton} onClick={handelInformation}>?</button>
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button>

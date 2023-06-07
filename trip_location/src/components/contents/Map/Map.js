@@ -60,12 +60,15 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
     };
   }, [editMode, destinationTitle]);
 
+  const handelInformation = () => { //설명서
+
+  }
+
   const handleSavePath = () => { //로컬저장소에 마커 위도,경도,주소 정보 저장
     if (markerData.length === 0) {
       alert('경로를 지정해주세요.');
       return;
-    }
-
+  }
     const newMarkerData = markerData.map((data) => {
       const locations = [
         {
@@ -102,6 +105,7 @@ const Map = ({ destinationTitle, paths, setPaths }) => {
   return (
     <div css={map} ref={mapRef}>
       <div css={guideBox}>
+            <button css={guideButton} onClick={handelInformation}>?</button>
             <button css={guideButton} onClick={handleSavePath}>경로 저장</button>
       </div>
     </div>

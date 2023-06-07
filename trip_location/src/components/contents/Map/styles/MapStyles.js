@@ -32,5 +32,5 @@ export const guideButton = css`
 `;
 
 export const modalStyle = css`
-  background: 'rgba(0, 0, 0, 0.5)
+  background: rgba(0, 0, 0, 0.5);
 `;

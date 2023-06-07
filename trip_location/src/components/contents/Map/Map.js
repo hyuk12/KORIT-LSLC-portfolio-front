@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {guideBox, guideButton, mapStyle, modalStyle} from "./styles/MapStyles";
 import ModalInfo from '../Modal/ModalInfo';
 
+
 const { kakao } = window;
 
 const Map = ({ destinationTitle, paths, setPaths,isOpen,onClose }) => {

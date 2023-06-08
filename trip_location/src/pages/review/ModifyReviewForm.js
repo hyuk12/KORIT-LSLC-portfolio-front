@@ -234,12 +234,9 @@ const ModifyReviewForm = () => {
             handleLocationUpdate(locations);
         }
     };
+
     const reviewRePlanClickHandle = () => {
-        if (sendReviewData.review && sendReviewData.title && value && imgFiles.length > 0) {
-            reviewUpdate.mutate(sendReviewData);
-        } else {
-            alert('모든 부분을 작성해주세요');
-        }
+        reviewUpdate.mutate(sendReviewData);
     }
 
     const reviewDeleteClickHandle = () => {

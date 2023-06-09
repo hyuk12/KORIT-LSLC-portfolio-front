@@ -166,7 +166,7 @@ const SignUp = () => {
             };
 
             const response = await axios.post(
-                `http://localhost:8080/api/v1/auth/user`,
+                `http://43.202.21.26/api/v1/auth/user`,
                 signupUser,
                 option
             ); 

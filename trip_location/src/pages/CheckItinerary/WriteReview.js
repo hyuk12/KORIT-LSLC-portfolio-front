@@ -37,7 +37,7 @@ const WriteReview = () => {
 
   const travelInfo = useQuery(['info'], async () => {
     try {
-            const response = await axios.get('http://localhost:8080/api/v1/travel/plan/info', {
+            const response = await axios.get('http://43.202.21.26/api/v1/travel/plan/info', {
                 params: {
                     userId: searchParams.get('userId'),
                     travelId: searchParams.get('id'),
@@ -191,7 +191,7 @@ const WriteReview = () => {
             }
           }
 
-          const response = await axios.post('http://localhost:8080/api/v1/review/save', formData, option);
+          const response = await axios.post('http://43.202.21.26/api/v1/review/save', formData, option);
           return response
       }catch(error) {
 

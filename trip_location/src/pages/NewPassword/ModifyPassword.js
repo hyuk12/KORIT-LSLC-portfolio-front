@@ -34,7 +34,7 @@ const ModifyPassword = () => {
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://localhost:8080/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
+        const response = await axios.get('http://43.202.21.26/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
         return response;
     }, {
         enabled: authState.isAuthenticated,
@@ -99,7 +99,7 @@ const ModifyPassword = () => {
                 }
             };
 
-            const response = await axios.put('http://localhost:8080/api/v1/user/password/reset', modifyUserData, option);
+            const response = await axios.put('http://43.202.21.26/api/v1/user/password/reset', modifyUserData, option);
 
             return response
         } catch (error) {

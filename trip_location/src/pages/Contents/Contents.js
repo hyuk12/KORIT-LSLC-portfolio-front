@@ -30,7 +30,7 @@ const Contents = () => {
 
   const principal = useQuery(["principal"], async () => {
     // const accessToken = localStorage.getItem("accessToken");
-    const response = await axios.get('http://localhost:8080/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") }});
+    const response = await axios.get('http://43.202.21.26/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") }});
     return response;
   }, {
     enabled: refresh,

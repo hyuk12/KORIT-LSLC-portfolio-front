@@ -23,7 +23,7 @@ const RegionRegister = () => {
                 "Content-Type": "multipart/form-data"
             }
         }
-        const response = await axios.post("http://localhost:8080/post/register", formData, option);
+        const response = await axios.post("http://43.202.21.26/post/register", formData, option);
         return response;
     });
 

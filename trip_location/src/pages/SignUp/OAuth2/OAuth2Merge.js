@@ -24,7 +24,7 @@ const OAuth2Merge = () => {
 
     const providerMerge  = useMutation(async (mergeData) => {
         try {
-            const response = await axios.put("http://localhost:8080/api/v1/auth/oauth2/merge", mergeData);
+            const response = await axios.put("http://43.202.21.26/api/v1/auth/oauth2/merge", mergeData);
             return response;
         }catch (error) {
             setErrorMsg(error.response.data);

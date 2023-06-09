@@ -19,7 +19,7 @@ const PopularDestinations = ({ destination }) => {
 
     const popularLocationData = useQuery(['popularLocationData'], async () => {
         try {
-            const response = await axios.get('http://localhost:8080/locations/popular');
+            const response = await axios.get('http://43.202.21.26/locations/popular');
             return response
         }catch (error) {
             alert('Error getting')

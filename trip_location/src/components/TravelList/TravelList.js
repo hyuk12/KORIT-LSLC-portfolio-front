@@ -26,7 +26,7 @@ const TravelList = ({ userInfo, myTravelList, regionInfo, reviewDataList }) => {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
             }
-            const response = await axios.delete(`http://localhost:8080/api/v1/travel/plan/${travelId}`, option);
+            const response = await axios.delete(`http://43.202.21.26/api/v1/travel/plan/${travelId}`, option);
 
             return response
         }catch (error) {

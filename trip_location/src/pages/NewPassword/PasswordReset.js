@@ -71,7 +71,7 @@ const PasswordReset = () => {
         }
 
         try {
-            const response = await axios.put('http://localhost:8080/api/v1/auth/password/reset', resetPasswordData, option);
+            const response = await axios.put('http://43.202.21.26/api/v1/auth/password/reset', resetPasswordData, option);
             setGuideMessages('');
             alert('회원정보가 변경되었습니다.');
             navigate('/auth/login');

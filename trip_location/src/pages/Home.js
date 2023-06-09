@@ -36,7 +36,7 @@ const Home = () => {
     }, [images]);
 
     const cardData = useQuery(['cardData'], async () => {
-        const response = await axios.get('http://localhost:8080/post');
+        const response = await axios.get('http://43.202.21.26/post');
         return response.data;
     }, );
 

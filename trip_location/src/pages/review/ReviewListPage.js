@@ -38,7 +38,7 @@
 
         const reviewList = useQuery(['list'], async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/v1/review/list/all');
+                const response = await axios.get('http://43.202.21.26/api/v1/review/list/all');
 
                 return response
             }catch (error) {

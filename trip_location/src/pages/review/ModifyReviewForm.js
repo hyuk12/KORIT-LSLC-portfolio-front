@@ -30,6 +30,8 @@ const ModifyReviewForm = () => {
     const [ value, setValue ] = useState(0);
     const [selectedButton, setSelectedButton] = useState(0);
     const tripLocationListRef = useRef(null);
+    const prevImg = []
+    const deleteImg = []
     const [sendReviewData, setSendReviewData] = useState({
         review: "", // text
         title: "",  // string

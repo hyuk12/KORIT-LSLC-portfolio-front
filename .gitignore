@@ -1,3 +1,27 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+bin/
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,intellij+all,intellij+iml,intellij,java,node,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,intellij+all,intellij+iml,intellij,java,node,react
 
@@ -164,7 +188,7 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 
 ### Intellij+all Patch ###
-# Ignore everything but code style settings and run configurations
+# Ignore everything but code styles settings and run configurations
 # that are supposed to be shared within teams.
 
 .idea/*

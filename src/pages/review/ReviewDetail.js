@@ -38,7 +38,7 @@ const ReviewDetail = () => {
 
   const travelInfoReview = useQuery(['infoReview'], async () => {
     try {
-      const response = await axios.get('http://43.202.21.26/api/v1/travel/plan/info/review', {
+      const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/info/review', {
         params: {
           travelId: searchParams.get('id'),
         }
@@ -61,7 +61,7 @@ const ReviewDetail = () => {
   const getReviewDetails = useQuery(['getReviewDetails'], async () => {
     try {
 
-      const response = await axios.get(`http://43.202.21.26/api/v1/review/list/${searchParams.get('reviewId')}`)
+      const response = await axios.get(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/review/list/${searchParams.get('reviewId')}`)
       return response;
     }catch (error) {
 

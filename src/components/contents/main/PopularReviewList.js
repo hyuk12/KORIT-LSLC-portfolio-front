@@ -17,7 +17,7 @@ const PopularReviewList = () => {
 
     const reviewListByRating = useQuery(['list'], async () => {
         try {
-            const response = await axios.get('http://43.202.21.26/api/v1/review/list');
+            const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/review/list');
 
             return response.data
         }catch (error) {

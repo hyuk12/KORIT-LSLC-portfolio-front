@@ -81,7 +81,7 @@ const AddUserModal = ({ isOpen, onClose, destination, userInfo, updatePartyData 
       }
     }
     try {
-      const response = await axios.get('http://43.202.21.26/api/v1/user/search', option);
+      const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/user/search', option);
 
       return response;
     } catch (error) {

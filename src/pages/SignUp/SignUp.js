@@ -166,7 +166,7 @@ const SignUp = () => {
             };
 
             const response = await axios.post(
-                `http://43.202.21.26/api/v1/auth/user`,
+                `http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/auth/user`,
                 signupUser,
                 option
             ); 

@@ -69,7 +69,7 @@ const OAuth2Register = () => {
             }
         }
         try {
-            const response = await axios.post('http://43.202.21.26/api/v1/auth/oauth2/register', registerData, option);
+            const response = await axios.post('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/auth/oauth2/register', registerData, option);
             return response
         }catch (error) {
             alert("page 가 만료되었습니다")

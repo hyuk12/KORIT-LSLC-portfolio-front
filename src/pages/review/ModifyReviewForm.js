@@ -50,7 +50,7 @@ const ModifyReviewForm = () => {
                     travelId: parseInt(searchParams.get('id')),
                 }
             }
-            const response = await axios.get('http://43.202.21.26/api/v1/travel/plan/info/review', option);
+            const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/info/review', option);
             setSendReviewData((prevData) => ({
                 ...prevData,
                 travelId: parseInt(searchParams.get('id')),
@@ -73,7 +73,7 @@ const ModifyReviewForm = () => {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
             }
-            const response = await axios.get(`http://43.202.21.26/api/v1/review/list/${searchParams.get('reviewId')}`, option)
+            const response = await axios.get(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/review/list/${searchParams.get('reviewId')}`, option)
             return response;
         }catch (error) {
 
@@ -114,7 +114,7 @@ const ModifyReviewForm = () => {
                 formData.append('imgFiles', imgFile.file);
             })
 
-            const response = await axios.put(`http://43.202.21.26/api/v1/review/${searchParams.get('reviewId')}`, formData, option);
+            const response = await axios.put(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/review/${searchParams.get('reviewId')}`, formData, option);
             return response
         }catch (error) {
 
@@ -134,7 +134,7 @@ const ModifyReviewForm = () => {
                     Authorization: `${localStorage.getItem('accessToken')}`
                 }
             }
-            const response = await axios.delete(`http://43.202.21.26/api/v1/review/${deleteId}`, option);
+            const response = await axios.delete(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/review/${deleteId}`, option);
             
             return response
         }catch (error) {

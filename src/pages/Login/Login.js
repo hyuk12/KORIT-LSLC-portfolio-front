@@ -43,15 +43,15 @@ const Login = () => {
     }
 
     const googleAuthLoginClickHandler = () => {
-        window.location.href= "http://43.202.21.26/oauth2/authorization/google"
+        window.location.href= "http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google"
     }
 
     const naverAuthLoginClickHandler = () => {
-        window.location.href= "http://43.202.21.26/oauth2/authorization/naver"
+        window.location.href= "http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/naver"
     }
 
     const kakaoAuthLoginClickHandler = () => {
-        window.location.href= "http://43.202.21.26/oauth2/authorization/kakao"
+        window.location.href= "http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/kakao"
     }
 
     const signInUser = useMutation(async (loginData) => {
@@ -61,7 +61,7 @@ const Login = () => {
                     'Content-Type': 'application/json'
                 }
             }
-            const response = await axios.post(`http://43.202.21.26/api/v1/auth/login`, loginData, option);
+            const response = await axios.post(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/auth/login`, loginData, option);
 
             const accessToken = response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);

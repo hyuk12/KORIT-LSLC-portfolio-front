@@ -50,7 +50,7 @@ const MyPage = () => {
   });
 
   const principal = useQuery(["principal"], async () => {
-    const response = await axios.get('http://43.202.21.26/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
+    const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
     return response;
   }, {
     enabled: refresh,
@@ -73,7 +73,7 @@ const MyPage = () => {
       }
     }
     try {
-      const response = await axios.get('http://43.202.21.26/api/v1/travel/plan/list',option)
+      const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/list',option)
       return response;
     }catch (error) {
       alert('여행 일정이 없습니다.')
@@ -93,7 +93,7 @@ const MyPage = () => {
           'Authorization' : `${localStorage.getItem('accessToken')}`
         }
       }
-      const response = await axios.get(`http://43.202.21.26/api/v1/review/mylist`, option)
+      const response = await axios.get(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/review/mylist`, option)
       return response;
     } catch (error) {
       return error;

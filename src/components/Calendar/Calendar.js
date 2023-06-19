@@ -73,7 +73,7 @@ export default function Calendar(props) {
       }
     }
     try {
-      const response = await axios.post("http://43.202.21.26/api/v1/travel/plan/save", updatedScheduleData, option)
+      const response = await axios.post("http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/save", updatedScheduleData, option)
 
       window.location.replace(`/user/${userInfo.userId}`)
       return response;

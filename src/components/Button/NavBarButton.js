@@ -14,7 +14,7 @@ const NavBarButton = ({ handleSignUpClick, handleSignInClick }) => {
     const [authState, setAuthState] = useRecoilState(authenticationState);
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://43.202.21.26/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") }});
+        const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") }});
 
         return response;
     }, {

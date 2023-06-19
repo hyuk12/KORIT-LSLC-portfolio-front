@@ -36,7 +36,7 @@ const CheckCopyTrip = () => {
 
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://43.202.21.26/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
+        const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
         return response;
       }, {
         enabled: refresh,
@@ -53,7 +53,7 @@ const CheckCopyTrip = () => {
 
     const copyReviewInfo = useQuery(['info'], async () => {
         try {
-                const response = await axios.get('http://43.202.21.26/api/v1/travel/plan/info/copy', {
+                const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/info/copy', {
                     params: {
                         reviewId: searchParams.get('reviewId'),
                         travelId: searchParams.get('travelId'),
@@ -230,7 +230,7 @@ const CheckCopyTrip = () => {
               }
             }
             try {
-              const response = await axios.put(`http://43.202.21.26/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
+              const response = await axios.put(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
               window.location.replace(`/user/${userInfo.userId}`);
               return response;
             }catch (error) {
@@ -248,7 +248,7 @@ const CheckCopyTrip = () => {
           }
         }
         try {
-          const response = await axios.post("http://43.202.21.26/api/v1/travel/plan/save", updatedScheduleData, option)
+          const response = await axios.post("http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/save", updatedScheduleData, option)
     
           window.location.replace(`/user/${userInfo.userId}`)
           return response;

@@ -15,7 +15,7 @@ const AuthRouter = ({ path, element }) => {
                 "Authorization": `${localStorage.getItem("accessToken")}`
             }
         }
-        return await axios.get('http://43.202.21.26/api/v1/auth/authenticated', option)
+        return await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/auth/authenticated', option)
     }, {
         onSuccess: (response) => {
             if (response.status === 200) {

@@ -27,7 +27,7 @@ const CheckMyTrip = () => {
 
     const myTravelInfo = useQuery(['info'], async () => {
         try {
-                const response = await axios.get('http://43.202.21.26/api/v1/travel/plan/info', {
+                const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/info', {
                     params: {
                         travelId: searchParams.get('id'),
                     },
@@ -169,7 +169,7 @@ const CheckMyTrip = () => {
             }
         }
         try {
-            const response = await axios.put(`http://43.202.21.26/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
+            const response = await axios.put(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/travel/plan/update/${travelId}`, travelPlan, option);
             window.location.replace(`/user/${searchParams.get('userId')}`);
             return response;
         }catch (error) {

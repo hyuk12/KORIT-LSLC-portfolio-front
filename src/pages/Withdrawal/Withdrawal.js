@@ -34,7 +34,7 @@ const Withdrawal = () => {
     
     const principal = useQuery(["principal"], async () => {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get('http://43.202.21.26/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
+        const response = await axios.get('http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/user/principal', { headers: { Authorization: localStorage.getItem("accessToken") } });
         return response;
     }, {
         enabled: authState.isAuthenticated
@@ -58,7 +58,7 @@ const Withdrawal = () => {
                 password: userCheck.password,
             };
 
-            const response = await axios.delete(`http://43.202.21.26/api/v1/user/${principal.data.data.userId}`, {
+            const response = await axios.delete(`http://ec2-43-202-21-26.ap-northeast-2.compute.amazonaws.com/api/v1/user/${principal.data.data.userId}`, {
                 headers: {
                     Authorization: `${localStorage.getItem("accessToken")}`,
                 },
